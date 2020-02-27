@@ -2,22 +2,23 @@
 // Created by vsg on 22.02.2020.
 //
 
-#ifndef PROJECT_CELL_HPP
-#define PROJECT_CELL_HPP
-
-#include <cstdint>
+#ifndef _PROJECT_CELL_HPP
+#define _PROJECT_CELL_HPP
 
 class cell {
 public:
-    cell(int16_t w, int16_t h) : w_(w), h_(h) {}; // констуртор из прямоугольных координат
-    cell(int16_t x, int16_t y, int16_t z) : w_(-x + z), h_((x + 2 * y + z) / 2) {}; // конструктор с 3 переменными
+    cell(int w, int h) {
+        y_ = 2 * h + w % 2;
+        z_ = (w - y_) / 2;
+        x_ = z_ - w;
+    }; // констуртор из прямоугольных координат
+    cell(int x, int y, int z) : x_{x}, y_{y}, z_{z} {}; // конструктор с 3 переменными
 
-    int16_t pos_x() { return w_ };
-    int16_t pos_y() { return h_ };
+    int pos_w() { return -x_ + z_; }; // Для массива.
+    int pos_h() { return (x_ + 2 * y_ + z_) / 2; };
 
-private:
-    int16_t w_, h_;
+    int x_, y_, z_;
 };
 
 
-#endif //PROJECT_CELL_HPP
+#endif //_PROJECT_CELL_HPP
