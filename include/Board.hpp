@@ -8,7 +8,7 @@
 #include <vector>
 #include "Cell.hpp"
 
-enum class Figure {
+enum class figureType {
     INTELLECTOR,
     DOMINATOR,
     AGGRESSOR,
@@ -22,10 +22,10 @@ enum player_colour {
 };
 
 struct triple {
-    Figure type_;
+    figureType type_;
     cell pos_;
     player_colour colour_;
-    triple(Figure type, cell pos, player_colour colour)
+    triple(figureType type, cell pos, player_colour colour)
     : type_(type), pos_(pos), colour_(colour) {};
 };
 
@@ -47,10 +47,12 @@ private: // Интерфейс фигуры-------------------------------------
 
 public: // Функции класса-------------------------------------------------------------------------
     board();
+    bool addFigure(triple new_figure);
     ~board();
 
-    bool move(cell of_pos, cell to_pos);
+    bool move(cell of_pos, cell to_pos, player_colour turn_);
     const std::vector<std::vector<figure*>>& getBoard() {return data_; }
+
 
 private: // Все фигуры----------------------------------------------------------------------------
     class fIntellector : public figure {
@@ -116,8 +118,8 @@ private: // Все фигуры-------------------------------------------------
 
     // Поля доски---------------------------------------------------------------------------------
     std::vector<std::vector<figure*>> data_;
-    std::vector<figure*> all_white_figures_;
-    std::vector<figure*> all_black_figures_;
+    std::vector<const figure*> all_white_figures_;
+    std::vector<const figure*> all_black_figures_;
     int cols_ = 9, rows_ = 7; // ширина и высота
 
     const std::vector<triple> arrangement_; // Расположение фигур

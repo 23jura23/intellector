@@ -10,7 +10,7 @@
 class game {
 public:
     void init(); // Запуск игры
-    bool makeMove(cell cell_from, cell cell_to);
+    bool makeMove(cell cell_from, cell cell_to, player_colour turn_);
 
 private:
     board board_;
