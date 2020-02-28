@@ -6,124 +6,28 @@
 #define _PROJECT_BOARD_HPP
 
 #include <vector>
+#include <memory>
+#include "Types.hpp"
+#include "Figure.hpp"
 #include "Cell.hpp"
 
-enum class figureType {
-    INTELLECTOR,
-    DOMINATOR,
-    AGGRESSOR,
-    DEFENSSOR,
-    LIERATOR,
-    PROGRESSOR
-};
-
-enum player_colour {
-    black_, white_
-};
-
-struct triple {
-    figureType type_;
-    cell pos_;
-    player_colour colour_;
-    triple(figureType type, cell pos, player_colour colour)
-    : type_(type), pos_(pos), colour_(colour) {};
-};
-
-class board {
-private: // Интерфейс фигуры----------------------------------------------------------------------
-    class figure {
-    public:
-        figure(cell pos, player_colour colour) : pos_(pos), colour_(colour) {}
-        virtual ~figure() = default;
-
-        virtual bool checkMove(cell to_pos_);
-        virtual bool move(cell to_pos_);
-        virtual std::vector<cell>& allMoves();
-
-    private:
-        player_colour colour_;
-        cell pos_;
-    };
-
-public: // Функции класса-------------------------------------------------------------------------
-    board();
-    bool addFigure(triple new_figure);
-    ~board();
-
-    bool move(cell of_pos, cell to_pos, player_colour turn_);
-    const std::vector<std::vector<figure*>>& getBoard() {return data_; }
+class Board {
+public: // Функции доски-------------------------------------------------------------------------
+    Board();
+    ~Board() = default;
+    Board& operator= (const Board&) = default;
+    Board(const Board& other);
 
 
-private: // Все фигуры----------------------------------------------------------------------------
-    class fIntellector : public figure {
-    public:
-        fIntellector(cell pos, player_colour colour) : figure(pos, colour) {};
-        ~fIntellector() override = default;
+    bool move(Cell of_pos, Cell to_pos, PlayerColour turn_);
+    const std::vector<std::vector<std::unique_ptr<Figure>>>& getBoard() {return data_; } // Спросить что за подсказка
 
-        bool checkMove(cell to_pos_) override;
-        bool move(cell to_pos_) override;
-        std::vector<cell>& allMoves() override;
-    };
 
-    class fDominator : public figure {
-    public:
-        fDominator(cell pos, player_colour colour) : figure(pos, colour) {};
-        ~fDominator() override = default;
-
-        bool checkMove(cell to_pos_) override;
-        bool move(cell to_pos_) override;
-        std::vector<cell>& allMoves() override;
-    };
-
-    class fAggressor : public figure {
-    public:
-        fAggressor(cell pos, player_colour colour) : figure(pos, colour) {};
-        ~fAggressor() override = default;
-
-        bool checkMove(cell to_pos_) override;
-        bool move(cell to_pos_) override;
-        std::vector<cell>& allMoves() override;
-
-    };
-
-    class fDefenssor : public figure {
-    public:
-        fDefenssor(cell pos, player_colour colour) : figure(pos, colour) {};
-        ~fDefenssor() override = default;
-
-        bool checkMove(cell to_pos_) override;
-        bool move(cell to_pos_) override;
-        std::vector<cell>& allMoves() override;
-    };
-
-    class fLiberator : public figure {
-    public:
-        fLiberator(cell pos, player_colour colour) : figure(pos, colour) {};
-        ~fLiberator() override = default;
-
-        bool checkMove(cell to_pos_) override;
-        bool move(cell to_pos_) override;
-        std::vector<cell>& allMoves() override;
-    };
-
-    class fProgressor : public figure {
-    public:
-        fProgressor(cell pos, player_colour colour) : figure(pos, colour) {};
-        ~fProgressor() override = default;
-
-        bool checkMove(cell to_pos_) override;
-        bool move(cell to_pos_) override;
-        std::vector<cell>& allMoves() override;
-    };
-
-    // Поля доски---------------------------------------------------------------------------------
-    std::vector<std::vector<figure*>> data_;
-    std::vector<const figure*> all_white_figures_;
-    std::vector<const figure*> all_black_figures_;
-    int cols_ = 9, rows_ = 7; // ширина и высота
-
-    const std::vector<triple> arrangement_; // Расположение фигур
-
+private: // Поля доски----------------------------------------------------------------------------
+    std::vector<std::vector<std::unique_ptr<Figure>>> data_;
+//    std::vector<const figure*> all_white_figures_;
+//    std::vector<const figure*> all_black_figures_;
+    static constexpr int cols_ = 9, rows_ = 7; // ширина и высота
 };
 
 #endif //_PROJECT_BOARD_HPP

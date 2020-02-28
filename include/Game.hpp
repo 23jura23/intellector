@@ -7,14 +7,16 @@
 
 #include "Board.hpp"
 
-class game {
+class Game {
 public:
     void init(); // Запуск игры
-    bool makeMove(cell cell_from, cell cell_to, player_colour turn_);
+    bool makeMove(Cell cell_from, Cell cell_to);
 
 private:
-    board board_;
-    player_colour turn_; // Чей ход
+    Board board_;
+    PlayerColour turn_; // Чей ход
+    // кто играет
+    // история ходов
 };
 
 #endif //_PROJECT_GAME_HPP
