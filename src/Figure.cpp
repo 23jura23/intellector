@@ -41,64 +41,64 @@ std::unique_ptr<Figure> Figure::create(Triple new_figure) {
     }
 }
 
-bool Figure::checkMove(const Board &board_, Cell to_pos_) {
+bool Figure::checkMove(const Board &board, Cell to_pos) {
     return false; // TODO
 }
 
-std::vector<Cell> Figure::allMoves(const Board &board_) {
+std::vector<Cell> Figure::allMoves(const Board &board) {
     return std::vector<Cell>{}; // TODO
 }
 
 
-bool FigureIntellector::checkMove(const Board &board_, Cell to_pos_) {
+bool FigureIntellector::checkMove(const Board &board, Cell to_pos) {
     return false; // TODO
 }
 
-std::vector<Cell> FigureIntellector::allMoves(const Board &board_) {
+std::vector<Cell> FigureIntellector::allMoves(const Board &board) {
     return std::vector<Cell>{}; // TODO
 }
 
 
-bool FigureDominator::checkMove(const Board &board_, Cell to_pos_) {
+bool FigureDominator::checkMove(const Board &board, Cell to_pos) {
     return false; // TODO
 }
 
-std::vector<Cell> FigureDominator::allMoves(const Board &board_) {
+std::vector<Cell> FigureDominator::allMoves(const Board &board) {
     return std::vector<Cell>{}; // TODO
 }
 
 
-bool FigureAggressor::checkMove(const Board &board_, Cell to_pos_) {
+bool FigureAggressor::checkMove(const Board &board, Cell to_pos) {
     return false; // TODO
 }
 
-std::vector<Cell> FigureAggressor::allMoves(const Board &board_) {
+std::vector<Cell> FigureAggressor::allMoves(const Board &board) {
     return std::vector<Cell>{}; // TODO
 }
 
 
-bool FigureDefenssor::checkMove(const Board &board_, Cell to_pos_) {
+bool FigureDefenssor::checkMove(const Board &board, Cell to_pos) {
     return false; // TODO
 }
 
-std::vector<Cell> FigureDefenssor::allMoves(const Board &board_) {
+std::vector<Cell> FigureDefenssor::allMoves(const Board &board) {
     return std::vector<Cell>{}; // TODO
 }
 
 
-bool FigureLiberator::checkMove(const Board &board_, Cell to_pos_) {
+bool FigureLiberator::checkMove(const Board &board, Cell to_pos) {
     return false; // TODO
 }
 
-std::vector<Cell> FigureLiberator::allMoves(const Board &board_) {
+std::vector<Cell> FigureLiberator::allMoves(const Board &board) {
     return std::vector<Cell>{}; // TODO
 }
 
 
-bool FigureProgressor::checkMove(const Board &board_, Cell to_pos_) {
+bool FigureProgressor::checkMove(const Board &board, Cell to_pos) {
     return false; // TODO
 }
 
-std::vector<Cell> FigureProgressor::allMoves(const Board &board_) {
+std::vector<Cell> FigureProgressor::allMoves(const Board &board) {
     return std::vector<Cell>{}; // TODO
 }

@@ -56,7 +56,7 @@ Board::Board(const Board &other) {
     data_.resize(cols_);
     for (int w = 0; w < cols_; ++w) {
         data_[w].resize(rows_ - w % 2);
-        for (int h = 0; h < data_[w].size(); ++h) {
+        for (unsigned int h = 0; h < data_[w].size(); ++h) {
             Triple new_figure = other.data_[w][h].get()->getTriple();
             data_[w][h] = Figure::create(new_figure);
 
@@ -64,7 +64,7 @@ Board::Board(const Board &other) {
     }
 }
 
-bool Board::move(Cell of_pos, Cell to_pos, PlayerColour turn_) {
+bool Board::move(Cell of_pos, Cell to_pos, PlayerColour turn) {
     return false; // TODO
 }
 

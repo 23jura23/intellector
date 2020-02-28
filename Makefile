@@ -2,9 +2,9 @@
 
 CXX = g++
 
-CFLAGS = --std=c++17 -Wall -Wextra -Werror -Wshadow
+CFLAGS = --std=c++17 -Wall -Wextra -Wshadow
 INC = -Iinclude
-EXTRA_FLAGS = 
+EXTRA_FLAGS =
 
 DEBUG_FLAGS = -g
 RELEASE_FLAGS = -Ofast
