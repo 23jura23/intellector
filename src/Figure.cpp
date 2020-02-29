@@ -4,6 +4,10 @@
 
 #include "Figure.hpp"
 
+[[noreturn]] static void terminator () {
+    std::terminate();
+}
+
 //std::optional<Board> Figure::makeMove(const Board &board_, Cell to_pos_) {
 ////    if (checkMove(board_, to_pos_))
 ////        return static_cast<board>(board_);
@@ -30,7 +34,7 @@ std::unique_ptr<Figure> Figure::create(Triple new_figure) {
         case FigureType::DEFENSSOR :
             return std::make_unique<FigureDefenssor>(pos, colour);
 
-        case FigureType::LIERATOR :
+        case FigureType::LIBERATOR :
             return std::make_unique<FigureLiberator>(pos, colour);
 
         case FigureType::PROGRESSOR :
@@ -39,6 +43,8 @@ std::unique_ptr<Figure> Figure::create(Triple new_figure) {
         case FigureType::NONE :
             return std::make_unique<Figure>(pos, colour);
     }
+
+    terminator();
 }
 
 bool Figure::checkMove(const Board &board, Cell to_pos) {

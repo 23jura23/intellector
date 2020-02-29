@@ -16,7 +16,7 @@ enum class FigureType {
     DOMINATOR,
     AGGRESSOR,
     DEFENSSOR,
-    LIERATOR,
+    LIBERATOR,
     PROGRESSOR,
     NONE
 };
@@ -100,7 +100,7 @@ public:
 class FigureLiberator : public Figure {
 public:
     FigureLiberator(Cell pos, PlayerColour colour)
-    : Figure(pos, colour, FigureType::LIERATOR) {};
+    : Figure(pos, colour, FigureType::LIBERATOR) {};
 
 
     bool checkMove(const Board& board_, Cell to_pos_) override;
