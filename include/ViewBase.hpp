@@ -7,7 +7,7 @@ class viewBase
 {
     public:
        
-        virtual ~viewBase();
+        virtual ~viewBase() = default;
     protected:
 
 };

@@ -6,23 +6,41 @@
 #include <string>
 #include <vector>
 
+namespace Curses {
+
 class viewCurses : public viewBase {
+    using BoardField = Board::BoardField;
+    using pair = std::pair<size_t, size_t>;
+
 public:
-    viewCurses();
+    viewCurses(const BoardField& board);
     ~viewCurses();
 
-    void refresh();
+    void update(const BoardField&);
+    void refresh_view();
 
 private:
-    void outBoard();
-    struct hexCell {
-        using Paint = std::vector<std::string>;
-        size_t x,y; //left top angle 
-        const int d = 7; //edge size
-        size_t xsize = d-1 + d + d-1, ysize = d-1 + 1 + d-1; //size of Paint
-        Paint draw;
-        hexCell(Figure,size_t, size_t); 
+    struct BoardFieldContainer {
+        BoardFieldContainer(const BoardField&);
+        const BoardField& board_;
     };
+
+    std::unique_ptr<BoardFieldContainer> container_;
+
+    void outBoard();
+    void outFigure(const Figure& figure, pair TL);
+
+    static constexpr size_t d = 7;
+    static constexpr pair delta_down = { 0, 2 * (d - 3) };
+    static constexpr pair delta_right_down = { (d + 3) + (d - 3), d - 3 };
+    static constexpr pair delta_right_up = { 2 * (d + 3) + 2 * (d - 3), 0 };
+    
+    const int maxy, maxx;
+    size_t tlx = d - 1, tly = 0; //top left x y
+
+    pair getTL(pair); //get top left corner coordinates of cell
 };
+
+}
 
 #endif

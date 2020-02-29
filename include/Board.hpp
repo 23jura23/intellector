@@ -18,9 +18,10 @@ public: // Функции доски--------------------------------------------
     Board& operator= (const Board&) = default;
     Board(const Board& other);
 
+    typedef std::vector<std::vector<std::unique_ptr<Figure>>> BoardField;
 
     bool move(Cell of_pos, Cell to_pos, PlayerColour turn_);
-    const std::vector<std::vector<std::unique_ptr<Figure>>>& getBoard() {return data_; } // Спросить что за подсказка
+    const BoardField& getBoard() {return data_; } // Спросить что за подсказка
 
 
 private: // Поля доски----------------------------------------------------------------------------
