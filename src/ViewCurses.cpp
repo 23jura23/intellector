@@ -123,7 +123,7 @@ void viewCurses::outFigure(const Figure& figure, pair TL)
         };
 
         break;
-    case FigureType::LIERATOR:
+    case FigureType::LIBERATOR:
         draw = {
             "    ###########    ",
             "   #           #   ",
