@@ -39,12 +39,12 @@ test: build
 test_fsanitize: fsanitize test
 
 bin/${BIN}: ${OBJS} | obj bin
-	${CXX} ${CFLAGS} ${EXTRA_FLAGS} ${LINK_FLAGS} ${OBJS} -o bin/${BIN}
+	${CXX} ${CFLAGS} ${EXTRA_FLAGS} ${OBJS} ${LINK_FLAGS} -o bin/${BIN}
 
 -include ${DEP}
 
 obj/%.o: src/%.cpp | obj
-	${CXX} ${CFLAGS} ${EXTRA_FLAGS} ${LINK_FLAGS} ${INC} -MMD -c $< -o $@
+	${CXX} ${CFLAGS} ${EXTRA_FLAGS} ${INC} ${LINK_FLAGS} -MMD -c $< -o $@
 
 obj:
 	mkdir obj

@@ -47,6 +47,11 @@ Board::Board() {
         Cell pos = new_figure.pos_;
         data_[pos.posW()][pos.powH()] = Figure::create(new_figure);
     }
+
+    for (int w = 0;w < cols_; ++w)
+        for (int h = 0;h < data_[w].size();++h)
+            if (!data_[w][h])
+                data_[w][h] = Figure::create({PlayerColour::white_, Cell{w,h}, FigureType::NONE});
 }
 
 Board::Board(const Board &other) {
