@@ -7,26 +7,27 @@
 
 #include <vector>
 #include <memory>
-#include "Types.hpp"
 #include "Figure.hpp"
 #include "Cell.hpp"
+#include "Position.hpp"
 
 class Board {
-public: // Функции доски-------------------------------------------------------------------------
+public:
     Board();
     ~Board() = default;
-    Board& operator= (const Board&) = default;
-    Board(const Board& other);
+    Board &operator=(const Board &) = default;
+    Board(const Board &other);
 
+    bool move(Position of_pos, Position to_pos, PlayerColour turn);
 
-    bool move(Cell of_pos, Cell to_pos, PlayerColour turn_);
-    const std::vector<std::vector<std::unique_ptr<Figure>>>& getBoard() {return data_; } // Спросить что за подсказка
+    [[nodiscard]] const std::vector<std::vector<Cell>> &getBoard() const;
 
+    [[nodiscard]] const Cell &getCell(Position pos) const;
 
-private: // Поля доски----------------------------------------------------------------------------
-    std::vector<std::vector<std::unique_ptr<Figure>>> data_;
-//    std::vector<const figure*> all_white_figures_;
-//    std::vector<const figure*> all_black_figures_;
+private:
+    Cell &operator[](Position pos);
+
+    std::vector<std::vector<Cell>> data_;
     static constexpr int cols_ = 9, rows_ = 7; // ширина и высота
 };
 

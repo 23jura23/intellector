@@ -9,7 +9,8 @@
 #include <optional>
 #include <memory>
 #include "Types.hpp"
-#include "Cell.hpp"
+#include "Position.hpp"
+//#include "Board.hpp"
 
 enum class FigureType {
     INTELLECTOR,
@@ -17,8 +18,7 @@ enum class FigureType {
     AGGRESSOR,
     DEFENSSOR,
     LIBERATOR,
-    PROGRESSOR,
-    NONE
+    PROGRESSOR
 };
 
 enum class PlayerColour {
@@ -27,94 +27,86 @@ enum class PlayerColour {
 
 struct Triple {
     PlayerColour colour_;
-    Cell pos_;
+    Position pos_;
     FigureType type_;
-    Triple(PlayerColour colour, Cell pos, FigureType type)
-            : colour_(colour), pos_(pos), type_(type) {};
+
+    Triple(PlayerColour colour, Position pos, FigureType type);
 };
 
 class Figure {
 public:
-    Figure(Cell pos, PlayerColour colour, FigureType type = FigureType::NONE)
-    : colour_(colour), pos_(pos), type_(type) {}
+    Figure(PlayerColour colour, Position pos, FigureType type);
 
+    virtual bool checkMove(const Board &board, Position to_pos) = 0;
 
-    virtual bool checkMove(const Board& board_, Cell to_pos_);
-//    virtual std::optional<Board> makeMove(const Board& board_, Cell to_pos_);
-    virtual std::vector<Cell> allMoves(const Board& board_);
+    virtual std::vector<Position> allMoves(const Board &board) = 0;
 
-    [[nodiscard]] PlayerColour getColor()  const { return colour_; }
-    [[nodiscard]] Cell         getPos()    const { return pos_; }
-    [[nodiscard]] FigureType   getType()   const { return type_; }
-    [[nodiscard]] Triple       getTriple() const { return Triple(colour_, pos_, type_); }
+    [[nodiscard]] PlayerColour getColor() const;
+    [[nodiscard]] Position getPos() const;
+    [[nodiscard]] FigureType getType() const;
+    [[nodiscard]] Triple getTriple() const;
 
     static std::unique_ptr<Figure> create(Triple);
-private:
+
+protected:
+    Position pos_;
     const PlayerColour colour_;
-    Cell pos_;
     const FigureType type_;
 };
 
 //------------------------------------------------------------------------------------------------
 class FigureIntellector : public Figure {
 public:
-    FigureIntellector(Cell pos, PlayerColour colour)
-    : Figure(pos, colour, FigureType::INTELLECTOR) {};
+    FigureIntellector(PlayerColour colour, Position pos);
 
+    bool checkMove(const Board &board, Position to_pos) override;
 
-    bool checkMove(const Board& board_, Cell to_pos_) override;
-//    std::optional<Board> makeMove(const Board& board_, Cell to_pos_) override;
-    std::vector<Cell> allMoves(const Board& board_) override;
+    std::vector<Position> allMoves(const Board &board) override;
 };
 
 class FigureDominator : public Figure {
 public:
-    FigureDominator(Cell pos, PlayerColour colour)
-    : Figure(pos, colour, FigureType::DOMINATOR) {};
+    FigureDominator(PlayerColour colour, Position pos);
 
+    bool checkMove(const Board &board, Position to_pos) override;
 
-    bool checkMove(const Board& board_, Cell to_pos_) override;
-    std::vector<Cell> allMoves(const Board& board_) override;
+    std::vector<Position> allMoves(const Board &board) override;
 };
 
 class FigureAggressor : public Figure {
 public:
-    FigureAggressor(Cell pos, PlayerColour colour)
-    : Figure(pos, colour, FigureType::AGGRESSOR) {};
+    FigureAggressor(PlayerColour colour, Position pos);
 
+    bool checkMove(const Board &board, Position to_pos) override;
 
-    bool checkMove(const Board& board_, Cell to_pos_) override;
-    std::vector<Cell> allMoves(const Board& board_) override;
+    std::vector<Position> allMoves(const Board &board) override;
 };
 
 class FigureDefenssor : public Figure {
 public:
-    FigureDefenssor(Cell pos, PlayerColour colour)
-    : Figure(pos, colour, FigureType::DEFENSSOR) {};
+    FigureDefenssor(PlayerColour colour, Position pos);
 
+    bool checkMove(const Board &board, Position to_pos) override;
 
-    bool checkMove(const Board& board_, Cell to_pos_) override;
-    std::vector<Cell> allMoves(const Board& board_) override;
+    std::vector<Position> allMoves(const Board &board) override;
 };
 
 class FigureLiberator : public Figure {
 public:
-    FigureLiberator(Cell pos, PlayerColour colour)
-    : Figure(pos, colour, FigureType::LIBERATOR) {};
+    FigureLiberator(PlayerColour colour, Position pos);
 
+    bool checkMove(const Board &board, Position to_pos) override;
 
-    bool checkMove(const Board& board_, Cell to_pos_) override;
-    std::vector<Cell> allMoves(const Board& board_) override;
+    std::vector<Position> allMoves(const Board &board) override;
 };
 
 class FigureProgressor : public Figure {
 public:
-    FigureProgressor(Cell pos, PlayerColour colour)
-    : Figure(pos, colour, FigureType::PROGRESSOR) {};
+    FigureProgressor(PlayerColour colour, Position pos);
 
+    bool checkMove(const Board &board, Position to_pos) override;
 
-    bool checkMove(const Board& board_, Cell to_pos_) override;
-    std::vector<Cell> allMoves(const Board& board_) override;
+    std::vector<Position> allMoves(const Board &board) override;
 };
 
 
