@@ -7,11 +7,14 @@
 
 #include <memory>
 #include "Figure.hpp"
+#include "Position.hpp"
 
-enum class CellStatus {
-    MARKED,
+enum class CellStatus { // А может надо в View реализовать
     NOT_MARKED,
-    MARKED_TO_ATTACK,
+    CAN_MOVE,
+    CAN_ATTACK,
+    CURRENT,
+    LAST_MOVE,
 };
 
 enum class CellColour {
@@ -21,12 +24,13 @@ enum class CellColour {
 
 class Cell {
 public:
-    explicit Cell(Triple new_figure);
-
+//    Cell(PlayerColour colour, Position pos, FigureType type);
+    Cell(Figure figure, Position pos);
     explicit Cell(Position pos);
+    Cell& operator= (const Cell&);
 
-    std::unique_ptr<Figure> figure_ = nullptr;
 
+    std::optional<Figure> figure_;
     CellColour colour_;
     CellStatus status_ = CellStatus::NOT_MARKED;
 

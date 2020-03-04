@@ -4,19 +4,28 @@
 
 #include <Cell.hpp>
 
-Cell::Cell(Triple new_figure)
-        : figure_(Figure::create(new_figure)) {
-    Position pos = new_figure.pos_;
+//Cell::Cell(PlayerColour colour, Position pos, FigureType type)
+//    : figure_(Figure(colour, type)), colour_(Cell(pos).colour_) {}
+
+Cell::Cell(Figure figure, Position pos)
+        : figure_(figure), colour_(Cell(pos).colour_) {}
+
+Cell::Cell(Position pos)
+        : figure_() {
     if ((pos.posW() % 2 == 0 && pos.posH() % 3 == 0) || (pos.posW() % 2 == 1 && pos.posH() % 3 == 1))
         colour_ = CellColour::BLACK;
     else
         colour_ = CellColour::WHITE;
 }
 
-Cell::Cell(Position pos)
-        : figure_(nullptr) {
-    if ((pos.posW() % 2 == 0 && pos.posH() % 3 == 0) || (pos.posW() % 2 == 1 && pos.posH() % 3 == 1))
-        colour_ = CellColour::BLACK;
+Cell& Cell::operator= (const Cell& other) {
+    if (this == &other)
+        return *this;
+    if (figure_.has_value())
+        figure_.emplace(other.figure_.value());
     else
-        colour_ = CellColour::WHITE;
+        figure_.reset();
+    colour_ = other.colour_;
+    status_ = other.status_;
+    return *this;
 }

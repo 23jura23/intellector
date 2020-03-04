@@ -6,6 +6,7 @@
 #define _PROJECT_GAME_HPP
 
 #include "Board.hpp"
+#include "Controller.hpp"
 
 class Game {
 public:
