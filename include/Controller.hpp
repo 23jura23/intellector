@@ -8,7 +8,7 @@
 #include "Board.hpp"
 #include "Game.hpp"
 
-class Controller { // TODO поменять название с Game
+class Controller {
 public: // TODO в Controller ссылка на бота
     void init(); // Запуск игры
     bool makeMove(Cell cell_from, Cell cell_to);
