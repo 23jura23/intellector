@@ -8,17 +8,17 @@
 //    : figure_(Figure(colour, type)), colour_(Cell(pos).colour_) {}
 
 Cell::Cell(Figure figure, Position pos)
-        : figure_(figure), colour_(Cell(pos).colour_) {}
+        : figure_(figure), colour_(Cell(pos).colour_), pos_(pos) {}
 
 Cell::Cell(Position pos)
-        : figure_() {
+        : figure_(), pos_(pos) {
     if ((pos.posW() % 2 == 0 && pos.posH() % 3 == 0) || (pos.posW() % 2 == 1 && pos.posH() % 3 == 1))
         colour_ = CellColour::BLACK;
     else
         colour_ = CellColour::WHITE;
 }
 
-Cell& Cell::operator= (const Cell& other) {
+Cell& Cell::operator=(const Cell& other) {
     if (this == &other)
         return *this;
     if (other.figure_.has_value())
@@ -26,6 +26,6 @@ Cell& Cell::operator= (const Cell& other) {
     else
         figure_.reset();
     colour_ = other.colour_;
-    status_ = other.status_;
+    pos_ = other.pos_;
     return *this;
 }

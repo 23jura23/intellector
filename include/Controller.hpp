@@ -1,23 +1,23 @@
 //
-// Created by vsg on 04.03.2020.
+// Created by vsg on 22.02.2020.
 //
 
-#ifndef _INTELLECTOR_CONTROLLER_HPP
-#define _INTELLECTOR_CONTROLLER_HPP
+#ifndef _PROJECT_GAME_HPP
+#define _PROJECT_GAME_HPP
 
 #include "Board.hpp"
-#include "FigureMove.hpp"
+#include "Game.hpp"
 
-class Controller {
-public:
+class Controller { // TODO поменять название с Game
+public: // TODO в Controller ссылка на бота
+    void init(); // Запуск игры
+    bool makeMove(Cell cell_from, Cell cell_to);
 
-    bool makeMove(Position of_pos, Position to_pos, PlayerColour turn);
-    std::vector<Position> allFigureMoves(Position pos, PlayerColour turn);
-
-    [[nodiscard]] const Board& getBoard() const { return board_; }
 private:
     Board board_;
-    PlayerColour turn_;
+    PlayerColour turn_; // Чей ход
+    // кто играет
+    // история ходов
 };
 
-#endif //_INTELLECTOR_CONTROLLER_HPP
+#endif //_PROJECT_GAME_HPP

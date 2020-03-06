@@ -9,14 +9,6 @@
 #include "Figure.hpp"
 #include "Position.hpp"
 
-enum class CellStatus { // А может надо в View реализовать
-    NOT_MARKED,
-    CAN_MOVE,
-    CAN_ATTACK,
-    CURRENT,
-    LAST_MOVE,
-};
-
 enum class CellColour {
     WHITE,
     BLACK
@@ -27,13 +19,12 @@ public:
 //    Cell(PlayerColour colour, Position pos, FigureType type);
     Cell(Figure figure, Position pos);
     explicit Cell(Position pos);
-    Cell& operator= (const Cell&);
+    Cell& operator=(const Cell&);
 
 
     std::optional<Figure> figure_;
     CellColour colour_;
-    CellStatus status_ = CellStatus::NOT_MARKED;
-
+    Position pos_;
 };
 
 #endif //_PROJECT_CELL_HPP

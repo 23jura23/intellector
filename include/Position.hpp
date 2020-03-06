@@ -18,22 +18,42 @@ public:
     Position(int x, int y, int z)  // конструктор с 3 переменными
             : x_{x}, y_{y}, z_{z} {}
 
-    Position operator-(const Position &other) const {
-        return Position(x_ - other.x_, y_ - other.y_, z_ - other.z_);
+    Position operator-(const Position& right) const {
+        return Position(x_ - right.x_, y_ - right.y_, z_ - right.z_);
     }
 
-    Position operator+(const Position &other) const {
-        return Position(x_ + other.x_, y_ + other.y_, z_ + other.z_);
+    Position operator+(const Position& right) const {
+        return Position(x_ + right.x_, y_ + right.y_, z_ + right.z_);
+    }
+
+    Position operator*(const int val) const {
+        return Position(x_ * val, y_ * val, z_ * val);
+    }
+
+    [[nodiscard]] Position makeX() const {
+        Position null(1, -1, 1);
+        return *this - (null * x_);
+    }
+
+    [[nodiscard]] Position makeY() const {
+        Position null(-1, 1, -1);
+        return *this - (null * y_);
+    }
+
+    [[nodiscard]] Position makeZ() const {
+        Position null(1, -1, 1);
+        return *this - (null * z_);
+    }
+
+    [[nodiscard]] bool operator==(const Position& other) const {
+        return (x_ == other.x_ && y_ == other.y_ && z_ == other.z_);
     }
 
     [[nodiscard]] int posW() const { return -x_ + z_; }
+
     [[nodiscard]] int posH() const { return (x_ + 2 * y_ + z_) / 2; }
 
     int x_, y_, z_;
 };
-
-[[nodiscard]] inline double abs(Position pos) {
-    return sqrt(pos.x_ * pos.x_ + pos.y_ * pos.y_ + pos.z_ * pos.z_);
-}
 
 #endif //_INTELLECTOR_POSITION_HPP

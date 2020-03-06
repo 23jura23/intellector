@@ -1,23 +1,28 @@
 //
-// Created by vsg on 22.02.2020.
+// Created by vsg on 04.03.2020.
 //
 
-#ifndef _PROJECT_GAME_HPP
-#define _PROJECT_GAME_HPP
+#ifndef _INTELLECTOR_CONTROLLER_HPP
+#define _INTELLECTOR_CONTROLLER_HPP
 
 #include "Board.hpp"
-#include "Controller.hpp"
+#include "FigureMoveValidator.hpp"
+#include "MoveTypes.hpp"
 
 class Game {
 public:
-    void init(); // Запуск игры
-    bool makeMove(Cell cell_from, Cell cell_to);
+
+    bool makeMove(std::unique_ptr<SwapMove> move);
+    bool makeMove(std::unique_ptr<TransformMove> move);
+    bool makeMove(std::unique_ptr<SimpleMove> move);
+
+    std::vector<std::shared_ptr<SimpleMove>> allFigureMoves(Position pos, PlayerColour turn);
+
+    [[nodiscard]] const Board& getBoard() const { return board_; }
 
 private:
     Board board_;
-    PlayerColour turn_; // Чей ход
-    // кто играет
-    // история ходов
+    PlayerColour turn_;
 };
 
-#endif //_PROJECT_GAME_HPP
+#endif //_INTELLECTOR_CONTROLLER_HPP
