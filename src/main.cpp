@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Board.hpp"
 #include "ViewCurses.hpp"
+#include "Game.hpp"
 
 int main() {
     Board* board = new Board;

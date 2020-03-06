@@ -5,20 +5,35 @@
 #ifndef _PROJECT_CELL_HPP
 #define _PROJECT_CELL_HPP
 
-class Cell {
-public:
-    Cell(int w, int h) {
-        y_ = 2 * h + w % 2;
-        z_ = (w - y_) / 2;
-        x_ = z_ - w;
-    }; // констуртор из прямоугольных координат
-    Cell(int x, int y, int z) : x_{x}, y_{y}, z_{z} {}; // конструктор с 3 переменными
+#include <memory>
+#include "Figure.hpp"
+#include "Position.hpp"
 
-    int posW() { return -x_ + z_; }; // Для массива.
-    int powH() { return (x_ + 2 * y_ + z_) / 2; };
-
-    int x_, y_, z_;
+enum class CellStatus { // А может надо в View реализовать
+    NOT_MARKED,
+    CAN_MOVE,
+    CAN_ATTACK,
+    CURRENT,
+    LAST_MOVE,
 };
 
+enum class CellColour {
+    WHITE,
+    BLACK
+};
+
+class Cell {
+public:
+//    Cell(PlayerColour colour, Position pos, FigureType type);
+    Cell(Figure figure, Position pos);
+    explicit Cell(Position pos);
+    Cell& operator= (const Cell&);
+
+
+    std::optional<Figure> figure_;
+    CellColour colour_;
+    CellStatus status_ = CellStatus::NOT_MARKED;
+
+};
 
 #endif //_PROJECT_CELL_HPP

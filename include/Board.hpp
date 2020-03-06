@@ -6,28 +6,21 @@
 #define _PROJECT_BOARD_HPP
 
 #include <vector>
-#include <memory>
-#include "Types.hpp"
 #include "Figure.hpp"
 #include "Cell.hpp"
+#include "Position.hpp"
 
 class Board {
-public: // Функции доски-------------------------------------------------------------------------
+public:
     Board();
     ~Board() = default;
-    Board& operator= (const Board&) = default;
-    Board(const Board& other);
+    Board &operator=(const Board &) = default;
+    Board(const Board &other);
 
-    typedef std::vector<std::vector<std::unique_ptr<Figure>>> BoardField;
+    [[nodiscard]] const Cell& operator[] (Position pos) const;
+    [[nodiscard]] Cell& operator[] (Position pos);
 
-    bool move(Cell of_pos, Cell to_pos, PlayerColour turn_);
-    const BoardField& getBoard() {return data_; } // Спросить что за подсказка
-
-
-private: // Поля доски----------------------------------------------------------------------------
-    std::vector<std::vector<std::unique_ptr<Figure>>> data_;
-//    std::vector<const figure*> all_white_figures_;
-//    std::vector<const figure*> all_black_figures_;
+    std::vector<std::vector<Cell>> data_;
     static constexpr int cols_ = 9, rows_ = 7; // ширина и высота
 };
 
