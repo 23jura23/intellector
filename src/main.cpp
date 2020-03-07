@@ -1,12 +1,21 @@
-#include <iostream>
 #include "Board.hpp"
-#include "ViewCurses.hpp"
 #include "Controller.cpp"
+#include "ViewCurses.hpp"
+#include "ViewModelCurses.hpp"
+#include <iostream>
 
-int main() {
+int main()
+{
     Board* board = new Board;
-    Curses::viewCurses view(board->data_);
-    while (getch())
-        view.refresh_view();
+    try {
+        ViewCurses::viewCurses view;
+        auto tmp = ViewCurses::ViewModelCurses { *board, PlayerColour::white_ };
+        view.update(tmp);
+        while (getch()) {
+            view.refresh_view();
+        }
+    } catch (const ViewBaseException& e) {
+        std::cout << "View error: " << e.what() << std::endl;
+    }
     return 0;
 }

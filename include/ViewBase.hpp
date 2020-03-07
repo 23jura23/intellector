@@ -3,6 +3,16 @@
 
 #include "Board.hpp"
 
+class ViewBaseException final : public std::exception {
+public:
+    explicit ViewBaseException(const char* val) noexcept;
+
+    virtual const char* what() const noexcept;
+
+private:
+    const char* _msg;
+};
+
 class viewBase
 {
     public:

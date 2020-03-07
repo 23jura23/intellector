@@ -1,40 +1,41 @@
 #ifndef _VIEW_CURSES_HPP_
 #define _VIEW_CURSES_HPP_
 
-#include "ViewBase.hpp"
 #include <ncurses.h>
 #include <string>
 #include <vector>
 
-namespace Curses {
+#include "ViewBase.hpp"
+#include "ViewModelCurses.hpp"
+
+namespace ViewCurses {
 
 class viewCurses : public viewBase {
-    using BoardField = std::vector<std::vector<Cell>>;
     using pair = std::pair<size_t, size_t>;
 
 public:
-    viewCurses(const BoardField& board);
+    viewCurses();
     ~viewCurses();
 
-    void update(const BoardField&);
+    void update(ViewModelCurses&);
     void refresh_view();
 
 private:
-    struct BoardFieldContainer {
-        BoardFieldContainer(const BoardField&);
-        const BoardField& board_;
+    struct ModelContainer {
+        ModelContainer(ViewModelCurses&);
+        ViewModelCurses& board;
     };
 
-    std::unique_ptr<BoardFieldContainer> container_;
+    std::unique_ptr<ModelContainer> container_;
 
     void outBoard();
-    void outFigure(const Cell&, pair);
+    void outCell(const ViewModelCurses::ViewCellCurses&, pair);
 
     static constexpr size_t d = 7;
     static constexpr pair delta_down = { 0, 2 * (d - 3) };
     static constexpr pair delta_right_down = { (d + 3) + (d - 3), d - 3 };
     static constexpr pair delta_right_up = { 2 * (d + 3) + 2 * (d - 3), 0 };
-    
+
     const int maxy, maxx;
     size_t tlx = d - 1, tly = 0; //top left x y
 

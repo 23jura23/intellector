@@ -7,6 +7,7 @@
 
 #include "Board.hpp"
 #include "Game.hpp"
+#include "ViewModelCurses.hpp"
 
 class Controller {
 public: // TODO в Controller ссылка на бота
