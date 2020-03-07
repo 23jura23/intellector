@@ -30,8 +30,12 @@ fsanitize: EXTRA_FLAGS += ${FS_FLAGS}
 fsanitize: build
 
 clang: CXX = clang++
-clang: EXTRA_FLAGS += -Weverything -Wno-c++98-compat -Wno-c++-compat -Wno-padded 
+clang: EXTRA_FLAGS += -Wno-c++98-compat -Wno-c++-compat -Wno-padded 
 clang: build
+
+clang_everything: CXX = clang++
+clang_everything: EXTRA_FLAGS += -Weverything -Wno-c++98-compat -Wno-c++-compat -Wno-padded 
+clang_everything: build
 
 test: build
 	./bin/${BIN}
