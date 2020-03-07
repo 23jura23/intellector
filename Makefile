@@ -53,5 +53,5 @@ bin:
 	mkdir bin
 
 clean:
-	rm -rf obj bin
+	rm -rf obj bin error.txt
 

@@ -1,12 +1,12 @@
-#include "Board.hpp"
+#include "Game.hpp"
+#include <memory>
 
 class Bot
 {
-public:
-	void make_move(board &b);
-	Bot(bot_colour bc, int max_depth = 1);
+	virtual std::shared_ptr<SimpleMove> makeMove(Game &b) = 0;
+};
 
-private:
-	int max_depth_;
-	const player_colour bot_colour_;
+class RandomBot : Bot
+{
+	std::shared_ptr<SimpleMove> makeMove(Game &b) override;
 };

@@ -11,7 +11,6 @@
 
 class Game {
 public:
-
     bool makeMove(std::unique_ptr<SwapMove> move);
     bool makeMove(std::unique_ptr<TransformMove> move);
     bool makeMove(std::unique_ptr<SimpleMove> move);
@@ -19,7 +18,7 @@ public:
     std::vector<std::shared_ptr<SimpleMove>> allFigureMoves(Position pos, PlayerColour turn);
 
     [[nodiscard]] const Board& getBoard() const { return board_; }
-
+    [[nodiscard]] const PlayerColour getColourCurrentPlayer() const { return turn_; }
 private:
     Board board_;
     PlayerColour turn_;

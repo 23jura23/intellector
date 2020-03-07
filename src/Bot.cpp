@@ -1,36 +1,29 @@
 
 #include <random>
+#include <cassert>
 #include "Bot.hpp"	
 
-std::mt19937 rnd(1337);
+const int seed = 1337;
 
-Bot::Bot(player_colour bc, int max_depth = 1)
-{
-	max_depth_ = max_depth;
-	bot_colour_ = bc;
-}
+std::mt19937 rnd(seed);
 
+std::shared_ptr<SimpleMove> RandomBot::makeMove(Game &game)
+{	
+	Board board = Board(game.getBoard());
+	const PlayerColour colour = game.getColourCurrentPlayer();
 
-void Bot::make_move(board &b)
-{
-	auto brd = b.getBoard();
-	std::vector<std::pair<figure*, cell> all_moves;
-	for(auto &row : brd)
-		for(auto &fgr : row)
+	std::vector<std::shared_ptr<SimpleMove>> all_moves;
+
+	for(auto &row : board.data_)
+		for(auto &cell : row)
 		{
-			if(fgr != nullptr && fgr.colour() == bot_colour_)
-			{
-				auto moves = fgr.allMoves();
-				for(auto &move : moves)
-					all_moves.push_back({fgr, move});
-			}
+			std::vector<std::shared_ptr<SimpleMove>> moves = game.allFigureMoves(cell.pos_, colour);
+			for(auto move : moves)
+				all_moves.push_back(move);
 		}
-	assert(all_moves.size());
-	size_t necessary_move = rnd() % all_moves.size(); 
-	// for(auto &move: all_moves)
-	// {
 
-	// }
-	// all_moves[necessary_move].first.move(all_moves[necessary_move].second);
-			
-};
+	assert(all_moves.size() > 0);
+	size_t necessary_move = rnd() % all_moves.size();
+
+	return all_moves[necessary_move];
+}
