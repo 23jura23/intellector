@@ -5,7 +5,7 @@
 
 int main() {
     Board* board = new Board;
-    Curses::viewCurses view(board->getBoard());
+    Curses::viewCurses view(board->data_);
     while (getch())
         view.refresh_view();
     return 0;

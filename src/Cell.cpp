@@ -21,7 +21,7 @@ Cell::Cell(Position pos)
 Cell& Cell::operator= (const Cell& other) {
     if (this == &other)
         return *this;
-    if (figure_.has_value())
+    if (other.figure_.has_value())
         figure_.emplace(other.figure_.value());
     else
         figure_.reset();

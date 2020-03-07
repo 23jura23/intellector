@@ -9,7 +9,7 @@
 namespace Curses {
 
 class viewCurses : public viewBase {
-    using BoardField = Board::BoardField;
+    using BoardField = std::vector<std::vector<Cell>>;
     using pair = std::pair<size_t, size_t>;
 
 public:
@@ -28,7 +28,7 @@ private:
     std::unique_ptr<BoardFieldContainer> container_;
 
     void outBoard();
-    void outFigure(const Figure& figure, pair TL);
+    void outFigure(const Cell&, pair);
 
     static constexpr size_t d = 7;
     static constexpr pair delta_down = { 0, 2 * (d - 3) };
