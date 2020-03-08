@@ -8,27 +8,33 @@
 #include "ViewBase.hpp"
 #include "ViewModelCurses.hpp"
 
+class Controller;
+
 namespace ViewCurses {
 
 class viewCurses : public viewBase {
     using pair = std::pair<size_t, size_t>;
 
 public:
-    viewCurses();
-    viewCurses(ViewModelCurses&);
+    viewCurses(std::shared_ptr<Controller>);
     ~viewCurses();
 
     void run();
-    void update(ViewModelCurses&);
-    void refresh_view();
+    void fetchModel(); 
+    void reloadModel();
+    void updateModel(std::shared_ptr<ViewModelCurses>); 
+    void refreshView();
 
 private:
-    struct ModelContainer {
-        ModelContainer(ViewModelCurses&);
-        ViewModelCurses& board;
-    };
+//    struct ModelContainer {
+//        ModelContainer(ViewModelCurses&);
+//        ViewModelCurses& board;
+//    };
 
-    std::unique_ptr<ModelContainer> container_;
+//    std::unique_ptr<ModelContainer> container_;
+
+    std::shared_ptr<ViewModelCurses> board_;
+    std::shared_ptr<Controller> controller_;
 
     void outBoard();
     void outCell(const ViewModelCurses::ViewCellCurses&, pair);
@@ -44,6 +50,11 @@ private:
     pair getTL(pair); //get top left corner coordinates of cell
 
     Position currentPos;
+    enum class CurrentPosStatus {
+        UNSELECTED,
+        SELECTED
+    } currentPosStatus;
+    std::shared_ptr<ViewModelCurses::ViewCellCurses> currentSelectedCell;
 };
 
 }

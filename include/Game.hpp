@@ -21,7 +21,7 @@ public:
     [[nodiscard]] PlayerColour getColourCurrentPlayer() const { return turn_; }
 private:
     Board board_;
-    PlayerColour turn_;
+    PlayerColour turn_ = PlayerColour::white_;
 };
 
 #endif //_INTELLECTOR_CONTROLLER_HPP

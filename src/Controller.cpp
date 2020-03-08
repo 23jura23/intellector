@@ -3,3 +3,24 @@
 //
 
 #include "Controller.hpp"
+
+Controller::Controller(std::shared_ptr<Game> game)
+    : game_ { game }
+{
+}
+
+//Controller::init()
+//{
+//    
+//}
+
+void Controller::makeMove(const SimpleMove& move)
+{
+    game_->makeMove(std::make_unique<SimpleMove>(move)); //wtf what for unique_ptr
+}
+
+void Controller::updateAll()
+{
+    //TODO auto choice which to update (only instanced!)
+    updateViewModel<ViewCurses::viewCurses>();
+}

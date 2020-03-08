@@ -3,14 +3,15 @@
 
 #include "Board.hpp"
 #include "Game.hpp"
+#include "ViewModelBase.hpp"
 
 namespace ViewCurses {
 
-struct ViewModelCurses {
+struct ViewModelCurses : public ViewModelBase {
     typedef std::vector<std::shared_ptr<SimpleMove>> MovesTable;
 
-    ViewModelCurses(Board&, PlayerColour);
-    ViewModelCurses(Board&, PlayerColour, MovesTable&);
+    ViewModelCurses(const Board&, PlayerColour);
+    ViewModelCurses(const Board&, PlayerColour, MovesTable&);
 
     struct ViewCellCurses {
         enum class ViewCellCursesStatus {

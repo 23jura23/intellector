@@ -28,6 +28,10 @@ bool Game::makeMove(std::unique_ptr<SimpleMove> move) {
 
     board_[to_pos] = Cell(move->figure_, to_pos);
     board_[from_pos] = Cell(from_pos);
+    if (turn_ == PlayerColour::white_)
+        turn_ = PlayerColour::black_;
+    else
+        turn_ = PlayerColour::white_;
     return true;
 }
 

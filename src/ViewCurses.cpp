@@ -3,6 +3,7 @@
 #include <unistd.h>
 
 #include "Board.hpp"
+#include "Controller.hpp"
 #include "Figure.hpp"
 #include "ViewCurses.hpp"
 
@@ -54,20 +55,20 @@ using namespace std;
 
 using namespace ViewCurses;
 
-viewCurses::ModelContainer::ModelContainer(ViewModelCurses& board)
-    : board { board }
-{
-}
-
 //TODO center align
-viewCurses::viewCurses()
-    : maxy { getmaxy(stdscr) }
+viewCurses::viewCurses(std::shared_ptr<Controller> controller)
+    : controller_ { controller }
+    , maxy { getmaxy(stdscr) }
     , maxx { getmaxx(stdscr) }
     , tlx { d - 1 }
     , tly { 0 }
     , currentPos { -2, 3, 2 }
+    , currentPosStatus { CurrentPosStatus::UNSELECTED }
 {
     freopen("error.txt", "a", stderr);
+
+    fetchModel();
+
     initscr();
     if (!has_colors()) {
         endwin();
@@ -95,12 +96,6 @@ viewCurses::viewCurses()
     noecho();
 }
 
-viewCurses::viewCurses(ViewModelCurses& model)
-    : viewCurses()
-{
-    update(model);
-}
-
 viewCurses::~viewCurses()
 {
     use_default_colors();
@@ -110,7 +105,7 @@ viewCurses::~viewCurses()
 void viewCurses::run()
 {
     while (1) {
-        refresh_view();
+        refreshView();
         chtype c = getch();
 
         Position newPos = currentPos;
@@ -134,49 +129,106 @@ void viewCurses::run()
         case 'q':
             newPos.x_ += 1;
             break;
-        case 'W':
-            newPos.y_ += 3;
-            break;
-        case 'S':
-            newPos.y_ -= 3;
-            break;
-        case 'A':
-            newPos.x_ += 1;
-            newPos.z_ -= 1;
-            break;
-        case 'E':
-            newPos.x_ -= 1;
-            newPos.z_ += 1;
-            break;
-        case 'D':
-            newPos.x_ -= 1;
-            break;
-        case 'Q':
-            newPos.x_ += 1;
-            break;
+            //        case 'W':
+            //            newPos.y_ += 3;
+            //            break;
+            //        case 'S':
+            //            newPos.y_ -= 3;
+            //            break;
+            //        case 'A':
+            //            newPos.x_ += 1;
+            //            newPos.z_ -= 1;
+            //            break;
+            //        case 'E':
+            //            newPos.x_ -= 1;
+            //            newPos.z_ += 1;
+            //            break;
+            //        case 'D':
+            //            newPos.x_ -= 1;
+            //            break;
+            //        case 'Q':
+            //            newPos.x_ += 1;
+            //            break;
         case 32:
-            //make step
+            switch (currentPosStatus) {
+            case CurrentPosStatus::UNSELECTED:
+                if (board_->viewBoard[currentPos.posW()][currentPos.posH()].cell.figure_.has_value()) {
+                    cerr << "Cell " << currentPos.posW() << ' ' << currentPos.posH() << " was selected" << endl;
+                    // Cell with figure was selected
+                    if (currentSelectedCell)
+                        throw ViewBaseException("Figure selected, but it was already selected");
+                    currentPosStatus = CurrentPosStatus::SELECTED;
+                    currentSelectedCell = std::make_shared<ViewModelCurses::ViewCellCurses>(board_->viewBoard[currentPos.posW()][currentPos.posH()]);
+                    controller_->selectCell<ViewCurses::viewCurses>(currentSelectedCell->cell);
+                    fetchModel();
+                } else {
+                    cerr << "Empty cell " << currentPos.posW() << ' ' << currentPos.posH() << " was tried to be selected (unsuccessfully)" << endl;
+                    // Empty cell was selected
+                }
+
+                break;
+            case CurrentPosStatus::SELECTED:
+                cerr << "Trying to do smth with Cell " << currentPos.posW() << ' ' << currentPos.posH() << endl;
+                if (currentPos.posW() == currentSelectedCell->cell.pos_.posW() && currentPos.posH() == currentSelectedCell->cell.pos_.posH()) {
+                    cerr << "Cell " << currentPos.posW() << ' ' << currentPos.posH() << " was unselected" << endl;
+                    // Cell was unselected
+                    reloadModel();
+//                    controller_->unSelectCell<ViewCurses::viewCurses>();
+                    currentPosStatus = CurrentPosStatus::UNSELECTED;
+                    currentSelectedCell.reset();
+                } else {
+                    if (board_->viewBoard[currentPos.posW()][currentPos.posH()].inMoves.size()) {
+                        cerr << "Step " << currentPos.posW() << ' ' << currentPos.posH() << " was tried to be done" << endl;
+                        if (board_->viewBoard[currentPos.posW()][currentPos.posH()].inMoves.size() == 1) {
+                            cerr << "UniStep " << currentPos.posW() << ' ' << currentPos.posH() << " was done" << endl;
+                            controller_->makeMove(*board_->viewBoard[currentPos.posW()][currentPos.posH()].inMoves[0]);
+                            reloadModel();
+                            currentPosStatus = CurrentPosStatus::UNSELECTED;
+                            currentSelectedCell.reset();
+                        } else {
+                            cerr << "MultiStep " << currentPos.posW() << ' ' << currentPos.posH() << " was triedto be done (yet unsuccessfully)" << endl;
+                            // multiple steps to the same cell are possible
+                        }
+                    } else {
+                        // Impossible move
+                    }
+                }
+                break;
+            }
             break;
         }
         cerr << c << endl;
         cerr << "newPos: " << newPos.posW() << ' ' << newPos.posH() << endl;
         cerr << "truepos" << newPos.x_ << ' ' << newPos.y_ << ' ' << newPos.z_ << endl;
         if (
-            !(newPos == currentPos) && (0 <= newPos.posW() && newPos.posW() < container_->board.viewBoard.size() && 0 <= newPos.posH() && newPos.posH() < container_->board.viewBoard[newPos.posW()].size())) {
-            container_->board.viewBoard[currentPos.posW()][currentPos.posH()].status = ViewModelCurses::ViewCellCurses::ViewCellCursesStatus::INACTIVE;
+            !(newPos == currentPos) && (0 <= newPos.posW() && newPos.posW() < board_->viewBoard.size() && 0 <= newPos.posH() && newPos.posH() < board_->viewBoard[newPos.posW()].size())) {
+            if (board_->viewBoard[currentPos.posW()][currentPos.posH()].inMoves.size())
+                board_->viewBoard[currentPos.posW()][currentPos.posH()].status = ViewModelCurses::ViewCellCurses::ViewCellCursesStatus::ACTIVE;
+            else
+                board_->viewBoard[currentPos.posW()][currentPos.posH()].status = ViewModelCurses::ViewCellCurses::ViewCellCursesStatus::INACTIVE;
             currentPos = newPos;
-            container_->board.viewBoard[currentPos.posW()][currentPos.posH()].status = ViewModelCurses::ViewCellCurses::ViewCellCursesStatus::CURRENT;
+            board_->viewBoard[currentPos.posW()][currentPos.posH()].status = ViewModelCurses::ViewCellCurses::ViewCellCursesStatus::CURRENT;
         }
     }
 }
 
-void viewCurses::update(ViewModelCurses& newModel)
+void viewCurses::updateModel(std::shared_ptr<ViewModelCurses> newModel)
 {
-    container_ = std::make_unique<ModelContainer>(newModel);
-    outBoard();
+    board_ = newModel;
 }
 
-void viewCurses::refresh_view()
+void viewCurses::fetchModel()
+{
+    updateModel(std::dynamic_pointer_cast<ViewModelCurses>(controller_->getViewModel<viewCurses>()));
+}
+
+void viewCurses::reloadModel()
+{
+    controller_->updateViewModel<viewCurses>();
+    fetchModel();
+}
+
+void viewCurses::refreshView()
 {
     clear();
     outBoard();
@@ -192,13 +244,13 @@ auto viewCurses::getTL(pair corner) -> pair
 
 void viewCurses::outBoard()
 {
-    for (size_t x = 0; x < container_->board.viewBoard.size(); ++x)
-        for (size_t y = 0; y < container_->board.viewBoard[x].size(); ++y) {
-            //            size_t cor_x = container_->board.viewBoard.size() - 1 - x;
+    for (size_t x = 0; x < board_->viewBoard.size(); ++x)
+        for (size_t y = 0; y < board_->viewBoard[x].size(); ++y) {
+            //            size_t cor_x = board_->viewBoard.size() - 1 - x;
             size_t cor_x = x;
-            size_t cor_y = container_->board.viewBoard[x].size() - 1 - y;
+            size_t cor_y = board_->viewBoard[x].size() - 1 - y;
             //            size_t cor_y = y;
-            outCell(container_->board.viewBoard[cor_x][cor_y], getTL({ x, y }));
+            outCell(board_->viewBoard[cor_x][cor_y], getTL({ x, y }));
         }
 }
 
