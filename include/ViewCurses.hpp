@@ -15,8 +15,10 @@ class viewCurses : public viewBase {
 
 public:
     viewCurses();
+    viewCurses(ViewModelCurses&);
     ~viewCurses();
 
+    void run();
     void update(ViewModelCurses&);
     void refresh_view();
 
@@ -40,6 +42,8 @@ private:
     size_t tlx = d - 1, tly = 0; //top left x y
 
     pair getTL(pair); //get top left corner coordinates of cell
+
+    Position currentPos;
 };
 
 }
