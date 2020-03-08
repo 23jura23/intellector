@@ -9,6 +9,7 @@
 
 class Position {
 public:
+    Position() = default;
     Position(int w, int h) {  // констуртор из прямоугольных координат
         y_ = 2 * h + w % 2;
         z_ = (w - y_) / 2;
@@ -22,8 +23,16 @@ public:
         return Position(x_ - right.x_, y_ - right.y_, z_ - right.z_);
     }
 
+    Position operator-=(const Position& right) {
+        return *this = *this - right;
+    }
+
     Position operator+(const Position& right) const {
         return Position(x_ + right.x_, y_ + right.y_, z_ + right.z_);
+    }
+
+    Position operator+=(const Position& right) {
+        return *this = *this + right;
     }
 
     Position operator*(const int val) const {
@@ -47,6 +56,10 @@ public:
 
     [[nodiscard]] bool operator==(const Position& other) const {
         return (x_ == other.x_ && y_ == other.y_ && z_ == other.z_);
+    }
+
+    [[nodiscard]] bool operator!=(const Position& other) const {
+        return !(*this == other);
     }
 
     [[nodiscard]] int posW() const { return -x_ + z_; }

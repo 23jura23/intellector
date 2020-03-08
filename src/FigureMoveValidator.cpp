@@ -8,6 +8,12 @@
     std::terminate();
 }
 
+int sgn(int x) {
+    if (x > 0) return 1;
+    if (x < 0) return -1;
+    return 0;
+}
+
 FigureMoveValidator::FigureMoveValidator(Board& board, PlayerColour colour, Position pos, FigureType type)
         : board_(board), figure_(Figure(colour, type)), pos_(pos) {}
 
@@ -40,10 +46,12 @@ IntellectorMoveValidator::IntellectorMoveValidator(Board& board, PlayerColour co
         : FigureMoveValidator(board, colour, pos, FigureType::INTELLECTOR) {}
 
 bool IntellectorMoveValidator::checkMove(Position to_pos) {
+    if (!inBoard(to_pos)) return false;
+
     Position diff = pos_ - to_pos;
     if (!(diff.makeX() == diff.makeY() && abs(diff.makeX().z_) == 1) &&
         !(diff.makeX() == diff.makeZ() && abs(diff.makeX().y_) == 1) &&
-        !(diff.makeY() == diff.makeZ() && abs(diff.makeX().x_) == 1))
+        !(diff.makeY() == diff.makeZ() && abs(diff.makeY().x_) == 1))
         return false;
 
     if (!board_[to_pos].figure_.has_value())
@@ -65,9 +73,14 @@ std::vector<std::shared_ptr<SimpleMove>> IntellectorMoveValidator::allMoves() {
     };
 
     for (auto d : diff) {
-        if (!board_[pos_ + d].figure_.has_value())
+        Position pos = pos_ + d;
+        if (!inBoard(pos)) continue;
+        if (board_[pos].figure_.has_value() && board_[pos].figure_->colour_ == figure_.colour_) continue;
+
+        if (!board_[pos].figure_.has_value())
             answer.push_back(std::make_shared<SimpleMove>(pos_, pos_ + d, figure_));
-        else if (board_[pos_ + d].figure_->type_ == FigureType::DEFENSSOR)
+        else if (board_[pos].figure_->type_ == FigureType::DEFENSSOR &&
+                 board_[pos].figure_->colour_ == figure_.colour_)
             answer.push_back(std::make_shared<SwapMove>(pos_, pos_ + d, figure_));
     }
 
@@ -78,12 +91,53 @@ std::vector<std::shared_ptr<SimpleMove>> IntellectorMoveValidator::allMoves() {
 DominatorMoveValidator::DominatorMoveValidator(Board& board, PlayerColour colour, Position pos)
         : FigureMoveValidator(board, colour, pos, FigureType::DOMINATOR) {}
 
-bool DominatorMoveValidator::checkMove(Position move) {
-    return false; // TODO
+bool DominatorMoveValidator::checkMove(Position to_pos) {
+    if (!inBoard(to_pos)) return false;
+
+    Position diff = pos_ - to_pos;
+    Position path_to_pos(0, 0, 0);
+    if (diff.makeX() == diff.makeY())
+        path_to_pos = Position(0, 0, sgn(diff.makeX().z_));
+    if (diff.makeX() == diff.makeZ())
+        path_to_pos = Position(0, 0, sgn(diff.makeX().y_));
+    if (diff.makeY() == diff.makeZ())
+        path_to_pos = Position(0, 0, sgn(diff.makeY().x_));
+
+    if (path_to_pos == Position(0, 0, 0))
+        return false;
+
+    Position i{};
+    for (i = path_to_pos; i != diff; i += path_to_pos) {
+        if (board_[to_pos].figure_.has_value())
+            return false;
+    }
+
+    return !board_[to_pos].figure_.has_value() || board_[to_pos].figure_->colour_ != figure_.colour_;
 }
 
 std::vector<std::shared_ptr<SimpleMove>> DominatorMoveValidator::allMoves() {
-    return std::vector<std::shared_ptr<SimpleMove>>{}; // TODO
+    std::vector<std::shared_ptr<SimpleMove>> answer;
+    std::vector<Position> diff{
+            {1,  0,  0},
+            {-1, 0,  0},
+            {0,  1,  0},
+            {0,  -1, 0},
+            {0,  0,  1},
+            {0,  0,  -1}
+    };
+
+    for (auto d : diff) {
+        for (Position i = d;; i += d) {
+            Position pos = pos_ + i;
+
+            if (!inBoard(pos)) break;
+            if (board_[pos].figure_.has_value() && board_[pos].figure_->colour_ == figure_.colour_) break;
+
+            answer.push_back(std::make_shared<SimpleMove>(pos_, pos_ + d, figure_));
+        }
+    }
+
+    return answer;
 }
 
 
@@ -102,34 +156,130 @@ std::vector<std::shared_ptr<SimpleMove>> AggressorMoveValidator::allMoves() {
 DefenssorMoveValidator::DefenssorMoveValidator(Board& board, PlayerColour colour, Position pos)
         : FigureMoveValidator(board, colour, pos, FigureType::DEFENSSOR) {}
 
-bool DefenssorMoveValidator::checkMove(Position move) {
-    return false; // TODO
+bool DefenssorMoveValidator::checkMove(Position to_pos) {
+    if (!inBoard(to_pos)) return false;
+
+    Position diff = pos_ - to_pos;
+    if (!(diff.makeX() == diff.makeY() && abs(diff.makeX().z_) == 1) &&
+        !(diff.makeX() == diff.makeZ() && abs(diff.makeX().y_) == 1) &&
+        !(diff.makeY() == diff.makeZ() && abs(diff.makeY().x_) == 1))
+        return false;
+
+    return !board_[to_pos].figure_.has_value() || board_[to_pos].figure_->colour_ != figure_.colour_;
 }
 
 std::vector<std::shared_ptr<SimpleMove>> DefenssorMoveValidator::allMoves() {
-    return std::vector<std::shared_ptr<SimpleMove>>{}; // TODO
+    std::vector<std::shared_ptr<SimpleMove>> answer;
+    std::vector<Position> diff{
+            {1,  0,  0},
+            {-1, 0,  0},
+            {0,  1,  0},
+            {0,  -1, 0},
+            {0,  0,  1},
+            {0,  0,  -1},
+    };
+
+    for (auto d : diff) {
+        Position pos = pos_ + d;
+        if (!inBoard(pos)) continue;
+        if (board_[pos].figure_.has_value() && board_[pos].figure_->colour_ == figure_.colour_) continue;
+
+        answer.push_back(std::make_shared<SimpleMove>(pos_, pos, figure_));
+    }
+
+    return answer;
 }
 
 
 LiberatorMoveValidator::LiberatorMoveValidator(Board& board, PlayerColour colour, Position pos)
         : FigureMoveValidator(board, colour, pos, FigureType::LIBERATOR) {}
 
-bool LiberatorMoveValidator::checkMove(Position move) {
-    return false; // TODO
+bool LiberatorMoveValidator::checkMove(Position to_pos) {
+    if (!inBoard(to_pos)) return false;
+
+    Position diff = pos_ - to_pos;
+    if (!(diff.makeX() == diff.makeY() && abs(diff.makeX().z_) == 2) &&
+        !(diff.makeX() == diff.makeZ() && abs(diff.makeX().y_) == 2) &&
+        !(diff.makeY() == diff.makeZ() && abs(diff.makeY().x_) == 2))
+        return false;
+
+    return !board_[to_pos].figure_.has_value() || board_[to_pos].figure_->colour_ != figure_.colour_;
 }
 
 std::vector<std::shared_ptr<SimpleMove>> LiberatorMoveValidator::allMoves() {
-    return std::vector<std::shared_ptr<SimpleMove>>{}; // TODO
+    std::vector<std::shared_ptr<SimpleMove>> answer;
+    std::vector<Position> diff{
+            {2,  0,  0},
+            {-2, 0,  0},
+            {0,  2,  0},
+            {0,  -2, 0},
+            {0,  0,  2},
+            {0,  0,  -2},
+    };
+
+    for (auto d : diff) {
+        Position pos = pos_ + d;
+        if (!inBoard(pos)) continue;
+        if (board_[pos].figure_.has_value() && board_[pos].figure_->colour_ == figure_.colour_) continue;
+
+        answer.push_back(std::make_shared<SimpleMove>(pos_, pos, figure_));
+    }
+
+    return answer;
 }
 
 
 ProgressorMoveValidator::ProgressorMoveValidator(Board& board, PlayerColour colour, Position pos)
         : FigureMoveValidator(board, colour, pos, FigureType::PROGRESSOR) {}
 
-bool ProgressorMoveValidator::checkMove(Position move) {
-    return false; // TODO
+bool ProgressorMoveValidator::checkMove(Position to_pos) {
+    if (!inBoard(to_pos)) return false;
+
+    Position diff = pos_ - to_pos;
+    if (figure_.colour_ == PlayerColour::white_) {
+        if (!(diff.makeX() == diff.makeY() && diff.makeX().z_ == 1) &&
+            !(diff.makeX() == diff.makeZ() && diff.makeX().y_ == 1) &&
+            !(diff.makeY() == diff.makeZ() && diff.makeY().x_ == 1))
+            return false;
+    }
+    else {
+        if (!(diff.makeX() == diff.makeY() && diff.makeX().z_ == -1) &&
+            !(diff.makeX() == diff.makeZ() && diff.makeX().y_ == -1) &&
+            !(diff.makeY() == diff.makeZ() && diff.makeY().x_ == -1))
+            return false;
+
+    }
+
+    return !board_[to_pos].figure_.has_value() || board_[to_pos].figure_->colour_ != figure_.colour_;
 }
 
 std::vector<std::shared_ptr<SimpleMove>> ProgressorMoveValidator::allMoves() {
-    return std::vector<std::shared_ptr<SimpleMove>>{}; // TODO
+    std::vector<std::shared_ptr<SimpleMove>> answer;
+    std::vector<Position> diff{
+            {1, 0, 0},
+            {0, 1, 0},
+            {0, 0, 1},
+    };
+    if (figure_.colour_ == PlayerColour::black_)
+        for (auto& d : diff) {
+            d = d * (-1);
+        }
+
+    for (auto d : diff) {
+        Position pos = pos_ + d;
+        if (!inBoard(pos)) continue;
+        if (board_[pos].figure_.has_value() && board_[pos].figure_->colour_ == figure_.colour_) continue;
+
+        if ((pos.posH() == 0 && pos.posW() % 2 == 1) || pos.posH() == Board::cols_ - 1) {
+            answer.push_back(std::make_shared<TransformMove>(pos_, pos, figure_, FigureType::DEFENSSOR));
+            answer.push_back(std::make_shared<TransformMove>(pos_, pos, figure_, FigureType::PROGRESSOR));
+            answer.push_back(std::make_shared<TransformMove>(pos_, pos, figure_, FigureType::LIBERATOR));
+            answer.push_back(std::make_shared<TransformMove>(pos_, pos, figure_, FigureType::AGGRESSOR));
+            answer.push_back(std::make_shared<TransformMove>(pos_, pos, figure_, FigureType::DOMINATOR));
+        }
+        else
+            answer.push_back(std::make_shared<SimpleMove>(pos_, pos, figure_));
+    }
+
+    return answer;
 }
