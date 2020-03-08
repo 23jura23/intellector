@@ -13,6 +13,14 @@ using namespace std;
 #define COLOR_BLACK_CELL 237
 #define COLOR_WHITE_FIGURE 187
 #define COLOR_BLACK_FIGURE 137
+#define COLOR_WHITE_ACTIVE 82
+#define COLOR_BLACK_ACTIVE 70
+#define COLOR_WHITE_CURRENT 123
+#define COLOR_BLACK_CURRENT 111
+#define COLOR_WHITE_LETTER 196
+#define COLOR_BLACK_LETTER 226
+#define COLOR_FORE_BORDER 238
+#define COLOR_BACK_BORDER 241
 #else
 #define COLOR_WHITE_CELL 187
 #define COLOR_BLACK_CELL 137
@@ -124,6 +132,26 @@ void viewCurses::run()
             newPos.x_ -= 1;
             break;
         case 'q':
+            newPos.x_ += 1;
+            break;
+        case 'W':
+            newPos.y_ += 3;
+            break;
+        case 'S':
+            newPos.y_ -= 3;
+            break;
+        case 'A':
+            newPos.x_ += 1;
+            newPos.z_ -= 1;
+            break;
+        case 'E':
+            newPos.x_ -= 1;
+            newPos.z_ += 1;
+            break;
+        case 'D':
+            newPos.x_ -= 1;
+            break;
+        case 'Q':
             newPos.x_ += 1;
             break;
         case 32:
@@ -353,8 +381,8 @@ void viewCurses::outCell(const ViewModelCurses::ViewCellCurses& cell, pair TL)
                     break;
                 }
             }
+            //                usleep(10000);
+            //                refresh();
         }
     }
-    //            usleep(100000);
-    //            refresh();
 }
