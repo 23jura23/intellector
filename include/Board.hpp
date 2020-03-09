@@ -26,7 +26,7 @@ public:
 
 [[nodiscard]] inline bool inBoard(Position pos) {
     return (pos.posH() >= 0 && pos.posW() >= 0 &&
-            pos.posH() < Board::cols_ - pos.posW() % 2 && pos.posW() < Board::rows_);
+            pos.posH() < Board::rows_ - pos.posW() % 2 && pos.posW() < Board::cols_);
 }
 
 #endif //_PROJECT_BOARD_HPP

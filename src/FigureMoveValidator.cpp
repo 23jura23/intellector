@@ -127,13 +127,13 @@ std::vector<std::shared_ptr<SimpleMove>> DominatorMoveValidator::allMoves() {
     };
 
     for (auto d : diff) {
-        for (Position i = d;; i += d) {
-            Position pos = pos_ + i;
+        for (Position pos = pos_ + d;; pos += d) {
 
             if (!inBoard(pos)) break;
             if (board_[pos].figure_.has_value() && board_[pos].figure_->colour_ == figure_.colour_) break;
 
-            answer.push_back(std::make_shared<SimpleMove>(pos_, pos_ + d, figure_));
+            answer.push_back(std::make_shared<SimpleMove>(pos_, pos, figure_));
+            if (board_[pos].figure_.has_value() && board_[pos].figure_->colour_ != figure_.colour_) break;
         }
     }
 
