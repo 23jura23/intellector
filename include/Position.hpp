@@ -17,10 +17,10 @@ public:
     };
 
     Position(int x, int y, int z)  // конструктор с 3 переменными
-            : x_{x}, y_{y}, z_{z} {}
+            : x_{x}, y_{y}, z_{z} { this->makeSum(); }
 
     Position operator-(const Position& right) const {
-        return Position(x_ - right.x_, y_ - right.y_, z_ - right.z_);
+        return Position(x_ - right.x_, y_ - right.y_, z_ - right.z_).makeSum();
     }
 
     Position operator-=(const Position& right) {
@@ -28,7 +28,7 @@ public:
     }
 
     Position operator+(const Position& right) const {
-        return Position(x_ + right.x_, y_ + right.y_, z_ + right.z_);
+        return Position(x_ + right.x_, y_ + right.y_, z_ + right.z_).makeSum();
     }
 
     Position operator+=(const Position& right) {
@@ -36,7 +36,7 @@ public:
     }
 
     Position operator*(const int val) const {
-        return Position(x_ * val, y_ * val, z_ * val);
+        return Position(x_ * val, y_ * val, z_ * val).makeSum();
     }
 
     [[nodiscard]] Position makeX() const {
@@ -52,6 +52,11 @@ public:
     [[nodiscard]] Position makeZ() const {
         Position null(1, -1, 1);
         return *this - (null * z_);
+    }
+
+    Position makeSum() {
+        Position null(1, -1, 1);
+        return *this -= null * (x_ + y_ + z_);
     }
 
     [[nodiscard]] bool operator==(const Position& other) const {
