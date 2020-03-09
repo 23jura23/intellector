@@ -75,7 +75,6 @@ std::vector<std::shared_ptr<SimpleMove>> IntellectorMoveValidator::allMoves() {
     for (auto d : diff) {
         Position pos = pos_ + d;
         if (!inBoard(pos)) continue;
-        if (board_[pos].figure_.has_value() && board_[pos].figure_->colour_ == figure_.colour_) continue;
 
         if (!board_[pos].figure_.has_value())
             answer.push_back(std::make_shared<SimpleMove>(pos_, pos_ + d, figure_));
