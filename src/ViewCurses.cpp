@@ -31,6 +31,8 @@ using namespace std;
 #define COLOR_BLACK_ACTIVE 70
 #define COLOR_WHITE_CURRENT 123
 #define COLOR_BLACK_CURRENT 111
+#define COLOR_WHITE_SELECTED 56
+#define COLOR_BLACK_SELECTED 55
 #define COLOR_WHITE_LETTER 196
 #define COLOR_BLACK_LETTER 226
 #define COLOR_FORE_BORDER 238
@@ -43,15 +45,23 @@ using namespace std;
 #define BOB 103 // Black On Black
 //#define WOA 104 // White On Active
 //#define BOA 105 // Black On Active
-#define CELL_WHITE 200         // INACTIVE
-#define CELL_BLACK 201         // INACTIVE
-#define CELL_WHITE_ACTIVE 202  // ACTIVE
-#define CELL_BLACK_ACTIVE 203  // ACTIVE
-#define CELL_WHITE_CURRENT 204 // CURRENT
-#define CELL_BLACK_CURRENT 205 // CURRENT
+#define CELL_WHITE 200          // INACTIVE
+#define CELL_BLACK 201          // INACTIVE
+#define CELL_WHITE_ACTIVE 202   // ACTIVE
+#define CELL_BLACK_ACTIVE 203   // ACTIVE
+#define CELL_WHITE_CURRENT 204  // CURRENT
+#define CELL_BLACK_CURRENT 205  // CURRENT
+#define CELL_WHITE_SELECTED 206 // SELECTED
+#define CELL_BLACK_SELECTED 207 // SELECTED
 #define CELL_BORDER 220
 #define LETTER_BLACK 221
 #define LETTER_WHITE 222
+
+//TODO
+//Highlight current cell
+//Do not select opponent cell
+//Fix downside coordinate bug
+//operator[] ViewBoard
 
 using namespace ViewCurses;
 
@@ -87,6 +97,8 @@ viewCurses::viewCurses(std::shared_ptr<Controller> controller)
     init_pair(CELL_BLACK_ACTIVE, COLOR_BLACK_ACTIVE, COLOR_BLACK_ACTIVE);
     init_pair(CELL_WHITE_CURRENT, COLOR_WHITE_CURRENT, COLOR_WHITE_CURRENT);
     init_pair(CELL_BLACK_CURRENT, COLOR_BLACK_CURRENT, COLOR_BLACK_CURRENT);
+    init_pair(CELL_WHITE_SELECTED, COLOR_WHITE_SELECTED, COLOR_WHITE_SELECTED);
+    init_pair(CELL_BLACK_SELECTED, COLOR_BLACK_SELECTED, COLOR_BLACK_SELECTED);
     init_pair(CELL_BORDER, COLOR_FORE_BORDER, COLOR_BACK_BORDER);
     init_pair(LETTER_WHITE, COLOR_WHITE_LETTER, COLOR_WHITE_FIGURE);
     init_pair(LETTER_BLACK, COLOR_BLACK_LETTER, COLOR_BLACK_FIGURE);
@@ -155,12 +167,17 @@ void viewCurses::run()
                 if (board_->viewBoard[currentPos.posW()][currentPos.posH()].cell.figure_.has_value()) {
                     cerr << "Cell " << currentPos.posW() << ' ' << currentPos.posH() << " was selected" << endl;
                     // Cell with figure was selected
-                    if (currentSelectedCell)
-                        throw ViewBaseException("Figure selected, but it was already selected");
+                    //                    if (currentSelectedCell)
+                    //                        throw ViewBaseException("Figure selected, but it was already selected");
                     currentPosStatus = CurrentPosStatus::SELECTED;
-                    currentSelectedCell = std::make_shared<ViewModelCurses::ViewCellCurses>(board_->viewBoard[currentPos.posW()][currentPos.posH()]);
-                    controller_->selectCell<ViewCurses::viewCurses>(currentSelectedCell->cell);
+                    selectedPos = currentPos;
+                    //                    currentSelectedCell = &(board_->viewBoard[currentPos.posW()][currentPos.posH()]);
+                    //                    cerr << "Selecting " << currentSelectedCell << endl;
+                    //                    cerr << board_->viewBoard[currentPos.posW()][currentPos.posH()].cell.pos_.posW() << endl;
+                    //                    cerr << currentSelectedCell->cell.pos_.posW() << endl;
+                    controller_->selectCell<ViewCurses::viewCurses>(board_->viewBoard[selectedPos.posW()][selectedPos.posH()].cell);
                     fetchModel();
+                    board_->viewBoard[selectedPos.posW()][selectedPos.posH()].status = ViewModelCurses::ViewCellCurses::ViewCellCursesStatus::SELECTED;
                 } else {
                     cerr << "Empty cell " << currentPos.posW() << ' ' << currentPos.posH() << " was tried to be selected (unsuccessfully)" << endl;
                     // Empty cell was selected
@@ -169,13 +186,15 @@ void viewCurses::run()
                 break;
             case CurrentPosStatus::SELECTED:
                 cerr << "Trying to do smth with Cell " << currentPos.posW() << ' ' << currentPos.posH() << endl;
-                if (currentPos.posW() == currentSelectedCell->cell.pos_.posW() && currentPos.posH() == currentSelectedCell->cell.pos_.posH()) {
+                //                cerr << "currentSelectedCell " << currentSelectedCell << endl;
+                //                cerr << currentSelectedCell->cell.pos_.posW() << endl;
+                if (currentPos.posW() == selectedPos.posW() && currentPos.posH() == selectedPos.posH()) {
                     cerr << "Cell " << currentPos.posW() << ' ' << currentPos.posH() << " was unselected" << endl;
                     // Cell was unselected
                     reloadModel();
-//                    controller_->unSelectCell<ViewCurses::viewCurses>();
+                    //                    controller_->unSelectCell<ViewCurses::viewCurses>();
+                    board_->viewBoard[currentPos.posW()][currentPos.posH()].status = ViewModelCurses::ViewCellCurses::ViewCellCursesStatus::INACTIVE;
                     currentPosStatus = CurrentPosStatus::UNSELECTED;
-                    currentSelectedCell.reset();
                 } else {
                     if (board_->viewBoard[currentPos.posW()][currentPos.posH()].inMoves.size()) {
                         cerr << "Step " << currentPos.posW() << ' ' << currentPos.posH() << " was tried to be done" << endl;
@@ -183,8 +202,8 @@ void viewCurses::run()
                             cerr << "UniStep " << currentPos.posW() << ' ' << currentPos.posH() << " was done" << endl;
                             controller_->makeMove(*board_->viewBoard[currentPos.posW()][currentPos.posH()].inMoves[0]);
                             reloadModel();
+                            board_->viewBoard[currentPos.posW()][currentPos.posH()].status = ViewModelCurses::ViewCellCurses::ViewCellCursesStatus::INACTIVE;
                             currentPosStatus = CurrentPosStatus::UNSELECTED;
-                            currentSelectedCell.reset();
                         } else {
                             cerr << "MultiStep " << currentPos.posW() << ' ' << currentPos.posH() << " was triedto be done (yet unsuccessfully)" << endl;
                             // multiple steps to the same cell are possible
@@ -201,13 +220,16 @@ void viewCurses::run()
         cerr << "newPos: " << newPos.posW() << ' ' << newPos.posH() << endl;
         cerr << "truepos" << newPos.x_ << ' ' << newPos.y_ << ' ' << newPos.z_ << endl;
         if (
-            !(newPos == currentPos) && (0 <= newPos.posW() && newPos.posW() < board_->viewBoard.size() && 0 <= newPos.posH() && newPos.posH() < board_->viewBoard[newPos.posW()].size())) {
-            if (board_->viewBoard[currentPos.posW()][currentPos.posH()].inMoves.size())
+            (0 <= newPos.posW() && newPos.posW() < board_->viewBoard.size() && 0 <= newPos.posH() && newPos.posH() < board_->viewBoard[newPos.posW()].size())) {
+            if (currentPosStatus == CurrentPosStatus::SELECTED && currentPos.posW() == selectedPos.posW() && currentPos.posH() == selectedPos.posH())
+                board_->viewBoard[currentPos.posW()][currentPos.posH()].status = ViewModelCurses::ViewCellCurses::ViewCellCursesStatus::SELECTED;
+            else if (board_->viewBoard[currentPos.posW()][currentPos.posH()].inMoves.size())
                 board_->viewBoard[currentPos.posW()][currentPos.posH()].status = ViewModelCurses::ViewCellCurses::ViewCellCursesStatus::ACTIVE;
             else
                 board_->viewBoard[currentPos.posW()][currentPos.posH()].status = ViewModelCurses::ViewCellCurses::ViewCellCursesStatus::INACTIVE;
             currentPos = newPos;
-            board_->viewBoard[currentPos.posW()][currentPos.posH()].status = ViewModelCurses::ViewCellCurses::ViewCellCursesStatus::CURRENT;
+            if (!(currentPosStatus == CurrentPosStatus::SELECTED && currentPos.posW() == selectedPos.posW() && currentPos.posH() == selectedPos.posH()))
+                board_->viewBoard[currentPos.posW()][currentPos.posH()].status = ViewModelCurses::ViewCellCurses::ViewCellCursesStatus::CURRENT;
         }
     }
 }
@@ -277,6 +299,12 @@ void viewCurses::outCell(const ViewModelCurses::ViewCellCurses& cell, pair TL)
             CELL_COLOR = CELL_WHITE_CURRENT;
         else
             CELL_COLOR = CELL_BLACK_CURRENT;
+        break;
+    case ViewModelCurses::ViewCellCurses::ViewCellCursesStatus::SELECTED:
+        if (cell.cell.colour_ == CellColour::WHITE)
+            CELL_COLOR = CELL_WHITE_SELECTED;
+        else
+            CELL_COLOR = CELL_BLACK_SELECTED;
         break;
     }
     std::vector<const char*> draw;

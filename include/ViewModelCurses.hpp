@@ -15,9 +15,10 @@ struct ViewModelCurses : public ViewModelBase {
 
     struct ViewCellCurses {
         enum class ViewCellCursesStatus {
-            ACTIVE,
-            INACTIVE,
-            CURRENT
+            ACTIVE, // possible move
+            INACTIVE, // nothing special
+            CURRENT, // current pointer position
+            SELECTED // selected to make move
         };
 
         ViewCellCurses(Cell, ViewCellCursesStatus = ViewCellCursesStatus::INACTIVE);

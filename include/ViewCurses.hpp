@@ -54,7 +54,7 @@ private:
         UNSELECTED,
         SELECTED
     } currentPosStatus;
-    std::shared_ptr<ViewModelCurses::ViewCellCurses> currentSelectedCell;
+    Position selectedPos;
 };
 
 }
