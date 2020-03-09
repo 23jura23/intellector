@@ -13,6 +13,7 @@ struct ViewModelCurses : public ViewModelBase {
     ViewModelCurses(const Board&, PlayerColour);
     ViewModelCurses(const Board&, PlayerColour, MovesTable&);
 
+
     struct ViewCellCurses {
         enum class ViewCellCursesStatus {
             ACTIVE, // possible move
@@ -28,6 +29,8 @@ struct ViewModelCurses : public ViewModelBase {
         std::vector<std::shared_ptr<SimpleMove>> inMoves;
         ViewCellCursesStatus status;
     };
+    ViewCellCurses& operator[](const Position& pos);
+    const ViewCellCurses& operator[](const Position& pos) const;
 
     std::vector<std::vector<ViewCellCurses>> viewBoard;
     PlayerColour turn;

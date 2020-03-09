@@ -1,6 +1,7 @@
 #include "ViewModelCurses.hpp"
 
 using namespace ViewCurses;
+using ViewCellCurses = ViewModelCurses::ViewCellCurses;
 
 #include <iostream>
 using namespace std;
@@ -8,7 +9,7 @@ using namespace std;
 ViewModelCurses::ViewModelCurses(const Board& board, PlayerColour turn)
     : turn { turn }
 {
-    freopen("error.txt","a",stderr);
+    freopen("error.txt", "a", stderr);
     viewBoard.resize(board.cols_);
     for (size_t i = 0; i < board.data_.size(); ++i)
         for (size_t j = 0; j < board.data_[i].size(); ++j)
@@ -29,8 +30,17 @@ ViewModelCurses::ViewModelCurses(const Board& board_, PlayerColour turn_, MovesT
 
 ViewModelCurses::ViewCellCurses::ViewCellCurses(Cell cell, ViewCellCursesStatus status)
     : cell { cell }
-    , status { status}
+    , status { status }
 {
+}
+
+ViewCellCurses& ViewModelCurses::operator[](const Position& pos)
+{
+    return viewBoard[pos.posW()][pos.posH()];
+}
+const ViewCellCurses& ViewModelCurses::operator[](const Position& pos) const
+{
+    return viewBoard[pos.posW()][pos.posH()];
 }
 
 //ViewModelCurses::ViewCellCurses::ViewCellCurses(Cell cell, std::vector<std::shared_ptr<SimpleMove>> inMoves)
