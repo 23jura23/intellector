@@ -9,7 +9,11 @@
 
 class Position {
 public:
-    Position() = default;
+    Position() : x_{1}, y_{-1}, z_{1} {};
+    Position(const Position&) = default;
+    Position& operator=(const Position&) = default;
+    ~Position() = default;
+
     Position(int w, int h) {  // констуртор из прямоугольных координат
         y_ = 2 * h + w % 2;
         z_ = (w - y_) / 2;
@@ -40,7 +44,7 @@ public:
     }
 
     [[nodiscard]] Position makeX() const {
-        Position null(1, -1, 1);
+        Position null;
         return *this - (null * x_);
     }
 
@@ -50,13 +54,16 @@ public:
     }
 
     [[nodiscard]] Position makeZ() const {
-        Position null(1, -1, 1);
+        Position null;
         return *this - (null * z_);
     }
 
     Position makeSum() {
-        Position null(1, -1, 1);
-        return *this -= null * (x_ + y_ + z_);
+        int sum = x_ + y_ + z_;
+        x_ -= sum;
+        y_ += sum;
+        z_ -= sum;
+        return *this;
     }
 
     [[nodiscard]] bool operator==(const Position& other) const {
@@ -69,7 +76,7 @@ public:
 
     [[nodiscard]] int posW() const { return -x_ + z_; }
 
-    [[nodiscard]] int posH() const { return (x_ + 2 * y_ + z_) / 2; }
+    [[nodiscard]] int posH() const { return floor((x_ + 2 * y_ + z_) / 2.0); } // -3 1 2 -> -3 0 2
 
     int x_, y_, z_;
 };
