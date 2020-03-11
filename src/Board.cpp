@@ -45,7 +45,7 @@ Board::Board() {
             data_[w].emplace_back(Position(w, h));
 
     for (auto new_cell : arrangement_) {
-        (*this)[new_cell.second] = Cell(new_cell.first, new_cell.second);
+        (*this)[new_cell.second].figure_.emplace(new_cell.first);
     }
 }
 
@@ -58,7 +58,7 @@ Board::Board(const Board& other) {
             if (!other.data_[w][h].figure_.has_value())
                 data_[w].emplace_back(Position(w, h));
             else {
-                data_[w].emplace_back(other.data_[w][h].figure_.value(), Position(w, h));
+                data_[w].emplace_back(Position(w, h), other.data_[w][h].figure_.value());
             }
         }
     }

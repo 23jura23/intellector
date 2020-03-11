@@ -11,27 +11,23 @@
 
 class SimpleMove {
 public:
-    SimpleMove(const Position& from_pos, const Position& to_pos, const Figure& figure)
-            : from_(from_pos), to_(to_pos)
-            , figure_(figure) {}
+    SimpleMove(const Position& from_pos, const Position& to_pos)
+            : from_(from_pos), to_(to_pos) {}
 
     Position from_, to_;
-    Figure figure_;
-
-//    static std::shared_ptr<SimpleMove> create(const Cell& from_cell, const Cell& to_cell, PlayerColour turn);
 };
 
 class SwapMove : public SimpleMove {
 public:
-    SwapMove(const Position& from_pos, const Position& to_pos, const Figure& figure)
-            : SimpleMove(from_pos, to_pos, figure) {}
+    SwapMove(const Position& from_pos, const Position& to_pos)
+            : SimpleMove(from_pos, to_pos) {}
 };
 
 
 class TransformMove : public SimpleMove {
 public:
-    TransformMove(const Position& from_pos, const Position& to_pos, const Figure& figure, const FigureType figure_type)
-            : SimpleMove(from_pos, to_pos, figure), figure_type_(figure_type) {}
+    TransformMove(const Position& from_pos, const Position& to_pos, const FigureType figure_type)
+            : SimpleMove(from_pos, to_pos), figure_type_(figure_type) {}
 
     FigureType figure_type_;
 };

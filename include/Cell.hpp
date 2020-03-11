@@ -16,15 +16,15 @@ enum class CellColour {
 
 class Cell {
 public:
-//    Cell(PlayerColour colour, Position pos, FigureType type);
-    Cell(Figure figure, Position pos);
-    explicit Cell(Position pos);
-    Cell& operator=(const Cell&);
+    Cell(const Cell&) = default;
+    Cell& operator=(const Cell&) = delete;
 
+    Cell(Position pos, Figure figure);
+    explicit Cell(Position pos);
 
     std::optional<Figure> figure_;
-    CellColour colour_;
-    Position pos_;
+    const CellColour colour_;
+    const Position pos_;
 };
 
 #endif //_PROJECT_CELL_HPP

@@ -14,10 +14,10 @@ int sgn(int x) {
     return 0;
 }
 
-FigureMoveValidator::FigureMoveValidator(Board& board, PlayerColour colour, Position pos, FigureType type)
+FigureMoveValidator::FigureMoveValidator(const Board& board, PlayerColour colour, Position pos, FigureType type)
         : board_(board), figure_(Figure(colour, type)), pos_(pos) {}
 
-std::shared_ptr<FigureMoveValidator> FigureMoveValidator::create(Board& board, Figure figure, Position pos) {
+std::shared_ptr<FigureMoveValidator> FigureMoveValidator::create(const Board& board, Figure figure, Position pos) {
     PlayerColour colour = figure.colour_;
     switch (figure.type_) {
         case FigureType::INTELLECTOR :
@@ -42,7 +42,7 @@ std::shared_ptr<FigureMoveValidator> FigureMoveValidator::create(Board& board, F
 }
 
 
-IntellectorMoveValidator::IntellectorMoveValidator(Board& board, PlayerColour colour, Position pos)
+IntellectorMoveValidator::IntellectorMoveValidator(const Board& board, PlayerColour colour, Position pos)
         : FigureMoveValidator(board, colour, pos, FigureType::INTELLECTOR) {}
 
 bool IntellectorMoveValidator::checkMove(Position to_pos) {
@@ -77,17 +77,17 @@ std::vector<std::shared_ptr<SimpleMove>> IntellectorMoveValidator::allMoves() {
         if (!inBoard(pos)) continue;
 
         if (!board_[pos].figure_.has_value())
-            answer.push_back(std::make_shared<SimpleMove>(pos_, pos_ + d, figure_));
+            answer.push_back(std::make_shared<SimpleMove>(pos_, pos_ + d));
         else if (board_[pos].figure_->type_ == FigureType::DEFENSSOR &&
                  board_[pos].figure_->colour_ == figure_.colour_)
-            answer.push_back(std::make_shared<SwapMove>(pos_, pos_ + d, figure_));
+            answer.push_back(std::make_shared<SwapMove>(pos_, pos_ + d));
     }
 
     return answer;
 }
 
 
-DominatorMoveValidator::DominatorMoveValidator(Board& board, PlayerColour colour, Position pos)
+DominatorMoveValidator::DominatorMoveValidator(const Board& board, PlayerColour colour, Position pos)
         : FigureMoveValidator(board, colour, pos, FigureType::DOMINATOR) {}
 
 bool DominatorMoveValidator::checkMove(Position to_pos) {
@@ -131,7 +131,7 @@ std::vector<std::shared_ptr<SimpleMove>> DominatorMoveValidator::allMoves() {
             if (!inBoard(pos)) break;
             if (board_[pos].figure_.has_value() && board_[pos].figure_->colour_ == figure_.colour_) break;
 
-            answer.push_back(std::make_shared<SimpleMove>(pos_, pos, figure_));
+            answer.push_back(std::make_shared<SimpleMove>(pos_, pos));
             if (board_[pos].figure_.has_value() && board_[pos].figure_->colour_ != figure_.colour_) break;
         }
     }
@@ -140,7 +140,7 @@ std::vector<std::shared_ptr<SimpleMove>> DominatorMoveValidator::allMoves() {
 }
 
 
-AggressorMoveValidator::AggressorMoveValidator(Board& board, PlayerColour colour, Position pos)
+AggressorMoveValidator::AggressorMoveValidator(const Board& board, PlayerColour colour, Position pos)
         : FigureMoveValidator(board, colour, pos, FigureType::AGGRESSOR) {}
 
 bool AggressorMoveValidator::checkMove(Position to_pos) {
@@ -184,7 +184,7 @@ std::vector<std::shared_ptr<SimpleMove>> AggressorMoveValidator::allMoves() {
             if (!inBoard(pos)) break;
             if (board_[pos].figure_.has_value() && board_[pos].figure_->colour_ == figure_.colour_) break;
 
-            answer.push_back(std::make_shared<SimpleMove>(pos_, pos, figure_));
+            answer.push_back(std::make_shared<SimpleMove>(pos_, pos));
             if (board_[pos].figure_.has_value() && board_[pos].figure_->colour_ != figure_.colour_) break;
         }
     }
@@ -193,7 +193,7 @@ std::vector<std::shared_ptr<SimpleMove>> AggressorMoveValidator::allMoves() {
 }
 
 
-DefenssorMoveValidator::DefenssorMoveValidator(Board& board, PlayerColour colour, Position pos)
+DefenssorMoveValidator::DefenssorMoveValidator(const Board& board, PlayerColour colour, Position pos)
         : FigureMoveValidator(board, colour, pos, FigureType::DEFENSSOR) {}
 
 bool DefenssorMoveValidator::checkMove(Position to_pos) {
@@ -224,14 +224,14 @@ std::vector<std::shared_ptr<SimpleMove>> DefenssorMoveValidator::allMoves() {
         if (!inBoard(pos)) continue;
         if (board_[pos].figure_.has_value() && board_[pos].figure_->colour_ == figure_.colour_) continue;
 
-        answer.push_back(std::make_shared<SimpleMove>(pos_, pos, figure_));
+        answer.push_back(std::make_shared<SimpleMove>(pos_, pos));
     }
 
     return answer;
 }
 
 
-LiberatorMoveValidator::LiberatorMoveValidator(Board& board, PlayerColour colour, Position pos)
+LiberatorMoveValidator::LiberatorMoveValidator(const Board& board, PlayerColour colour, Position pos)
         : FigureMoveValidator(board, colour, pos, FigureType::LIBERATOR) {}
 
 bool LiberatorMoveValidator::checkMove(Position to_pos) {
@@ -262,14 +262,14 @@ std::vector<std::shared_ptr<SimpleMove>> LiberatorMoveValidator::allMoves() {
         if (!inBoard(pos)) continue;
         if (board_[pos].figure_.has_value() && board_[pos].figure_->colour_ == figure_.colour_) continue;
 
-        answer.push_back(std::make_shared<SimpleMove>(pos_, pos, figure_));
+        answer.push_back(std::make_shared<SimpleMove>(pos_, pos));
     }
 
     return answer;
 }
 
 
-ProgressorMoveValidator::ProgressorMoveValidator(Board& board, PlayerColour colour, Position pos)
+ProgressorMoveValidator::ProgressorMoveValidator(const Board& board, PlayerColour colour, Position pos)
         : FigureMoveValidator(board, colour, pos, FigureType::PROGRESSOR) {}
 
 bool ProgressorMoveValidator::checkMove(Position to_pos) {
@@ -311,14 +311,14 @@ std::vector<std::shared_ptr<SimpleMove>> ProgressorMoveValidator::allMoves() {
         if (board_[pos].figure_.has_value() && board_[pos].figure_->colour_ == figure_.colour_) continue;
 
         if ((pos.posH() == 0 && pos.posW() % 2 == 1) || pos.posH() == Board::cols_ - 1) {
-            answer.push_back(std::make_shared<TransformMove>(pos_, pos, figure_, FigureType::DEFENSSOR));
-            answer.push_back(std::make_shared<TransformMove>(pos_, pos, figure_, FigureType::PROGRESSOR));
-            answer.push_back(std::make_shared<TransformMove>(pos_, pos, figure_, FigureType::LIBERATOR));
-            answer.push_back(std::make_shared<TransformMove>(pos_, pos, figure_, FigureType::AGGRESSOR));
-            answer.push_back(std::make_shared<TransformMove>(pos_, pos, figure_, FigureType::DOMINATOR));
+            answer.push_back(std::make_shared<TransformMove>(pos_, pos, FigureType::DEFENSSOR));
+            answer.push_back(std::make_shared<TransformMove>(pos_, pos, FigureType::PROGRESSOR));
+            answer.push_back(std::make_shared<TransformMove>(pos_, pos, FigureType::LIBERATOR));
+            answer.push_back(std::make_shared<TransformMove>(pos_, pos, FigureType::AGGRESSOR));
+            answer.push_back(std::make_shared<TransformMove>(pos_, pos, FigureType::DOMINATOR));
         }
         else
-            answer.push_back(std::make_shared<SimpleMove>(pos_, pos, figure_));
+            answer.push_back(std::make_shared<SimpleMove>(pos_, pos));
     }
 
     return answer;

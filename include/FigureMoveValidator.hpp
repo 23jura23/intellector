@@ -11,13 +11,13 @@
 
 class FigureMoveValidator {
 public:
-    FigureMoveValidator(Board& board, PlayerColour colour, Position pos, FigureType type);
+    FigureMoveValidator(const Board& board, PlayerColour colour, Position pos, FigureType type);
 
     virtual bool checkMove(Position to_pos) = 0;
 
     virtual std::vector<std::shared_ptr<SimpleMove>> allMoves() = 0;
 
-    static std::shared_ptr<FigureMoveValidator> create(Board& board, Figure figure, Position pos);
+    static std::shared_ptr<FigureMoveValidator> create(const Board& board, Figure figure, Position pos);
 
 protected:
     const Board& board_;
@@ -27,7 +27,7 @@ protected:
 
 class IntellectorMoveValidator : public FigureMoveValidator {
 public:
-    IntellectorMoveValidator(Board& board, PlayerColour colour, Position pos);
+    IntellectorMoveValidator(const Board& board, PlayerColour colour, Position pos);
 
     bool checkMove(Position to_pos) override;
 
@@ -36,7 +36,7 @@ public:
 
 class DominatorMoveValidator : public FigureMoveValidator {
 public:
-    DominatorMoveValidator(Board& board, PlayerColour colour, Position pos);
+    DominatorMoveValidator(const Board& board, PlayerColour colour, Position pos);
 
     bool checkMove(Position to_pos) override;
 
@@ -45,7 +45,7 @@ public:
 
 class AggressorMoveValidator : public FigureMoveValidator {
 public:
-    AggressorMoveValidator(Board& board, PlayerColour colour, Position pos);
+    AggressorMoveValidator(const Board& board, PlayerColour colour, Position pos);
 
     bool checkMove(Position to_pos) override;
 
@@ -54,7 +54,7 @@ public:
 
 class DefenssorMoveValidator : public FigureMoveValidator {
 public:
-    DefenssorMoveValidator(Board& board, PlayerColour colour, Position pos);
+    DefenssorMoveValidator(const Board& board, PlayerColour colour, Position pos);
 
     bool checkMove(Position to_pos) override;
 
@@ -63,7 +63,7 @@ public:
 
 class LiberatorMoveValidator : public FigureMoveValidator {
 public:
-    LiberatorMoveValidator(Board& board, PlayerColour colour, Position pos);
+    LiberatorMoveValidator(const Board& board, PlayerColour colour, Position pos);
 
     bool checkMove(Position to_pos) override;
 
@@ -72,7 +72,7 @@ public:
 
 class ProgressorMoveValidator : public FigureMoveValidator {
 public:
-    ProgressorMoveValidator(Board& board, PlayerColour colour, Position pos);
+    ProgressorMoveValidator(const Board& board, PlayerColour colour, Position pos);
 
     bool checkMove(Position to_pos) override;
 
