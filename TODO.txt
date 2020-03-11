@@ -1,0 +1,33 @@
+DONE Highlight current cell
+DONE Fix downside coordinate bug
+DONE operator[] ViewBoard
+
+Do not select opponent cell
+Center align
+Progressor transformation menu (TransformMove)
+SwapMove
+Ncurses main menu
+rewrite getTL more beautiful
+Esc for cancel Current selection
+Auto choice which View to update (only instanced!) - ask sokolov?
+CMake instead of Make
+Validate Moves in Game
+constexpr instead of MACROs for colors. Make constexpr color_scheme class
+colors or colours?
+Controller passes turn to Game, receiving it from Game
+FigureMoveValidator recieve Board by non-const reference - make it const
+Rename to avoid shadowing in ViewCurses constructors (warning)
+size_t >= 0 (warning)
+Remove trash comments
+Replace unique_ptr with shared_ptr (or vice versa)
+Swap in SwapMove instead of reconstructing them
+Base (for all project) exception class (IntellectorException?) but QT throws its own
+
+Git Hooks for autoformatting
+Debug and Release versions (with and without error.txt)
+
+Install QT
+
+Think about:
+Controller template architecture model
+Parallel Views at presentation (possibly, one for player, other one for bot, views from them)

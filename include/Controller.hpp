@@ -11,7 +11,7 @@
 #include "ViewModelBase.hpp"
 
 class Controller {
-public: // TODO в Controller ссылка на бота
+public: // TODO reference to Bot in Controller? What for?
     Controller(std::shared_ptr<Game> game);
     void init(); // Запуск игры // do we need it? then it must be template <typename Viewtype>
     template <typename ViewType>
@@ -73,7 +73,7 @@ using namespace std;
 template <>
 inline void Controller::selectCell<ViewCurses::viewCurses>(const Cell& selected)
 {
-    auto steps = game_->allFigureMoves(selected.pos_, game_->getColourCurrentPlayer()); // something strange: why game_ is getting its own field through its own getter?
+    auto steps = game_->allFigureMoves(selected.pos_, game_->getColourCurrentPlayer()); // TODO something strange: why game_ is getting its own field through its own getter?
     freopen("error.txt","a",stderr);
     cerr << "steps.size(): " << steps.size() << endl;
     getViewModel<ViewCurses::viewCurses>() = std::make_shared<ViewCurses::ViewModelCurses>(game_->getBoard(), game_->getColourCurrentPlayer(), steps);

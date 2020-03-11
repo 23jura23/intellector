@@ -57,15 +57,8 @@ using namespace std;
 #define LETTER_BLACK 221
 #define LETTER_WHITE 222
 
-//TODO
-//DONE Highlight current cell
-//Do not select opponent cell
-//Fix downside coordinate bug
-//DONE operator[] ViewBoard
-
 using namespace ViewCurses;
 
-//TODO center align
 viewCurses::viewCurses(std::shared_ptr<Controller> controller)
     : controller_ { controller }
     , maxy { getmaxy(stdscr) }
@@ -261,7 +254,7 @@ auto viewCurses::getTL(pair corner) -> pair
 {
     //    cerr << corner.first << ' ' << corner.second << " => " << tlx + corner.first / 2 * delta_right_up.first + (corner.first % 2) * delta_right_down.first - (d - 1) << ' ' << tly + corner.second * delta_down.second + (corner.first % 2) * delta_right_down.second << endl;
     return { tlx + corner.first / 2 * delta_right_up.first + (corner.first % 2) * delta_right_down.first - (d - 1), tly + corner.second * delta_down.second + (corner.first % 2) * delta_right_down.second };
-    //TODO rewrite more beautiful}
+    //TODO rewrite more beautiful
 }
 
 void viewCurses::outBoard()
