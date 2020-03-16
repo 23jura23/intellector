@@ -9,7 +9,7 @@
 
 class Position {
 public:
-    Position() : x_{1}, y_{-1}, z_{1} {};
+    Position() : x_{0}, y_{0}, z_{0} {};
     Position(const Position&) = default;
     Position& operator=(const Position&) = default;
     ~Position() = default;
@@ -21,10 +21,10 @@ public:
     };
 
     Position(int x, int y, int z)  // конструктор с 3 переменными
-            : x_{x}, y_{y}, z_{z} { this->makeSum(); }
+            : x_{x}, y_{y}, z_{z} {}
 
     Position operator-(const Position& right) const {
-        return Position(x_ - right.x_, y_ - right.y_, z_ - right.z_).makeSum();
+        return Position(x_ - right.x_, y_ - right.y_, z_ - right.z_);
     }
 
     Position operator-=(const Position& right) {
@@ -32,29 +32,29 @@ public:
     }
 
     Position operator+(const Position& right) const {
-        return Position(x_ + right.x_, y_ + right.y_, z_ + right.z_).makeSum();
+        return Position(x_ + right.x_, y_ + right.y_, z_ + right.z_);
     }
 
     Position operator+=(const Position& right) {
         return *this = *this + right;
     }
 
-    Position operator*(const int val) const {
-        return Position(x_ * val, y_ * val, z_ * val).makeSum();
+    Position operator*(int val) const {
+        return Position(x_ * val, y_ * val, z_ * val);
     }
 
     [[nodiscard]] Position makeX() const {
-        Position null;
+        Position null(1, -1, 1);
         return *this - (null * x_);
     }
 
     [[nodiscard]] Position makeY() const {
-        Position null(-1, 1, -1);
-        return *this - (null * y_);
+        Position null(1, -1, 1);
+        return *this + (null * y_);
     }
 
     [[nodiscard]] Position makeZ() const {
-        Position null;
+        Position null(1, -1, 1);
         return *this - (null * z_);
     }
 

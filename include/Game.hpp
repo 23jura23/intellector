@@ -10,12 +10,10 @@
 #include "MoveTypes.hpp"
 
 class Game {
-public: // TODO сделать ходы в move, а здесь только применять их
+public:
     // TODO просить бота делать ходы
-    // TODO зачем спрашивать кто делает ход
-    bool makeMove(std::unique_ptr<SwapMove> move);
-    bool makeMove(std::unique_ptr<TransformMove> move);
-    bool makeMove(std::unique_ptr<SimpleMove> move);
+
+    bool makeMove(const std::shared_ptr<SimpleMove>& move);
 
     [[nodiscard]] std::vector<std::shared_ptr<SimpleMove>> allFigureMoves(Position pos, PlayerColour turn) const;
 

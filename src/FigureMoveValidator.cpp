@@ -105,7 +105,7 @@ bool DominatorMoveValidator::checkMove(Position to_pos) {
     if (path_to_pos == Position(0, 0, 0))
         return false;
 
-    Position i{};
+    Position i;
     for (i = path_to_pos; i != diff; i += path_to_pos) {
         if (board_[pos_ + i].figure_.has_value())
             return false;

@@ -13,6 +13,8 @@ class FigureMoveValidator {
 public:
     FigureMoveValidator(const Board& board, PlayerColour colour, Position pos, FigureType type);
 
+    [[nodiscard]] Figure getFigure() const { return figure_; }
+
     virtual bool checkMove(Position to_pos) = 0;
 
     virtual std::vector<std::shared_ptr<SimpleMove>> allMoves() = 0;
