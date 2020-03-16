@@ -149,7 +149,7 @@ bool AggressorMoveValidator::checkMove(Position to_pos) {
     Position diff = to_pos - pos_;
     Position path_to_pos(0, 0, 0);
     if (diff.makeX().y_ == diff.makeX().z_)
-        path_to_pos = Position(0, sgn(diff.makeX().y_), sgn(diff.makeX().y_));
+        path_to_pos = Position(0, sgn(diff.makeX().y_), sgn(diff.makeX().z_));
     if (diff.makeY().x_ == -diff.makeY().z_)
         path_to_pos = Position(sgn(diff.makeY().x_), 0, sgn(diff.makeY().z_));
     if (diff.makeZ().x_ == diff.makeZ().y_)
@@ -158,9 +158,9 @@ bool AggressorMoveValidator::checkMove(Position to_pos) {
     if (path_to_pos == Position(0, 0, 0))
         return false;
 
-    Position i{};
+    Position i;
     for (i = path_to_pos; i != diff; i += path_to_pos) {
-        if (board_[to_pos].figure_.has_value())
+        if (board_[pos_ + i].figure_.has_value())
             return false;
     }
 
