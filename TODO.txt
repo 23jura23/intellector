@@ -22,6 +22,7 @@ Remove trash comments
 Replace unique_ptr with shared_ptr (or vice versa)
 Swap in SwapMove instead of reconstructing them
 Base (for all project) exception class (IntellectorException?) but QT throws its own
+Add upside-down rotate of black figures as feature
 
 Git Hooks for autoformatting
 Debug and Release versions (with and without error.txt)

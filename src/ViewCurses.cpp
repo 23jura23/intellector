@@ -455,11 +455,13 @@ void viewCurses::outCell(const ViewModelCurses::ViewCellCurses& cell, pair TL)
     move(TL.second, TL.first);
     for (size_t i = 0; i < draw.size(); ++i) {
         size_t draw_i = i;
-        if (cell.cell.figure_.has_value()
-            && cell.cell.figure_->colour_ == PlayerColour::black_
-            && cell.cell.figure_->type_ != FigureType::INTELLECTOR)
-            draw_i = draw.size() - 1 - i;
-        if (0 <= TL.second + i && TL.second + i <= static_cast<size_t>(maxy) && 0 <= TL.first && TL.first <= static_cast<size_t>(maxx)) {
+        //  if (cell.cell.figure_.has_value()
+        //      && cell.cell.figure_->colour_ == PlayerColour::black_
+        //      && cell.cell.figure_->type_ != FigureType::INTELLECTOR)
+        //      draw_i = draw.size() - 1 - i;
+        //  inverts black figures
+        //  add as feature
+        if (TL.second + i <= static_cast<size_t>(maxy) && TL.first <= static_cast<size_t>(maxx)) {
             move(TL.second + i, TL.first);
             for (size_t j = 0; j < d - 1 + d + d - 1; ++j) {
                 switch (draw[draw_i][j]) {
