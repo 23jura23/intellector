@@ -96,7 +96,9 @@ viewCurses::viewCurses(std::shared_ptr<Controller> controller)
     init_pair(LETTER_WHITE, COLOR_WHITE_LETTER, COLOR_WHITE_FIGURE);
     init_pair(LETTER_BLACK, COLOR_BLACK_LETTER, COLOR_BLACK_FIGURE);
 
-    keypad(stdscr, true);
+    //    keypad(stdscr, true);
+    //    otherwise ESC does not work, see https://www.daniweb.com/programming/software-development/threads/259439/keycode-of-esc-in-curses-h
+    //    other solutions: nocbreak(); or timeout(0); or not using ESC to cancel
     curs_set(0);
     noecho();
 }
@@ -154,6 +156,11 @@ void viewCurses::run()
             //        case 'Q':
             //            newPos.x_ += 1;
             //            break;
+        case 27:
+            reloadModel();
+            (*board_)[currentPos].status = ViewModelCurses::ViewCellCurses::ViewCellCursesStatus::INACTIVE;
+            currentPosStatus = CurrentPosStatus::UNSELECTED;
+            break;
         case 32:
             switch (currentPosStatus) {
             case CurrentPosStatus::UNSELECTED:

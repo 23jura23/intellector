@@ -2,13 +2,13 @@ DONE Highlight current cell
 DONE Fix downside coordinate bug
 DONE operator[] ViewBoard
 DONE Do not select opponent cell
+DONE Esc for cancel Current selection
 
 Center align
 Progressor transformation menu (TransformMove)
 SwapMove
 Ncurses main menu
 rewrite getTL more beautiful
-Esc for cancel Current selection
 Auto choice which View to update (only instanced!) - ask sokolov?
 CMake instead of Make
 Validate Moves in Game
