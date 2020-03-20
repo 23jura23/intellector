@@ -7,7 +7,9 @@ using ViewCellCurses = ViewModelCurses::ViewCellCurses;
 using namespace std;
 
 ViewModelCurses::ViewModelCurses(const Board& board, PlayerColour turn)
-    : turn { turn }
+    : rows {board.rows_}
+    , cols {board.cols_}
+    , turn { turn }
 {
     freopen("error.txt", "a", stderr);
     viewBoard.resize(board.cols_);

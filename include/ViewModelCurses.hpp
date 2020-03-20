@@ -32,6 +32,7 @@ struct ViewModelCurses : public ViewModelBase {
     ViewCellCurses& operator[](const Position& pos);
     const ViewCellCurses& operator[](const Position& pos) const;
 
+    const int cols, rows;
     std::vector<std::vector<ViewCellCurses>> viewBoard;
     PlayerColour turn;
 };

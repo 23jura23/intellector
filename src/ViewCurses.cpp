@@ -57,13 +57,43 @@ using namespace std;
 #define LETTER_BLACK 221
 #define LETTER_WHITE 222
 
+#define CENTER_ALIGN 1
+//TODO add to config/settings
+
 using namespace ViewCurses;
+
+void viewCurses::calculateTL()
+{
+    tlx = 0;
+    tly = 0;
+    maxy = getmaxy(stdscr);
+    maxx = getmaxx(stdscr);
+
+    if (CENTER_ALIGN) {
+        size_t leny = 0;
+        for (size_t i = 0;i < board_->viewBoard.size();++i)
+        {
+            size_t j = board_->viewBoard[i].size();
+            leny = max(leny, getTL({i, j}).second);
+        }
+        size_t lenx = 0;
+        if(board_->cols <= 0)
+            throw ViewBaseException("Width of board must be positive");
+        for (size_t j = 0;j < board_->viewBoard[board_->cols-1].size(); ++j)
+        {
+            lenx = max(lenx, getTL({board_->cols, j}).first);
+        }
+        tlx = maxx/2 - lenx/2;
+        tly = maxy/2 - leny/2;
+    } else {
+        tlx = d - 1;
+        tly = 0;
+    }
+}
 
 viewCurses::viewCurses(std::shared_ptr<Controller> controller)
     : controller_ { controller }
-    , maxy { getmaxy(stdscr) }
-    , maxx { getmaxx(stdscr) }
-    , tlx { d - 1 }
+    , tlx { 0 }
     , tly { 0 }
     , currentPos { -2, 3, 2 }
     , currentPosStatus { CurrentPosStatus::UNSELECTED }
@@ -71,8 +101,9 @@ viewCurses::viewCurses(std::shared_ptr<Controller> controller)
     freopen("error.txt", "a", stderr);
 
     fetchModel();
-
     initscr();
+    calculateTL();
+
     if (!has_colors()) {
         endwin();
         throw ViewBaseException("Your terminal does not support colors");
@@ -253,6 +284,7 @@ void viewCurses::reloadModel()
 void viewCurses::refreshView()
 {
     clear();
+    calculateTL();
     outBoard();
     refresh();
 }
