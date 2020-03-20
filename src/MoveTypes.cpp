@@ -5,7 +5,7 @@
 #include "MoveTypes.hpp"
 #include "FigureMoveValidator.hpp"
 
-bool SimpleMove::makeMove(Board& board) {
+bool SimpleMove::makeMove(Board& board) const {
     std::shared_ptr<FigureMoveValidator> figure = FigureMoveValidator::create(board,
                                                                               board[from_].figure_.value(),
                                                                               from_);
@@ -18,7 +18,7 @@ bool SimpleMove::makeMove(Board& board) {
     return true;
 }
 
-bool SwapMove::makeMove(Board& board) {
+bool SwapMove::makeMove(Board& board) const {
     if (board[from_].figure_->type_ != FigureType::INTELLECTOR ||
         !board[to_].figure_.has_value())
         return false;
@@ -35,7 +35,7 @@ bool SwapMove::makeMove(Board& board) {
     return true;
 }
 
-bool TransformMove::makeMove(Board& board) {
+bool TransformMove::makeMove(Board& board) const {
     if (board[from_].figure_->type_ != FigureType::PROGRESSOR ||
         !((to_.posH() == 0 && to_.posW() % 2 == 1) || to_.posH() == Board::cols_ - 1))
         return false;

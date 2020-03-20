@@ -21,14 +21,14 @@
 //}
 
 
-bool Game::makeMove(const std::shared_ptr<SimpleMove>& move) {
-    if (move == nullptr)
+bool Game::makeMove(const SimpleMove& move) {
+//    if (move == nullptr)
+//        return false;
+
+    if (!board_[move.from_].figure_.has_value() || board_[move.from_].figure_->colour_ != turn_)
         return false;
 
-    if (!board_[move->from_].figure_.has_value() || board_[move->from_].figure_->colour_ != turn_)
-        return false;
-
-    if (!move->makeMove(board_))
+    if (!move.makeMove(board_))
         return false;
 
     if (turn_ == PlayerColour::white_)

@@ -13,7 +13,7 @@ class Game {
 public:
     // TODO просить бота делать ходы
 
-    bool makeMove(const std::shared_ptr<SimpleMove>& move);
+    bool makeMove(const SimpleMove& move);
 
     [[nodiscard]] std::vector<std::shared_ptr<SimpleMove>> allFigureMoves(Position pos, PlayerColour turn) const;
 
