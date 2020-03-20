@@ -23,7 +23,6 @@ struct ViewModelCurses : public ViewModelBase {
         };
 
         ViewCellCurses(Cell, ViewCellCursesStatus = ViewCellCursesStatus::INACTIVE);
-        //        ViewCellCurses(Cell, std::vector<std::shared_ptr<SimpleMove>>);
 
         Cell cell;
         std::vector<std::shared_ptr<SimpleMove>> inMoves;

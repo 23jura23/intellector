@@ -167,26 +167,6 @@ void viewCurses::run()
         case 'q':
             newPos.x_ += 1;
             break;
-            //        case 'W':
-            //            newPos.y_ += 3;
-            //            break;
-            //        case 'S':
-            //            newPos.y_ -= 3;
-            //            break;
-            //        case 'A':
-            //            newPos.x_ += 1;
-            //            newPos.z_ -= 1;
-            //            break;
-            //        case 'E':
-            //            newPos.x_ -= 1;
-            //            newPos.z_ += 1;
-            //            break;
-            //        case 'D':
-            //            newPos.x_ -= 1;
-            //            break;
-            //        case 'Q':
-            //            newPos.x_ += 1;
-            //            break;
         case 27:
             reloadModel();
             (*board_)[currentPos].status = ViewModelCurses::ViewCellCurses::ViewCellCursesStatus::INACTIVE;
@@ -198,14 +178,9 @@ void viewCurses::run()
                 if ((*board_)[currentPos].cell.figure_.has_value() && (*board_)[currentPos].cell.figure_->colour_ == controller_->getCurrentPlayer()) {
                     cerr << "Cell " << currentPos.posW() << ' ' << currentPos.posH() << " was selected" << endl;
                     // Cell with figure was selected
-                    //                    if (currentSelectedCell)
-                    //                        throw ViewBaseException("Figure selected, but it was already selected");
+
                     currentPosStatus = CurrentPosStatus::SELECTED;
                     selectedPos = currentPos;
-                    //                    currentSelectedCell = &((*board_)[currentPos]);
-                    //                    cerr << "Selecting " << currentSelectedCell << endl;
-                    //                    cerr << (*board_)[currentPos].cell.pos_.posW() << endl;
-                    //                    cerr << currentSelectedCell->cell.pos_.posW() << endl;
                     controller_->selectCell<ViewCurses::viewCurses>((*board_)[selectedPos].cell);
                     fetchModel();
                     (*board_)[selectedPos].status = ViewModelCurses::ViewCellCurses::ViewCellCursesStatus::SELECTED;
@@ -217,13 +192,11 @@ void viewCurses::run()
                 break;
             case CurrentPosStatus::SELECTED:
                 cerr << "Trying to do smth with Cell " << currentPos.posW() << ' ' << currentPos.posH() << endl;
-                //                cerr << "currentSelectedCell " << currentSelectedCell << endl;
-                //                cerr << currentSelectedCell->cell.pos_.posW() << endl;
                 if (currentPos.posW() == selectedPos.posW() && currentPos.posH() == selectedPos.posH()) {
                     cerr << "Cell " << currentPos.posW() << ' ' << currentPos.posH() << " was unselected" << endl;
                     // Cell was unselected
+
                     reloadModel();
-                    //                    controller_->unSelectCell<ViewCurses::viewCurses>();
                     (*board_)[currentPos].status = ViewModelCurses::ViewCellCurses::ViewCellCursesStatus::INACTIVE;
                     currentPosStatus = CurrentPosStatus::UNSELECTED;
                 } else {
@@ -247,8 +220,6 @@ void viewCurses::run()
             }
             break;
         }
-//        newPos.makeSum();
-        cerr << c << endl;
         cerr << "newPos: " << newPos.posW() << ' ' << newPos.posH() << endl;
         cerr << "truepos" << newPos.x_ << ' ' << newPos.y_ << ' ' << newPos.z_ << endl;
         if (inBoard(newPos)) {
@@ -291,7 +262,6 @@ void viewCurses::refreshView()
 
 auto viewCurses::getTL(pair corner) -> pair
 {
-    //    cerr << corner.first << ' ' << corner.second << " => " << tlx + corner.first / 2 * delta_right_up.first + (corner.first % 2) * delta_right_down.first - (d - 1) << ' ' << tly + corner.second * delta_down.second + (corner.first % 2) * delta_right_down.second << endl;
     return { tlx + corner.first / 2 * delta_right_up.first + (corner.first % 2) * delta_right_down.first - (d - 1), tly + corner.second * delta_down.second + (corner.first % 2) * delta_right_down.second };
     //TODO rewrite more beautiful
 }
@@ -300,10 +270,8 @@ void viewCurses::outBoard()
 {
     for (size_t x = 0; x < board_->viewBoard.size(); ++x)
         for (size_t y = 0; y < board_->viewBoard[x].size(); ++y) {
-            //            size_t cor_x = board_->viewBoard.size() - 1 - x;
             size_t cor_x = x;
             size_t cor_y = board_->viewBoard[x].size() - 1 - y;
-            //            size_t cor_y = y;
             outCell(board_->viewBoard[cor_x][cor_y], getTL({ x, y }));
         }
 }

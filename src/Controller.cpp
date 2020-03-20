@@ -9,11 +9,6 @@ Controller::Controller(std::shared_ptr<Game> game)
 {
 }
 
-//Controller::init()
-//{
-//    
-//}
-
 void Controller::makeMove(const SimpleMove& move)
 {
     game_->makeMove(move);

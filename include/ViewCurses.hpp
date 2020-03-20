@@ -26,13 +26,6 @@ public:
     void refreshView();
 
 private:
-//    struct ModelContainer {
-//        ModelContainer(ViewModelCurses&);
-//        ViewModelCurses& board;
-//    };
-
-//    std::unique_ptr<ModelContainer> container_;
-
     std::shared_ptr<ViewModelCurses> board_;
     std::shared_ptr<Controller> controller_;
 
