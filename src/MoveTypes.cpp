@@ -30,8 +30,8 @@ bool SwapMove::makeMove(Board& board) const {
     if (!figure->checkMove(to_))
         return false;
 
-    board[to_].figure_.emplace(board[from_].figure_.value());
-    board[from_].figure_.emplace(figure->getFigure());
+    board[from_].figure_.emplace(board[to_].figure_.value());
+    board[to_].figure_.emplace(figure->getFigure());
     return true;
 }
 
