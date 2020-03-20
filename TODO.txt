@@ -1,8 +1,8 @@
 DONE Highlight current cell
 DONE Fix downside coordinate bug
 DONE operator[] ViewBoard
+DONE Do not select opponent cell
 
-Do not select opponent cell
 Center align
 Progressor transformation menu (TransformMove)
 SwapMove

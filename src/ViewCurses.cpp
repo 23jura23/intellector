@@ -157,7 +157,7 @@ void viewCurses::run()
         case 32:
             switch (currentPosStatus) {
             case CurrentPosStatus::UNSELECTED:
-                if ((*board_)[currentPos].cell.figure_.has_value()) {
+                if ((*board_)[currentPos].cell.figure_.has_value() && (*board_)[currentPos].cell.figure_->colour_ == controller_->getCurrentPlayer()) {
                     cerr << "Cell " << currentPos.posW() << ' ' << currentPos.posH() << " was selected" << endl;
                     // Cell with figure was selected
                     //                    if (currentSelectedCell)
