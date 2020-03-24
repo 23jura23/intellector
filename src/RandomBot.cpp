@@ -1,7 +1,6 @@
-
 #include <random>
 #include <cassert>
-#include "Bot.hpp"	
+#include "RandomBot.hpp"	
 
 const int seed = 1337;
 

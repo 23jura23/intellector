@@ -1,5 +1,9 @@
 #ifndef _BOTFACTORY_HPP
 #define _BOTFACTORY_HPP
-#include "Bot.hpp"
+#include <memory>
+#include "RandomBot.hpp"
+#include "GameSettings.hpp"
 
-#endif  //_BOTFACTORY_HPP
+std::shared_ptr<Bot> BotFactory(const GameSettings &settings);
+
+#endif //_BOTFACTORY_HPP
