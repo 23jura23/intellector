@@ -9,7 +9,7 @@ class Bot
 {
 public:
 	Bot() = default;
-	virtual std::shared_ptr<SimpleMove> makeMove(Game &b) = 0;
+	virtual std::shared_ptr<SimpleMove> makeMove(Game &g) = 0;
 };
 
 #endif // _BOT_HPP

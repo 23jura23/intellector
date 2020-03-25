@@ -7,7 +7,7 @@ class RandomBot : Bot
 {
 public:
 	RandomBot() = default;
-	std::shared_ptr<SimpleMove> makeMove(Game &b) override;
+	std::shared_ptr<SimpleMove> makeMove(Game &g) override;
 };
 
 #endif //_RANDOMBOT_HPP
