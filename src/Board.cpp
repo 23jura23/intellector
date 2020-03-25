@@ -5,7 +5,7 @@
 #include "Board.hpp"
 
 Board::Board() {
-    const std::vector<std::pair<Figure, Position>> arrangement_{// Надо именить на что-то нормальное
+    const std::vector<std::pair<Figure, Position>> arrangement_{
             {Figure{PlayerColour::white_, FigureType::DOMINATOR},   Position{0, 0}},
             {Figure{PlayerColour::white_, FigureType::LIBERATOR},   Position{1, 0}},
             {Figure{PlayerColour::white_, FigureType::AGGRESSOR},   Position{2, 0}},

@@ -98,9 +98,9 @@ bool DominatorMoveValidator::checkMove(Position to_pos) {
     if (diff.makeX() == diff.makeY())
         path_to_pos = Position(0, 0, sgn(diff.makeX().z_));
     if (diff.makeX() == diff.makeZ())
-        path_to_pos = Position(0, 0, sgn(diff.makeX().y_));
+        path_to_pos = Position(0, sgn(diff.makeX().y_), 0);
     if (diff.makeY() == diff.makeZ())
-        path_to_pos = Position(0, 0, sgn(diff.makeY().x_));
+        path_to_pos = Position(sgn(diff.makeY().x_), 0, 0);
 
     if (path_to_pos == Position(0, 0, 0))
         return false;

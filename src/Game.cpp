@@ -4,28 +4,7 @@
 
 #include "Game.hpp"
 
-<<<<<<< HEAD
-//bool Game::makeMove(std::unique_ptr<SwapMove> move) {
-//    Position from_pos = move->from_, to_pos = move->to_;
-//
-//    board_[to_pos] = Cell(Figure(turn_, FigureType::INTELLECTOR), to_pos);
-//    board_[from_pos] = Cell(Figure(turn_, FigureType::DEFENSSOR), from_pos);
-//    return true;
-//}
-//
-//bool Game::makeMove(std::unique_ptr<TransformMove> move) {
-//    Position from_pos = move->from_, to_pos = move->to_;
-//
-//    board_[to_pos] = Cell(Figure(turn_, move->figure_type_), to_pos);
-//    board_[from_pos] = Cell(from_pos);
-//    return true;
-//}
-
-
 bool Game::makeMove(const SimpleMove& move) {
-//    if (move == nullptr)
-//        return false;
-
     if (!board_[move.from_].figure_.has_value() || board_[move.from_].figure_->colour_ != turn_)
         return false;
 
@@ -48,3 +27,17 @@ std::vector<std::shared_ptr<SimpleMove>> Game::allFigureMoves(Position pos, Play
     return figure->allMoves();
 }
 
+std::optional<PlayerColour> Game::getWinner() const { // может можно получше
+    bool is_white = false;
+    bool is_black = false;
+    for (const auto& row : board_.data_)
+        for (const auto& cell : row)
+            if (cell.figure_.has_value() && cell.figure_->type_ == FigureType::INTELLECTOR)
+                cell.figure_->colour_ == PlayerColour::white_ ? is_white = true : is_black = true;
+    if (is_black && is_white)
+        return {};
+    if (is_black)
+        return PlayerColour::black_;
+    if (is_white)
+        return PlayerColour::white_;
+}

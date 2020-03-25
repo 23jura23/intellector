@@ -12,6 +12,8 @@
 class Game {
 public:
     // TODO просить бота делать ходы
+    // TODO конец игры?
+    // TODO сделать конструктор для ботов
 
     bool makeMove(const SimpleMove& move);
 
@@ -20,6 +22,8 @@ public:
     [[nodiscard]] const Board& getBoard() const { return board_; }
 
     [[nodiscard]] PlayerColour getColourCurrentPlayer() const { return turn_; }
+
+    [[nodiscard]] std::optional<PlayerColour> getWinner() const;
 
 private:
     Board board_;
