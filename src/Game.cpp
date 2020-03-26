@@ -40,4 +40,5 @@ std::optional<PlayerColour> Game::getWinner() const { // может можно �
         return PlayerColour::black_;
     if (is_white)
         return PlayerColour::white_;
+    return {};
 }
