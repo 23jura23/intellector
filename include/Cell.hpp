@@ -6,16 +6,14 @@
 #define _PROJECT_CELL_HPP
 
 #include <memory>
+
 #include "Figure.hpp"
 #include "Position.hpp"
 
-enum class CellColour {
-    WHITE,
-    BLACK
-};
+enum class CellColour { WHITE, BLACK };
 
 class Cell {
-public:
+   public:
     Cell(const Cell&) = default;
     Cell& operator=(const Cell&) = delete;
 
@@ -27,4 +25,4 @@ public:
     const Position pos_;
 };
 
-#endif //_PROJECT_CELL_HPP
+#endif  //_PROJECT_CELL_HPP

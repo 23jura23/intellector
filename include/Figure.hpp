@@ -7,26 +7,19 @@
 
 #include <optional>
 
-enum class FigureType {
-    INTELLECTOR,
-    DOMINATOR,
-    AGGRESSOR,
-    DEFENSSOR,
-    LIBERATOR,
-    PROGRESSOR
-};
+enum class FigureType { INTELLECTOR, DOMINATOR, AGGRESSOR, DEFENSSOR, LIBERATOR, PROGRESSOR };
 
-enum class PlayerColour {
-    black_, white_
-};
+enum class PlayerColour { black_, white_ };
 
 class Figure {
-public:
-     Figure(PlayerColour colour, FigureType type)
-             : colour_(colour), type_(type) {}
+   public:
+    Figure(PlayerColour colour, FigureType type)
+        : colour_(colour)
+        , type_(type) {
+    }
 
     const PlayerColour colour_;
     const FigureType type_;
 };
 
-#endif //MY_FOLDER_FIGURE_HPP
+#endif  //MY_FOLDER_FIGURE_HPP

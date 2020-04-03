@@ -13,13 +13,12 @@ struct ViewModelCurses : public ViewModelBase {
     ViewModelCurses(const Board&, PlayerColour);
     ViewModelCurses(const Board&, PlayerColour, MovesTable&);
 
-
     struct ViewCellCurses {
         enum class ViewCellCursesStatus {
-            ACTIVE, // possible move
-            INACTIVE, // nothing special
-            CURRENT, // current pointer position
-            SELECTED // selected to make move
+            ACTIVE,    // possible move
+            INACTIVE,  // nothing special
+            CURRENT,   // current pointer position
+            SELECTED   // selected to make move
         };
 
         ViewCellCurses(Cell, ViewCellCursesStatus = ViewCellCursesStatus::INACTIVE);
@@ -36,6 +35,6 @@ struct ViewModelCurses : public ViewModelBase {
     PlayerColour turn;
 };
 
-}
+}  // namespace ViewCurses
 
 #endif

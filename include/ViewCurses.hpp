@@ -2,6 +2,7 @@
 #define _VIEW_CURSES_HPP_
 
 #include <ncurses.h>
+
 #include <string>
 #include <vector>
 
@@ -15,17 +16,17 @@ namespace ViewCurses {
 class viewCurses : public viewBase {
     using pair = std::pair<size_t, size_t>;
 
-public:
+   public:
     viewCurses(std::shared_ptr<Controller>);
     ~viewCurses();
 
     void run();
-    void fetchModel(); 
+    void fetchModel();
     void reloadModel();
-    void updateModel(std::shared_ptr<ViewModelCurses>); 
+    void updateModel(std::shared_ptr<ViewModelCurses>);
     void refreshView();
 
-private:
+   private:
     std::shared_ptr<ViewModelCurses> board_;
     std::shared_ptr<Controller> controller_;
 
@@ -33,24 +34,21 @@ private:
     void outCell(const ViewModelCurses::ViewCellCurses&, pair);
 
     static constexpr size_t d = 7;
-    static constexpr pair delta_down = { 0, 2 * (d - 3) };
-    static constexpr pair delta_right_down = { (d + 3) + (d - 3), d - 3 };
-    static constexpr pair delta_right_up = { 2 * (d + 3) + 2 * (d - 3), 0 };
+    static constexpr pair delta_down = {0, 2 * (d - 3)};
+    static constexpr pair delta_right_down = {(d + 3) + (d - 3), d - 3};
+    static constexpr pair delta_right_up = {2 * (d + 3) + 2 * (d - 3), 0};
 
     int maxy, maxx;
-    size_t tlx, tly; //top left x y
+    size_t tlx, tly;  //top left x y
     void calculateTL();
 
-    pair getTL(pair); //get top left corner coordinates of cell
+    pair getTL(pair);  //get top left corner coordinates of cell
 
     Position currentPos;
-    enum class CurrentPosStatus {
-        UNSELECTED,
-        SELECTED
-    } currentPosStatus;
+    enum class CurrentPosStatus { UNSELECTED, SELECTED } currentPosStatus;
     Position selectedPos;
 };
 
-}
+}  // namespace ViewCurses
 
 #endif

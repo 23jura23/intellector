@@ -10,24 +10,29 @@
 #include "MoveTypes.hpp"
 
 class Game {
-public:
+   public:
     // TODO просить бота делать ходы
     // TODO конец игры?
     // TODO сделать конструктор для ботов
 
     bool makeMove(const SimpleMove& move);
 
-    [[nodiscard]] std::vector<std::shared_ptr<SimpleMove>> allFigureMoves(Position pos, PlayerColour turn) const;
+    [[nodiscard]] std::vector<std::shared_ptr<SimpleMove>> allFigureMoves(Position pos,
+                                                                          PlayerColour turn) const;
 
-    [[nodiscard]] const Board& getBoard() const { return board_; }
+    [[nodiscard]] const Board& getBoard() const {
+        return board_;
+    }
 
-    [[nodiscard]] PlayerColour getColourCurrentPlayer() const { return turn_; }
+    [[nodiscard]] PlayerColour getColourCurrentPlayer() const {
+        return turn_;
+    }
 
     [[nodiscard]] std::optional<PlayerColour> getWinner() const;
 
-private:
+   private:
     Board board_;
     PlayerColour turn_ = PlayerColour::white_;
 };
 
-#endif //_INTELLECTOR_CONTROLLER_HPP
+#endif  //_INTELLECTOR_CONTROLLER_HPP

@@ -6,12 +6,13 @@
 #define _PROJECT_BOARD_HPP
 
 #include <vector>
-#include "Figure.hpp"
+
 #include "Cell.hpp"
+#include "Figure.hpp"
 #include "Position.hpp"
 
 class Board {
-public:
+   public:
     Board();
     ~Board() = default;
     Board& operator=(const Board&) = default;
@@ -21,12 +22,12 @@ public:
     [[nodiscard]] Cell& operator[](Position pos);
 
     std::vector<std::vector<Cell>> data_;
-    static constexpr int cols_ = 9, rows_ = 7; // ширина и высота
+    static constexpr int cols_ = 9, rows_ = 7;  // ширина и высота
 };
 
 [[nodiscard]] inline bool inBoard(Position pos) {
-    return (pos.posH() >= 0 && pos.posW() >= 0 &&
-            pos.posH() < Board::rows_ - pos.posW() % 2 && pos.posW() < Board::cols_);
+    return (pos.posH() >= 0 && pos.posW() >= 0 && pos.posH() < Board::rows_ - pos.posW() % 2 &&
+            pos.posW() < Board::cols_);
 }
 
-#endif //_PROJECT_BOARD_HPP
+#endif  //_PROJECT_BOARD_HPP

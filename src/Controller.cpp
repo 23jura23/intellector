@@ -5,22 +5,18 @@
 #include "Controller.hpp"
 
 Controller::Controller(std::shared_ptr<Game> game)
-    : game_ { game }
-{
+    : game_{game} {
 }
 
-void Controller::makeMove(const SimpleMove& move)
-{
+void Controller::makeMove(const SimpleMove& move) {
     game_->makeMove(move);
 }
 
-void Controller::updateAll()
-{
-    //TODO auto choice which to update (only instanced!)
+void Controller::updateAll() {
+    // TODO auto choice which to update (only instanced!)
     updateViewModel<ViewCurses::viewCurses>();
 }
 
-PlayerColour Controller::getCurrentPlayer() const
-{
+PlayerColour Controller::getCurrentPlayer() const {
     return game_->getColourCurrentPlayer();
 }

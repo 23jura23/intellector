@@ -8,8 +8,11 @@
 #include <cmath>
 
 class Position {
-public:
-    Position() : x_{0}, y_{0}, z_{0} {};
+   public:
+    Position()
+        : x_{0}
+        , y_{0}
+        , z_{0} {};
     Position(const Position&) = default;
     Position& operator=(const Position&) = default;
     ~Position() = default;
@@ -21,7 +24,10 @@ public:
     };
 
     Position(int x, int y, int z)  // конструктор с 3 переменными
-            : x_{x}, y_{y}, z_{z} {}
+        : x_{x}
+        , y_{y}
+        , z_{z} {
+    }
 
     Position operator-(const Position& right) const {
         return Position(x_ - right.x_, y_ - right.y_, z_ - right.z_);
@@ -74,11 +80,15 @@ public:
         return !(*this == other);
     }
 
-    [[nodiscard]] int posW() const { return -x_ + z_; }
+    [[nodiscard]] int posW() const {
+        return -x_ + z_;
+    }
 
-    [[nodiscard]] int posH() const { return floor((x_ + 2 * y_ + z_) / 2.0); } // -3 1 2 -> -3 0 2
+    [[nodiscard]] int posH() const {
+        return floor((x_ + 2 * y_ + z_) / 2.0);
+    }  // -3 1 2 -> -3 0 2
 
     int x_, y_, z_;
 };
 
-#endif //_INTELLECTOR_POSITION_HPP
+#endif  //_INTELLECTOR_POSITION_HPP

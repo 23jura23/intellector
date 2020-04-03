@@ -4,22 +4,20 @@
 #include "Board.hpp"
 
 class ViewBaseException final : public std::exception {
-public:
+   public:
     explicit ViewBaseException(const char* val) noexcept;
 
     virtual const char* what() const noexcept;
 
-private:
+   private:
     const char* _msg;
 };
 
-class viewBase
-{
-    public:
-       
-        virtual ~viewBase() = default;
-    protected:
+class viewBase {
+   public:
+    virtual ~viewBase() = default;
 
+   protected:
 };
 
 #endif
