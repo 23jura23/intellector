@@ -7,6 +7,8 @@
 bool Game::makeMove(const SimpleMove& move) {
     if (!board_[move.from_].figure_.has_value() || board_[move.from_].figure_->colour_ != turn_)
         return false;
+    if (!inBoard(move.from_) || !inBoard(move.to_))
+        return false;
 
     if (!move.makeMove(board_)) return false;
 
@@ -22,7 +24,7 @@ std::vector<std::shared_ptr<SimpleMove>> Game::allFigureMoves(Position pos,
     if (!board_[pos].figure_.has_value() || board_[pos].figure_->colour_ != turn) return {};
 
     std::shared_ptr<FigureMoveValidator> figure =
-        FigureMoveValidator::create(board_, board_[pos].figure_.value(), pos);
+            FigureMoveValidator::create(board_, board_[pos].figure_.value(), pos);
     return figure->allMoves();
 }
 
