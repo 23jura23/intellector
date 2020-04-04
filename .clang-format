@@ -13,3 +13,7 @@ BinPackArguments: false
 IncludeBlocks: Regroup
 UseTab: Never
 ReflowComments: false
+ConstructorInitializerIndentWidth: 8
+IndentPPDirectives: BeforeHash
+AllowShortBlocksOnASingleLine: false
+AllowShortIfStatementsOnASingleLine: false
