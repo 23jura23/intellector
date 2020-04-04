@@ -41,7 +41,7 @@ bool TransformMove::makeMove(Board& board) const {
 
     if (!figure->checkMove(to_)) return false;
 
-    board[to_].figure_.emplace(board[from_].figure_.value());
-    board[from_].figure_.emplace(board[from_].figure_->colour_, figure_type_);
+    board[to_].figure_.emplace(board[from_].figure_->colour_, figure_type_);
+    board[from_].figure_ = std::nullopt;
     return true;
 }
