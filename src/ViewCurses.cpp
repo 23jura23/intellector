@@ -258,35 +258,40 @@ void viewCurses::run() {
                                             "unsuccessfully)"
                                          << endl;
                                     auto& inMoves = (*board_)[currentPos].inMoves;
+                                    cerr << "inMoves size: " << inMoves.size() << endl;
                                     constexpr auto transformMoveCheck =
-                                        [](std::vector<std::shared_ptr<SimpleMove>>& inMoves) {
-                                            bool result = 0;
-                                            if (!inMoves.size())
+                                        [](std::vector<std::shared_ptr<SimpleMove>>& inMoves_) {
+                                            bool result = 1;
+                                            if (!inMoves_.size())
                                                 result = 0;
-                                            for (size_t i = 0; i < inMoves.size(); ++i) {
+                                            for (size_t i = 0; i < inMoves_.size(); ++i) {
                                                 if (!dynamic_pointer_cast<TransformMove>(
-                                                        inMoves[i])) {
+                                                        inMoves_[i])) {
                                                     result = 0;
                                                     break;
                                                 }
                                             }
                                             return result;
                                         };
+                                    cerr << "Check result: " << transformMoveCheck(inMoves) << endl;
                                     if (transformMoveCheck(inMoves)) {
                                         cerr << "transform move" << endl;
-                                        updatePositions(newPos);
+//                                        updatePositions(newPos);
                                         vector<shared_ptr<Figure>> potentialFigures(inMoves.size());
-                                        for (size_t i = 0;i < inMoves.size();++i)
-                                            potentialFigures[i] = make_shared<Figure>(board_->turn, dynamic_pointer_cast<TransformMove>(inMoves[i])->figure_type_);
+                                        for (size_t i = 0; i < inMoves.size(); ++i)
+                                            potentialFigures[i] = make_shared<Figure>(
+                                                board_->turn,
+                                                dynamic_pointer_cast<TransformMove>(inMoves[i])
+                                                    ->figure_type_);
 
                                         bool running_transform = 1;
                                         int currentIndex = 0;
                                         while (running_transform) {
+                                            board_->viewBoard[currentPos.posW()][currentPos.posH()].cell.figure_.emplace(*potentialFigures[currentIndex]);
+                                            refreshView();
                                             char c_transform;
                                             c_transform = getch();
-                                            board_->viewBoard[currentPos.posW()][currentPos.posH()].cell.figure_.emplace(*potentialFigures[currentIndex]);
                                             //TODO(23jura23) make constexpr figures of needed types and assign them. of build them inplace, but you need anyway ask vsg how to do it
-                                            refreshView();
                                             switch (c_transform) {
                                                 case 'r':
                                                     currentIndex =
