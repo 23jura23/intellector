@@ -33,7 +33,7 @@ bool SwapMove::makeMove(Board& board) const {
 
 bool TransformMove::makeMove(Board& board) const {
     if (board[from_].figure_->type_ != FigureType::PROGRESSOR ||
-        !((to_.posH() == 0 && to_.posW() % 2 == 1) || to_.posH() == Board::cols_ - 1))
+        !((to_.posH() == 0 && to_.posW() % 2 == 0) || to_.posH() == Board::rows_ - 1))
         return false;
 
     std::shared_ptr<FigureMoveValidator> figure =
