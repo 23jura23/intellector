@@ -3,10 +3,10 @@ DONE Fix downside coordinate bug
 DONE operator[] ViewBoard
 DONE Do not select opponent cell
 DONE Esc for cancel Current selection
+DONE Progressor transformation menu (TransformMove)
+DONE Center align
+DONE SwapMove
 
-Center align
-Progressor transformation menu (TransformMove)
-SwapMove
 Ncurses main menu
 rewrite getTL more beautiful
 Auto choice which View to update (only instanced!) - ask sokolov?
@@ -23,7 +23,9 @@ Replace unique_ptr with shared_ptr (or vice versa)
 Swap in SwapMove instead of reconstructing them
 Base (for all project) exception class (IntellectorException?) but QT throws its own
 Add upside-down rotate of black figures as feature
-Select only available cells when selected a figure
+Move only in available cells when selected a figure
+Decomposition
+Some tiny TODOs in ViewCurses
 
 Git Hooks for autoformatting
 Debug and Release versions (with and without error.txt)

@@ -1,6 +1,7 @@
 #ifndef _VIEW_CURSES_HPP_
 #define _VIEW_CURSES_HPP_
 
+#include <memory.h>
 #include <ncurses.h>
 
 #include <string>
@@ -48,6 +49,13 @@ class viewCurses : public viewBase {
     Position currentPos;
     enum class CurrentPosStatus { UNSELECTED, SELECTED } currentPosStatus;
     Position selectedPos;
+
+    // just decomposition functions
+    void selectPosition();
+    void unselectPosition();
+    void makeUniStep();
+    void makeMultiStep();
+    void makeMultiStep_TransformMove(std::vector<std::shared_ptr<SimpleMove>>&);
 };
 
 }  // namespace ViewCurses

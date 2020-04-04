@@ -159,6 +159,109 @@ void viewCurses::updatePositions(Position& newPos) {
     }
 }
 
+void viewCurses::selectPosition() {
+    if ((*board_)[currentPos].cell.figure_.has_value() &&
+        (*board_)[currentPos].cell.figure_->colour_ == controller_->getCurrentPlayer()) {
+        cerr << "Cell " << currentPos.posW() << ' ' << currentPos.posH() << " was selected" << endl;
+        // Cell with figure was selected
+
+        currentPosStatus = CurrentPosStatus::SELECTED;
+        selectedPos = currentPos;
+        controller_->selectCell<ViewCurses::viewCurses>((*board_)[selectedPos].cell);
+        fetchModel();
+        (*board_)[selectedPos].status =
+            ViewModelCurses::ViewCellCurses::ViewCellCursesStatus::SELECTED;
+    } else {
+        cerr << "Empty cell " << currentPos.posW() << ' ' << currentPos.posH()
+             << " was tried to be selected (unsuccessfully)" << endl;
+        // Empty cell was selected
+    }
+}
+
+void viewCurses::unselectPosition() {
+    cerr << "Cell " << currentPos.posW() << ' ' << currentPos.posH() << " was unselected" << endl;
+    // Cell was unselected
+
+    reloadModel();
+    (*board_)[currentPos].status = ViewModelCurses::ViewCellCurses::ViewCellCursesStatus::INACTIVE;
+    currentPosStatus = CurrentPosStatus::UNSELECTED;
+}
+
+void viewCurses::makeUniStep() {
+    cerr << "UniStep " << currentPos.posW() << ' ' << currentPos.posH() << " was done" << endl;
+    controller_->makeMove(*(*board_)[currentPos].inMoves[0]);
+    reloadModel();
+    (*board_)[currentPos].status = ViewModelCurses::ViewCellCurses::ViewCellCursesStatus::INACTIVE;
+    currentPosStatus = CurrentPosStatus::UNSELECTED;
+}
+
+void viewCurses::makeMultiStep_TransformMove(std::vector<std::shared_ptr<SimpleMove>>& inMoves) {
+    cerr << "transform move" << endl;
+    // TODO(23jura23) unneeded?
+    //                                        updatePositions(newPos);
+    vector<shared_ptr<Figure>> potentialFigures(inMoves.size());
+    for (size_t i = 0; i < inMoves.size(); ++i)
+        potentialFigures[i] =
+            make_shared<Figure>(board_->turn,
+                                dynamic_pointer_cast<TransformMove>(inMoves[i])->figure_type_);
+
+    bool running_transform = 1;
+    int currentIndex = 0;
+    auto& currentCell = board_->viewBoard[currentPos.posW()][currentPos.posH()];
+    while (running_transform) {
+        currentCell.cell.figure_.emplace(*potentialFigures[currentIndex]);
+        refreshView();
+        char c_transform;
+        c_transform = getch();
+        //TODO(23jura23) blinking
+        switch (c_transform) {
+            case 'r':
+                currentIndex = (currentIndex + 1) % inMoves.size();
+                break;
+            case 'f':
+                currentIndex = (currentIndex - 1 + inMoves.size()) % inMoves.size();
+                break;
+            case 32:
+                // TODO(23jura23) function for local makeMove, lambda? function in run()?
+                controller_->makeMove(*(*board_)[currentPos].inMoves[currentIndex]);
+                reloadModel();
+                (*board_)[currentPos].status =
+                    ViewModelCurses::ViewCellCurses::ViewCellCursesStatus::INACTIVE;
+                currentPosStatus = CurrentPosStatus::UNSELECTED;
+                running_transform = 0;
+                break;
+        };
+    }
+}
+
+void viewCurses::makeMultiStep() {
+    cerr << "MultiStep " << currentPos.posW() << ' ' << currentPos.posH()
+         << " was triedto be done (yet "
+            "unsuccessfully)"
+         << endl;
+    auto& inMoves = (*board_)[currentPos].inMoves;
+    cerr << "inMoves size: " << inMoves.size() << endl;
+    //TODO(23jura23) first-match choice of succeeded MultiSteps' checks
+    constexpr auto transformMoveCheck = [](std::vector<std::shared_ptr<SimpleMove>>& inMoves_) {
+        bool result = 1;
+        if (!inMoves_.size())
+            result = 0;
+        for (size_t i = 0; i < inMoves_.size(); ++i) {
+            if (!dynamic_pointer_cast<TransformMove>(inMoves_[i])) {
+                result = 0;
+                break;
+            }
+        }
+        return result;
+    };
+    cerr << "Check result: " << transformMoveCheck(inMoves) << endl;
+    if (transformMoveCheck(inMoves)) {
+        makeMultiStep_TransformMove(inMoves);
+    }
+    // multiple steps to the same cell are
+    // possible
+}
+
 void viewCurses::run() {
     Position newPos = currentPos;
 
@@ -168,7 +271,6 @@ void viewCurses::run() {
         refreshView();
         winner = controller_->getWinner();
         if (winner.has_value()) {
-            // TODO(23jura23) menu or not: blinking figures to choose!
             // but you need to make universal interface of multistep, where unistep is just multistep with only one possible move. And blinking will be just the implementation for TransformMove
             // TODO(23jura23) think about appearing sliding menu in left or right part of screen
         }
@@ -205,120 +307,22 @@ void viewCurses::run() {
             case 32:
                 switch (currentPosStatus) {
                     case CurrentPosStatus::UNSELECTED:
-                        if ((*board_)[currentPos].cell.figure_.has_value() &&
-                            (*board_)[currentPos].cell.figure_->colour_ ==
-                                controller_->getCurrentPlayer()) {
-                            cerr << "Cell " << currentPos.posW() << ' ' << currentPos.posH()
-                                 << " was selected" << endl;
-                            // Cell with figure was selected
-
-                            currentPosStatus = CurrentPosStatus::SELECTED;
-                            selectedPos = currentPos;
-                            controller_->selectCell<ViewCurses::viewCurses>(
-                                (*board_)[selectedPos].cell);
-                            fetchModel();
-                            (*board_)[selectedPos].status =
-                                ViewModelCurses::ViewCellCurses::ViewCellCursesStatus::SELECTED;
-                        } else {
-                            cerr << "Empty cell " << currentPos.posW() << ' ' << currentPos.posH()
-                                 << " was tried to be selected (unsuccessfully)" << endl;
-                            // Empty cell was selected
-                        }
-
+                        selectPosition();
                         break;
                     case CurrentPosStatus::SELECTED:
                         cerr << "Trying to do smth with Cell " << currentPos.posW() << ' '
                              << currentPos.posH() << endl;
                         if (currentPos.posW() == selectedPos.posW() &&
                             currentPos.posH() == selectedPos.posH()) {
-                            cerr << "Cell " << currentPos.posW() << ' ' << currentPos.posH()
-                                 << " was unselected" << endl;
-                            // Cell was unselected
-
-                            reloadModel();
-                            (*board_)[currentPos].status =
-                                ViewModelCurses::ViewCellCurses::ViewCellCursesStatus::INACTIVE;
-                            currentPosStatus = CurrentPosStatus::UNSELECTED;
+                            unselectPosition();
                         } else {
                             if ((*board_)[currentPos].inMoves.size()) {
                                 cerr << "Step " << currentPos.posW() << ' ' << currentPos.posH()
                                      << " was tried to be done" << endl;
                                 if ((*board_)[currentPos].inMoves.size() == 1) {
-                                    cerr << "UniStep " << currentPos.posW() << ' '
-                                         << currentPos.posH() << " was done" << endl;
-                                    controller_->makeMove(*(*board_)[currentPos].inMoves[0]);
-                                    reloadModel();
-                                    (*board_)[currentPos].status = ViewModelCurses::ViewCellCurses::
-                                        ViewCellCursesStatus::INACTIVE;
-                                    currentPosStatus = CurrentPosStatus::UNSELECTED;
+                                    makeUniStep();
                                 } else {
-                                    cerr << "MultiStep " << currentPos.posW() << ' '
-                                         << currentPos.posH()
-                                         << " was triedto be done (yet "
-                                            "unsuccessfully)"
-                                         << endl;
-                                    auto& inMoves = (*board_)[currentPos].inMoves;
-                                    cerr << "inMoves size: " << inMoves.size() << endl;
-                                    constexpr auto transformMoveCheck =
-                                        [](std::vector<std::shared_ptr<SimpleMove>>& inMoves_) {
-                                            bool result = 1;
-                                            if (!inMoves_.size())
-                                                result = 0;
-                                            for (size_t i = 0; i < inMoves_.size(); ++i) {
-                                                if (!dynamic_pointer_cast<TransformMove>(
-                                                        inMoves_[i])) {
-                                                    result = 0;
-                                                    break;
-                                                }
-                                            }
-                                            return result;
-                                        };
-                                    cerr << "Check result: " << transformMoveCheck(inMoves) << endl;
-                                    if (transformMoveCheck(inMoves)) {
-                                        cerr << "transform move" << endl;
-//                                        updatePositions(newPos);
-                                        vector<shared_ptr<Figure>> potentialFigures(inMoves.size());
-                                        for (size_t i = 0; i < inMoves.size(); ++i)
-                                            potentialFigures[i] = make_shared<Figure>(
-                                                board_->turn,
-                                                dynamic_pointer_cast<TransformMove>(inMoves[i])
-                                                    ->figure_type_);
-
-                                        bool running_transform = 1;
-                                        int currentIndex = 0;
-                                        while (running_transform) {
-                                            board_->viewBoard[currentPos.posW()][currentPos.posH()].cell.figure_.emplace(*potentialFigures[currentIndex]);
-                                            refreshView();
-                                            char c_transform;
-                                            c_transform = getch();
-                                            //TODO(23jura23) make constexpr figures of needed types and assign them. of build them inplace, but you need anyway ask vsg how to do it
-                                            switch (c_transform) {
-                                                case 'r':
-                                                    currentIndex =
-                                                        (currentIndex + 1) % inMoves.size();
-                                                    break;
-                                                case 'f':
-                                                    currentIndex =
-                                                        (currentIndex - 1 + inMoves.size()) %
-                                                        inMoves.size();
-                                                    break;
-                                                case 32:
-                                                    // TODO(23jura23) function for local makeMove, lambda? function in run()?
-                                                    controller_->makeMove(
-                                                        *(*board_)[currentPos]
-                                                             .inMoves[currentIndex]);
-                                                    reloadModel();
-                                                    (*board_)[currentPos].status =
-                                                        ViewModelCurses::ViewCellCurses::
-                                                            ViewCellCursesStatus::INACTIVE;
-                                                    currentPosStatus = CurrentPosStatus::UNSELECTED;
-                                                    running_transform = 0;
-                                                    break;
-                                            };
-                                        }
-                                    }
-                                    // multiple steps to the same cell are
-                                    // possible
+                                    makeMultiStep();
                                 }
                             } else {
                                 // Impossible move
