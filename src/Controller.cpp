@@ -12,6 +12,10 @@ void Controller::makeMove(const SimpleMove& move) {
     game_->makeMove(move);
 }
 
+std::optional<PlayerColour> Controller::getWinner() {
+    return game_->getWinner();
+}
+
 void Controller::updateAll() {
     // TODO auto choice which to update (only instanced!)
     updateViewModel<ViewCurses::viewCurses>();

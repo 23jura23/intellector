@@ -23,6 +23,7 @@ class viewCurses : public viewBase {
     void run();
     void fetchModel();
     void reloadModel();
+    void updatePositions(Position&);
     void updateModel(std::shared_ptr<ViewModelCurses>);
     void refreshView();
 

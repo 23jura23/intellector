@@ -13,33 +13,33 @@
 using namespace std;
 
 #ifdef BW
-#define COLOR_WHITE_CELL    255
-#define COLOR_BLACK_CELL    237
-#define COLOR_WHITE_FIGURE  187
-#define COLOR_BLACK_FIGURE  137
-#define COLOR_WHITE_ACTIVE  82
-#define COLOR_BLACK_ACTIVE  70
-#define COLOR_WHITE_CURRENT 123
-#define COLOR_BLACK_CURRENT 111
-#define COLOR_WHITE_LETTER  196
-#define COLOR_BLACK_LETTER  226
-#define COLOR_FORE_BORDER   238
-#define COLOR_BACK_BORDER   241
+    #define COLOR_WHITE_CELL    255
+    #define COLOR_BLACK_CELL    237
+    #define COLOR_WHITE_FIGURE  187
+    #define COLOR_BLACK_FIGURE  137
+    #define COLOR_WHITE_ACTIVE  82
+    #define COLOR_BLACK_ACTIVE  70
+    #define COLOR_WHITE_CURRENT 123
+    #define COLOR_BLACK_CURRENT 111
+    #define COLOR_WHITE_LETTER  196
+    #define COLOR_BLACK_LETTER  226
+    #define COLOR_FORE_BORDER   238
+    #define COLOR_BACK_BORDER   241
 #else
-#define COLOR_WHITE_CELL     187
-#define COLOR_BLACK_CELL     137
-#define COLOR_WHITE_FIGURE   231
-#define COLOR_BLACK_FIGURE   0
-#define COLOR_WHITE_ACTIVE   82
-#define COLOR_BLACK_ACTIVE   70
-#define COLOR_WHITE_CURRENT  123
-#define COLOR_BLACK_CURRENT  111
-#define COLOR_WHITE_SELECTED 56
-#define COLOR_BLACK_SELECTED 55
-#define COLOR_WHITE_LETTER   196
-#define COLOR_BLACK_LETTER   226
-#define COLOR_FORE_BORDER    238
-#define COLOR_BACK_BORDER    241
+    #define COLOR_WHITE_CELL     187
+    #define COLOR_BLACK_CELL     137
+    #define COLOR_WHITE_FIGURE   231
+    #define COLOR_BLACK_FIGURE   0
+    #define COLOR_WHITE_ACTIVE   82
+    #define COLOR_BLACK_ACTIVE   70
+    #define COLOR_WHITE_CURRENT  123
+    #define COLOR_BLACK_CURRENT  111
+    #define COLOR_WHITE_SELECTED 56
+    #define COLOR_BLACK_SELECTED 55
+    #define COLOR_WHITE_LETTER   196
+    #define COLOR_BLACK_LETTER   226
+    #define COLOR_FORE_BORDER    238
+    #define COLOR_BACK_BORDER    241
 #endif
 
 #define WOW 100  // White On White
@@ -78,7 +78,8 @@ void viewCurses::calculateTL() {
             leny = max(leny, getTL({i, j}).second);
         }
         size_t lenx = 0;
-        if (board_->cols <= 0) throw ViewBaseException("Width of board must be positive");
+        if (board_->cols <= 0)
+            throw ViewBaseException("Width of board must be positive");
         for (size_t j = 0; j < board_->viewBoard[board_->cols - 1].size(); ++j) {
             lenx = max(lenx, getTL({board_->cols, j}).first);
         }
@@ -91,11 +92,11 @@ void viewCurses::calculateTL() {
 }
 
 viewCurses::viewCurses(std::shared_ptr<Controller> controller)
-    : controller_{controller}
-    , tlx{0}
-    , tly{0}
-    , currentPos{-2, 3, 2}
-    , currentPosStatus{CurrentPosStatus::UNSELECTED} {
+        : controller_{controller}
+        , tlx{0}
+        , tly{0}
+        , currentPos{-2, 3, 2}
+        , currentPosStatus{CurrentPosStatus::UNSELECTED} {
     freopen("error.txt", "a", stderr);
 
     fetchModel();
@@ -138,14 +139,45 @@ viewCurses::~viewCurses() {
     endwin();
 }
 
+void viewCurses::updatePositions(Position& newPos) {
+    if (inBoard(newPos)) {
+        if (currentPosStatus == CurrentPosStatus::SELECTED &&
+            currentPos.posW() == selectedPos.posW() && currentPos.posH() == selectedPos.posH())
+            (*board_)[currentPos].status =
+                ViewModelCurses::ViewCellCurses::ViewCellCursesStatus::SELECTED;
+        else if ((*board_)[currentPos].inMoves.size())
+            (*board_)[currentPos].status =
+                ViewModelCurses::ViewCellCurses::ViewCellCursesStatus::ACTIVE;
+        else
+            (*board_)[currentPos].status =
+                ViewModelCurses::ViewCellCurses::ViewCellCursesStatus::INACTIVE;
+        currentPos = newPos;
+        if (!(currentPosStatus == CurrentPosStatus::SELECTED &&
+              currentPos.posW() == selectedPos.posW() && currentPos.posH() == selectedPos.posH()))
+            (*board_)[currentPos].status =
+                ViewModelCurses::ViewCellCurses::ViewCellCursesStatus::CURRENT;
+    }
+}
+
 void viewCurses::run() {
-    while (1) {
+    Position newPos = currentPos;
+
+    std::optional<PlayerColour> winner;
+    bool running = 1;
+    while (running) {
         refreshView();
+        winner = controller_->getWinner();
+        if (winner.has_value()) {
+            // TODO(23jura23) menu or not: blinking figures to choose!
+            // but you need to make universal interface of multistep, where unistep is just multistep with only one possible move. And blinking will be just the implementation for TransformMove
+            // TODO(23jura23) think about appearing sliding menu in left or right part of screen
+        }
         chtype c = getch();
 
-        Position newPos = currentPos;
-
         switch (c) {
+            case 'x':
+                running = 0;
+                break;
             case 'w':
                 newPos.y_ += 1;
                 break;
@@ -225,6 +257,61 @@ void viewCurses::run() {
                                          << " was triedto be done (yet "
                                             "unsuccessfully)"
                                          << endl;
+                                    auto& inMoves = (*board_)[currentPos].inMoves;
+                                    constexpr auto transformMoveCheck =
+                                        [](std::vector<std::shared_ptr<SimpleMove>>& inMoves) {
+                                            bool result = 0;
+                                            if (!inMoves.size())
+                                                result = 0;
+                                            for (size_t i = 0; i < inMoves.size(); ++i) {
+                                                if (!dynamic_pointer_cast<TransformMove>(
+                                                        inMoves[i])) {
+                                                    result = 0;
+                                                    break;
+                                                }
+                                            }
+                                            return result;
+                                        };
+                                    if (transformMoveCheck(inMoves)) {
+                                        cerr << "transform move" << endl;
+                                        updatePositions(newPos);
+                                        vector<shared_ptr<Figure>> potentialFigures(inMoves.size());
+                                        for (size_t i = 0;i < inMoves.size();++i)
+                                            potentialFigures[i] = make_shared<Figure>(board_->turn, dynamic_pointer_cast<TransformMove>(inMoves[i])->figure_type_);
+
+                                        bool running_transform = 1;
+                                        int currentIndex = 0;
+                                        while (running_transform) {
+                                            char c_transform;
+                                            c_transform = getch();
+                                            board_->viewBoard[currentPos.posW()][currentPos.posH()].cell.figure_.emplace(*potentialFigures[currentIndex]);
+                                            //TODO(23jura23) make constexpr figures of needed types and assign them. of build them inplace, but you need anyway ask vsg how to do it
+                                            refreshView();
+                                            switch (c_transform) {
+                                                case 'r':
+                                                    currentIndex =
+                                                        (currentIndex + 1) % inMoves.size();
+                                                    break;
+                                                case 'f':
+                                                    currentIndex =
+                                                        (currentIndex - 1 + inMoves.size()) %
+                                                        inMoves.size();
+                                                    break;
+                                                case 32:
+                                                    // TODO(23jura23) function for local makeMove, lambda? function in run()?
+                                                    controller_->makeMove(
+                                                        *(*board_)[currentPos]
+                                                             .inMoves[currentIndex]);
+                                                    reloadModel();
+                                                    (*board_)[currentPos].status =
+                                                        ViewModelCurses::ViewCellCurses::
+                                                            ViewCellCursesStatus::INACTIVE;
+                                                    currentPosStatus = CurrentPosStatus::UNSELECTED;
+                                                    running_transform = 0;
+                                                    break;
+                                            };
+                                        }
+                                    }
                                     // multiple steps to the same cell are
                                     // possible
                                 }
@@ -238,24 +325,7 @@ void viewCurses::run() {
         }
         cerr << "newPos: " << newPos.posW() << ' ' << newPos.posH() << endl;
         cerr << "truepos" << newPos.x_ << ' ' << newPos.y_ << ' ' << newPos.z_ << endl;
-        if (inBoard(newPos)) {
-            if (currentPosStatus == CurrentPosStatus::SELECTED &&
-                currentPos.posW() == selectedPos.posW() && currentPos.posH() == selectedPos.posH())
-                (*board_)[currentPos].status =
-                    ViewModelCurses::ViewCellCurses::ViewCellCursesStatus::SELECTED;
-            else if ((*board_)[currentPos].inMoves.size())
-                (*board_)[currentPos].status =
-                    ViewModelCurses::ViewCellCurses::ViewCellCursesStatus::ACTIVE;
-            else
-                (*board_)[currentPos].status =
-                    ViewModelCurses::ViewCellCurses::ViewCellCursesStatus::INACTIVE;
-            currentPos = newPos;
-            if (!(currentPosStatus == CurrentPosStatus::SELECTED &&
-                  currentPos.posW() == selectedPos.posW() &&
-                  currentPos.posH() == selectedPos.posH()))
-                (*board_)[currentPos].status =
-                    ViewModelCurses::ViewCellCurses::ViewCellCursesStatus::CURRENT;
-        }
+        updatePositions(newPos);
     }
 }
 
