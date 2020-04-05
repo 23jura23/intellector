@@ -27,7 +27,7 @@ std::pair<int, std::shared_ptr<SimpleMove>> AlphaBetaBot::make_virtual_move(Game
 			if(alpha > beta)
 				break;
 			Game copy(game);
-			copy.makeMove(move.get());
+//			copy.makeMove(move.get());
 			auto mvm = make_virtual_move(game, colour, !max, alpha, beta, depth - 1);
 			res = std::max(res, mvm);
 			alpha = std::max(alpha, mvm.first);
@@ -42,7 +42,7 @@ std::pair<int, std::shared_ptr<SimpleMove>> AlphaBetaBot::make_virtual_move(Game
 			if(alpha > beta)
 				break;
 			Game copy(game);
-			copy.makeMove(move);
+//			copy.makeMove(move);
 			auto mvm = make_virtual_move(game, colour, !max, alpha, beta, depth - 1);
 			res = std::min(res, mvm);
 			beta = std::min(beta, mvm.first);
@@ -54,7 +54,7 @@ std::pair<int, std::shared_ptr<SimpleMove>> AlphaBetaBot::make_virtual_move(Game
 
 std::shared_ptr<SimpleMove> makeMove(Game &game)
 {
-	Board gamecopy(game);
+//	Board gamecopy(game);
 	auto colour = game.getColourCurrentPlayer();
-	return make_virtual_move(gamecopy, colour, true, -1000, 1000, 6).second;
+//	return make_virtual_move(gamecopy, colour, true, -1000, 1000, 6).second;
 }
