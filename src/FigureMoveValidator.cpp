@@ -316,12 +316,10 @@ std::vector<std::shared_ptr<SimpleMove>> ProgressorMoveValidator::allMoves() {
 
         if ((pos.posH() == 0 && pos.posW() % 2 == 0) || pos.posH() == Board::rows_ - 1) {
             answer.push_back(std::make_shared<TransformMove>(pos_, pos, FigureType::DEFENSSOR));
-            answer.push_back(std::make_shared<TransformMove>(pos_, pos, FigureType::PROGRESSOR));
             answer.push_back(std::make_shared<TransformMove>(pos_, pos, FigureType::LIBERATOR));
             answer.push_back(std::make_shared<TransformMove>(pos_, pos, FigureType::AGGRESSOR));
             answer.push_back(std::make_shared<TransformMove>(pos_, pos, FigureType::DOMINATOR));
-        }
-        else
+        } else
             answer.push_back(std::make_shared<SimpleMove>(pos_, pos));
     }
 
