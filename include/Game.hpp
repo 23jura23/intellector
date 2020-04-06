@@ -6,6 +6,7 @@
 #define _INTELLECTOR_CONTROLLER_HPP
 
 #include "Board.hpp"
+#include "BotFactory.hpp"
 #include "FigureMoveValidator.hpp"
 #include "MoveTypes.hpp"
 
@@ -14,6 +15,17 @@ class Game {
     // TODO просить бота делать ходы
     // TODO конец игры?
     // TODO сделать конструктор для ботов
+
+    Game();
+
+    Game(const GameSettings& settings) {
+        if (settings.first_player())
+            white_bot_ = BotFactory(settings);
+        if (settings.second_player())
+            black_bot_ = BotFactory(settings);
+    }
+
+    void setGameSettings(const GameSettings& settings);
 
     bool makeMove(const SimpleMove& move);
 
@@ -32,6 +44,7 @@ class Game {
    private:
     Board board_;
     PlayerColour turn_ = PlayerColour::white_;
+    std::shared_ptr<Bot> white_bot_ = nullptr, black_bot_ = nullptr;
 };
 
 #endif  //_INTELLECTOR_CONTROLLER_HPP

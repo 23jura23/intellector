@@ -1,6 +1,9 @@
-#include <random>
+#include "RandomBot.hpp"
+
 #include <cassert>
-#include "RandomBot.hpp"	
+#include <random>
+
+#include "Game.hpp"
 
 const int seed = 1337;
 
@@ -8,7 +11,6 @@ std::mt19937 rnd(seed);
 
 std::shared_ptr<SimpleMove> RandomBot::makeMove(Game &game) {
     Board board = Board(game.getBoard());
-    const PlayerColour colour = game.getColourCurrentPlayer();
 
     std::vector<std::shared_ptr<SimpleMove>> all_moves;
 

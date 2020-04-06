@@ -4,13 +4,15 @@
 #include <functional>
 #include <map>
 #include <memory>
-#include "Game.hpp"
 
-class Bot
-{
-public:
-	Bot() = default;
-	virtual std::shared_ptr<SimpleMove> makeMove(Game &g) = 0;
+#include "MoveTypes.hpp"
+
+class Game;
+
+class Bot {
+   public:
+    Bot() = default;
+    virtual std::shared_ptr<SimpleMove> makeMove(Game &g) = 0;
 };
 
-#endif // _BOT_HPP
+#endif  // _BOT_HPP
