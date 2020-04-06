@@ -34,30 +34,25 @@ std::pair<int, std::shared_ptr<SimpleMove>> AlphaBetaBot::make_virtual_move(Game
             auto mvm = make_virtual_move(game, colour, !max, alpha, beta, depth - 1);
             res = std::max(res, mvm);
             alpha = std::max(alpha, mvm.first);
-		}
-		return res;
-	}
-	else
-	{
-		std::pair<int, std::shared_ptr<SimpleMove>> res = {1000, nullptr};
-		for(auto &move: all_moves)
-		{
-			if(alpha > beta)
-				break;
-			Game copy(game);
-//			copy.makeMove(move);
-			auto mvm = make_virtual_move(game, colour, !max, alpha, beta, depth - 1);
-			res = std::min(res, mvm);
-			beta = std::min(beta, mvm.first);
-		}
-		return res;
-	}
-
+        }
+        return res;
+    } else {
+        std::pair<int, std::shared_ptr<SimpleMove>> res = {1000, nullptr};
+        for (auto &move : all_moves) {
+            if (alpha > beta)
+                break;
+            Game copy(game);
+            //			copy.makeMove(move);
+            auto mvm = make_virtual_move(game, colour, !max, alpha, beta, depth - 1);
+            res = std::min(res, mvm);
+            beta = std::min(beta, mvm.first);
+        }
+        return res;
+    }
 }
 
-std::shared_ptr<SimpleMove> makeMove(Game &game)
-{
-//	Board gamecopy(game);
-	auto colour = game.getColourCurrentPlayer();
-//	return make_virtual_move(gamecopy, colour, true, -1000, 1000, 6).second;
+std::shared_ptr<SimpleMove> makeMove(Game &game) {
+    //	Board gamecopy(game);
+    auto colour = game.getColourCurrentPlayer();
+    //	return make_virtual_move(gamecopy, colour, true, -1000, 1000, 6).second;
 }

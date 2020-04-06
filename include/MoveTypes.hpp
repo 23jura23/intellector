@@ -12,8 +12,8 @@
 class SimpleMove {
    public:
     SimpleMove(const Position& from_pos, const Position& to_pos)
-        : from_(from_pos)
-        , to_(to_pos) {
+            : from_(from_pos)
+            , to_(to_pos) {
     }
 
     virtual bool makeMove(Board& board) const;
@@ -24,7 +24,7 @@ class SimpleMove {
 class SwapMove : public SimpleMove {
    public:
     SwapMove(const Position& from_pos, const Position& to_pos)
-        : SimpleMove(from_pos, to_pos) {
+            : SimpleMove(from_pos, to_pos) {
     }
 
     bool makeMove(Board& board) const override;
@@ -33,8 +33,8 @@ class SwapMove : public SimpleMove {
 class TransformMove : public SimpleMove {
    public:
     TransformMove(const Position& from_pos, const Position& to_pos, const FigureType figure_type)
-        : SimpleMove(from_pos, to_pos)
-        , figure_type_(figure_type) {
+            : SimpleMove(from_pos, to_pos)
+            , figure_type_(figure_type) {
     }
 
     bool makeMove(Board& board) const override;

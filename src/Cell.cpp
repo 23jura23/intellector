@@ -13,12 +13,12 @@ CellColour getColour(Position pos) {
 }
 
 Cell::Cell(Position pos, Figure figure)
-    : Cell(pos) {
+        : Cell(pos) {
     figure_.emplace(figure);
 }
 
 Cell::Cell(Position pos)
-    : figure_()
-    , colour_(getColour(pos))
-    , pos_(pos) {
+        : figure_()
+        , colour_(getColour(pos))
+        , pos_(pos) {
 }

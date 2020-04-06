@@ -5,7 +5,7 @@
 #include "Controller.hpp"
 
 Controller::Controller(std::shared_ptr<Game> game)
-    : game_{game} {
+        : game_{game} {
 }
 
 void Controller::makeMove(const SimpleMove& move) {

@@ -48,7 +48,8 @@ Board::Board() {
 }
 
 Board::Board(const Board& other) {
-    if (&other == this) return;
+    if (&other == this)
+        return;
 
     data_.resize(cols_);
     for (int w = 0; w < cols_; ++w) {

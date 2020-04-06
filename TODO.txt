@@ -6,6 +6,7 @@ DONE Esc for cancel Current selection
 DONE Progressor transformation menu (TransformMove)
 DONE Center align
 DONE SwapMove
+DONE FigureMoveValidator recieve Board by non-const reference - make it const
 
 Ncurses main menu
 rewrite getTL more beautiful
@@ -15,12 +16,11 @@ Validate Moves in Game
 constexpr instead of MACROs for colors. Make constexpr color_scheme class
 colors or colours?
 Controller passes turn to Game, receiving it from Game
-FigureMoveValidator recieve Board by non-const reference - make it const
 Rename to avoid shadowing in ViewCurses constructors (warning)
 size_t >= 0 (warning)
 Remove trash comments
 Replace unique_ptr with shared_ptr (or vice versa)
-Swap in SwapMove instead of reconstructing them
+? Swap in SwapMove instead of reconstructing them
 Base (for all project) exception class (IntellectorException?) but QT throws its own
 Add upside-down rotate of black figures as feature
 Move only in available cells when selected a figure

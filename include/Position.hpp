@@ -10,9 +10,9 @@
 class Position {
    public:
     Position()
-        : x_{0}
-        , y_{0}
-        , z_{0} {};
+            : x_{0}
+            , y_{0}
+            , z_{0} {};
     Position(const Position&) = default;
     Position& operator=(const Position&) = default;
     ~Position() = default;
@@ -24,9 +24,9 @@ class Position {
     };
 
     Position(int x, int y, int z)  // конструктор с 3 переменными
-        : x_{x}
-        , y_{y}
-        , z_{z} {
+            : x_{x}
+            , y_{y}
+            , z_{z} {
     }
 
     Position operator-(const Position& right) const {

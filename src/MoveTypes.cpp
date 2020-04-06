@@ -10,10 +10,11 @@ bool SimpleMove::makeMove(Board& board) const {
     std::shared_ptr<FigureMoveValidator> figure =
         FigureMoveValidator::create(board, board[from_].figure_.value(), from_);
 
-    if (!figure->checkMove(to_)) return false;
+    if (!figure->checkMove(to_))
+        return false;
 
     board[to_].figure_.emplace(board[from_].figure_.value());
-    board[from_].figure_ = std::nullopt;
+    board[from_].figure_.reset();
     return true;
 }
 
@@ -24,7 +25,8 @@ bool SwapMove::makeMove(Board& board) const {
     std::shared_ptr<FigureMoveValidator> figure =
         FigureMoveValidator::create(board, board[from_].figure_.value(), from_);
 
-    if (!figure->checkMove(to_)) return false;
+    if (!figure->checkMove(to_))
+        return false;
 
     board[from_].figure_.emplace(board[to_].figure_.value());
     board[to_].figure_.emplace(figure->getFigure());
@@ -39,9 +41,10 @@ bool TransformMove::makeMove(Board& board) const {
     std::shared_ptr<FigureMoveValidator> figure =
         FigureMoveValidator::create(board, board[from_].figure_.value(), from_);
 
-    if (!figure->checkMove(to_)) return false;
+    if (!figure->checkMove(to_))
+        return false;
 
     board[to_].figure_.emplace(board[from_].figure_->colour_, figure_type_);
-    board[from_].figure_ = std::nullopt;
+    board[from_].figure_.reset();
     return true;
 }

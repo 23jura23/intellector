@@ -14,8 +14,8 @@ enum class PlayerColour { black_, white_ };
 class Figure {
    public:
     Figure(PlayerColour colour, FigureType type)
-        : colour_(colour)
-        , type_(type) {
+            : colour_(colour)
+            , type_(type) {
     }
 
     const PlayerColour colour_;
