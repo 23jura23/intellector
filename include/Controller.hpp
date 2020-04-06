@@ -71,7 +71,7 @@ inline void Controller::selectCell(const Cell& selected) {
 
 template <>
 inline void Controller::selectCell<ViewCurses::viewCurses>(const Cell& selected) {
-    auto steps = game_->allFigureMoves(selected.pos_, game_->getColourCurrentPlayer());
+    auto steps = game_->allFigureMoves(selected.pos_);
     // TODO something strange: why game_ is getting its own field through its own getter?
     getViewModel<ViewCurses::viewCurses>() =
         std::make_shared<ViewCurses::ViewModelCurses>(game_->getBoard(),

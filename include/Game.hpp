@@ -17,8 +17,7 @@ class Game {
 
     bool makeMove(const SimpleMove& move);
 
-    [[nodiscard]] std::vector<std::shared_ptr<SimpleMove>> allFigureMoves(Position pos,
-                                                                          PlayerColour turn) const;
+    [[nodiscard]] std::vector<std::shared_ptr<SimpleMove>> allFigureMoves(Position pos) const;
 
     [[nodiscard]] const Board& getBoard() const {
         return board_;
