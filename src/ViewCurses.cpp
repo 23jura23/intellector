@@ -265,12 +265,12 @@ void viewCurses::makeMultiStep() {
 void viewCurses::run() {
     Position newPos = currentPos;
 
-    std::optional<PlayerColour> winner;
+    GameStatus winner;
     bool running = 1;
     while (running) {
         refreshView();
-        winner = controller_->getWinner();
-        if (winner.has_value()) {
+        winner = controller_->getGameStatus();
+        if (winner != GameStatus::game_running_) {
             // but you need to make universal interface of multistep, where unistep is just multistep with only one possible move. And blinking will be just the implementation for TransformMove
             // TODO(23jura23) think about appearing sliding menu in left or right part of screen
         }

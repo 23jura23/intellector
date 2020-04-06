@@ -12,8 +12,8 @@ void Controller::makeMove(const SimpleMove& move) {
     game_->makeMove(move);
 }
 
-std::optional<PlayerColour> Controller::getWinner() {
-    return game_->getWinner();
+GameStatus Controller::getGameStatus() {
+    return game_->getGameStatus();
 }
 
 void Controller::updateAll() {

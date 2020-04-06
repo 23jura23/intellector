@@ -21,7 +21,7 @@ class Controller {
     //    inline void unSelectCell();
 
     void makeMove(const SimpleMove& move);  // really void?
-    std::optional<PlayerColour> getWinner();
+    GameStatus getGameStatus();
 
     template <typename ViewType>
     inline void updateViewModel();

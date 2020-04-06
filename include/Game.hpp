@@ -10,13 +10,15 @@
 #include "FigureMoveValidator.hpp"
 #include "MoveTypes.hpp"
 
+enum class GameStatus { game_running_, game_over_white_win_, game_over_black_win_, game_over_ };
+
 class Game {
    public:
     // TODO конец игры?
 
     Game();
 
-    Game(const GameSettings& settings) {
+    explicit Game(const GameSettings& settings) {
         if (settings.first_player())
             white_bot_ = BotFactory(settings);
         if (settings.second_player())
@@ -37,7 +39,7 @@ class Game {
         return turn_;
     }
 
-    [[nodiscard]] std::optional<PlayerColour> getWinner() const;
+    [[nodiscard]] GameStatus getGameStatus() const;
 
    private:
     Board board_;
