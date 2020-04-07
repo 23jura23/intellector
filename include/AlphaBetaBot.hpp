@@ -1,9 +1,15 @@
+
+#ifndef _ALPHABETABOT_HPP
+#define _ALPHABETABOT_HPP
+
 #include "Bot.hpp"
+// #pragma once
+
 
 class AlphaBetaBot : Bot
 {
 public:
-	AlphaBetaBot() = default;
+	AlphaBetaBot() = delete;
 	AlphaBetaBot(int depth, std::function<int(const Board& board, const PlayerColour colour)> evaluation_function) : 
 				 depth_(depth),  
 				 evaluation_function_(evaluation_function) {};
@@ -28,7 +34,7 @@ namespace evaluate
 		{FigureType::PROGRESSOR ,   3}   //пешка
 	};
 
-	int scoreSumFigurePoints(const Board& board, const PlayerColour colour)
+	static int scoreSumFigurePoints(const Board& board, const PlayerColour colour)
 	{
 		int sum = 0;
 		for(auto &row : board.data_)
@@ -45,3 +51,5 @@ namespace evaluate
 		return sum;
 	}	
 };
+
+#endif  //_ALPHABETABOT_HPP

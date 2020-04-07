@@ -2,6 +2,8 @@
 
 #include "Game.hpp"
 
+#include <cassert>
+
 std::pair<int, std::shared_ptr<SimpleMove>> AlphaBetaBot::make_virtual_move(const Game &game,
                                                                             PlayerColour colour,
                                                                             bool max,
@@ -21,18 +23,29 @@ std::pair<int, std::shared_ptr<SimpleMove>> AlphaBetaBot::make_virtual_move(cons
     for (auto &row : board.data_)
         for (auto &cell : row) {
             std::vector<std::shared_ptr<SimpleMove>> moves = game.allFigureMoves(cell.pos_);
-            for (auto &move : moves) all_moves.push_back(move);
+            for (auto &move : moves) 
+            	all_moves.push_back(move);
         }
 
     if (max) {
         std::pair<int, std::shared_ptr<SimpleMove>> res = {-1000, nullptr};
-        for (auto &move : all_moves) {
+        for (const auto &move : all_moves) {
             if (alpha > beta)
                 break;
             Game copy(game);
+            if(!move)
+            {
+            	assert(0);
+            }
 			copy.makeMove(*move);
             auto mvm = make_virtual_move(game, colour, !max, alpha, beta, depth - 1);
-            res = std::max(res, mvm);
+
+            if(res.first < mvm.first)
+            {
+            	res.first = mvm.first;
+            	res.second = move;
+            }
+
             alpha = std::max(alpha, mvm.first);
         }
         return res;
@@ -44,7 +57,12 @@ std::pair<int, std::shared_ptr<SimpleMove>> AlphaBetaBot::make_virtual_move(cons
             Game copy(game);
 			copy.makeMove(*move);
             auto mvm = make_virtual_move(game, colour, !max, alpha, beta, depth - 1);
-            res = std::min(res, mvm);
+
+            if(res.first > mvm.first)
+            {
+            	res.first = mvm.first;
+            	res.second = move;
+            }
             beta = std::min(beta, mvm.first);
         }
         return res;

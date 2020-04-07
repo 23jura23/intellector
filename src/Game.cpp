@@ -5,7 +5,7 @@
 #include "Game.hpp"
 
 Game::Game() {
-    black_bot_ = BotFactory(GameSettings(0, false, true));
+    black_bot_ = BotFactory(GameSettings(1, false, true));
 }
 
 void Game::setGameSettings(const GameSettings& settings) {
