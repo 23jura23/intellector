@@ -14,9 +14,13 @@ enum class GameStatus { game_running_, game_over_white_win_, game_over_black_win
 
 class Game {
    public:
-    // TODO конец игры?
-
     Game();
+    Game(const Game& other)
+            : board_(other.board_)
+            , turn_(other.turn_)
+            , white_bot_(nullptr)
+            , black_bot_(nullptr) {
+    }
 
     explicit Game(const GameSettings& settings) {
         if (settings.first_player())
