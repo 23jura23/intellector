@@ -9,7 +9,7 @@ const int seed = 1337;
 
 std::mt19937 rnd(seed);
 
-std::shared_ptr<SimpleMove> RandomBot::makeMove(Game &game) {
+std::shared_ptr<SimpleMove> RandomBot::makeMove(const Game &game) {
     Board board = Board(game.getBoard());
 
     std::vector<std::shared_ptr<SimpleMove>> all_moves;
