@@ -7,6 +7,7 @@ DONE Progressor transformation menu (TransformMove)
 DONE Center align
 DONE SwapMove
 DONE FigureMoveValidator recieve Board by non-const reference - make it const
+MoveHistory
 
 Ncurses main menu
 rewrite getTL more beautiful
