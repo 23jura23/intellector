@@ -26,12 +26,18 @@ bool Game::makeMove(const SimpleMove& move) {
 
     if (turn_ == PlayerColour::white_) {
         turn_ = PlayerColour::black_;
-        (*black_bot_->makeMove(*this)).makeMove(board_);
-        turn_ = PlayerColour::white_;
+        if(black_bot_)
+        {
+            (*black_bot_->makeMove(*this)).makeMove(board_);
+            turn_ = PlayerColour::white_;
+        }
     } else {
         turn_ = PlayerColour::white_;
-        (*white_bot_->makeMove(*this)).makeMove(board_);
-        turn_ = PlayerColour::black_;
+        if(white_bot_)
+        {
+            (*white_bot_->makeMove(*this)).makeMove(board_);
+            turn_ = PlayerColour::black_;
+        }
     }
     return true;
 }

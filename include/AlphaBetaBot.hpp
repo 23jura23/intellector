@@ -41,6 +41,7 @@ namespace evaluate
 			for(auto &cell : row)
 				if(cell.figure_.has_value())
 				{
+					// sum++;
 					Figure figure = *cell.figure_;
 
 					if(figure.colour_ == colour)

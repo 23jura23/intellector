@@ -4,6 +4,14 @@
 
 #include <cassert>
 
+PlayerColour other_colour(PlayerColour colour)
+{
+    if(colour == PlayerColour::black_)
+        return PlayerColour::white_;
+    else
+        return PlayerColour::black_;
+}
+
 std::pair<int, std::shared_ptr<SimpleMove>> AlphaBetaBot::make_virtual_move(const Game &game,
                                                                             PlayerColour colour,
                                                                             bool max,
@@ -38,7 +46,7 @@ std::pair<int, std::shared_ptr<SimpleMove>> AlphaBetaBot::make_virtual_move(cons
             	assert(0);
             }
 			copy.makeMove(*move);
-            auto mvm = make_virtual_move(game, colour, !max, alpha, beta, depth - 1);
+            auto mvm = make_virtual_move(copy, other_colour(colour), !max, alpha, beta, depth - 1);
 
             if(res.first < mvm.first)
             {
@@ -56,7 +64,7 @@ std::pair<int, std::shared_ptr<SimpleMove>> AlphaBetaBot::make_virtual_move(cons
                 break;
             Game copy(game);
 			copy.makeMove(*move);
-            auto mvm = make_virtual_move(game, colour, !max, alpha, beta, depth - 1);
+            auto mvm = make_virtual_move(copy, other_colour(colour), !max, alpha, beta, depth - 1);
 
             if(res.first > mvm.first)
             {
@@ -72,5 +80,5 @@ std::pair<int, std::shared_ptr<SimpleMove>> AlphaBetaBot::make_virtual_move(cons
 std::shared_ptr<SimpleMove> AlphaBetaBot::makeMove(const Game &game) {
 	Game gamecopy(game);
     auto colour = game.getColourCurrentPlayer();
-	return make_virtual_move(gamecopy, colour, true, -1000, 1000, 6).second;
+	return make_virtual_move(gamecopy, colour, true, -1000, 1000, 4).second;
 }
