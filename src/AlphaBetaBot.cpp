@@ -4,8 +4,17 @@
 
 #include "Evaluate.hpp"
 #include "Game.hpp"
+#include <iostream>
+#include <thread>         
+#include <chrono>
+#include <random>
 
-const int DEPTH = 4;
+std::mt19937 randoms(std::time(0));
+
+using std::cout;
+using std::endl;
+
+const int DEPTH = 5;
 PlayerColour Colour;
 
 std::pair<int, std::shared_ptr<Move>> AlphaBetaBot::make_virtual_move(const Game &game,
@@ -24,40 +33,32 @@ std::pair<int, std::shared_ptr<Move>> AlphaBetaBot::make_virtual_move(const Game
         return std::pair<int, std::shared_ptr<Move>>{evaluation_function_(game, Colour), nullptr};
     }
 
-    std::vector<std::shared_ptr<Move>> all_moves;
+    std::vector<std::pair<std::shared_ptr<Move>, int>> all_moves;
 
-    // sort(all_moves.begin(), all_moves.end(), [&](auto a, auto b)
-    // {
-    //     Game gamecopy1(game);
-    //     gamecopy1.makeMove(*a);
-    //     Game gamecopy2(game);
-    //     gamecopy2.makeMove(*b);
-    //     int eval1 = evaluation_function_(gamecopy1.getBoard(), colour);
-    //     int eval2 = evaluation_function_(gamecopy2.getBoard(), colour);
-    //     if(max)
-    //         return eval1 > eval2;
-    //     else
-    //         return eval1 < eval2;
-    // });
 
     Board board = Board(game.getBoard());
 
     for (auto &row : board.data_)
         for (auto &cell : row) {
             std::vector<std::shared_ptr<Move>> moves = game.allFigureMoves(cell.pos_);
-            for (auto &move : moves) all_moves.push_back(move);
+            for (auto &move : moves) 
+            	all_moves.emplace_back(move, evaluate::figure_value.at(cell.figure_.value().type_));
         }
 
+    std::sort(all_moves.begin(), all_moves.end(), [&](auto a, auto b)
+    {
+        return a.second > b.second;
+    });
+
+
     if (max) {
-        std::pair<int, std::shared_ptr<Move>> res = {-1000, nullptr};
-        for (const auto &move : all_moves) {
+        std::pair<int, std::shared_ptr<Move>> res = {-1e9, nullptr};
+        for (const auto &[move, _] : all_moves) {
             if (alpha > beta)
                 break;
             Game copy(game);
-            if (!move) {
-                assert(0);
-            }
-            copy.makeMove(*move);
+
+			copy.makeMove(*move);
             auto mvm = make_virtual_move(copy, other_colour(colour), !max, alpha, beta, depth - 1);
 
             if (res.first < mvm.first) {
@@ -69,8 +70,8 @@ std::pair<int, std::shared_ptr<Move>> AlphaBetaBot::make_virtual_move(const Game
         }
         return res;
     } else {
-        std::pair<int, std::shared_ptr<Move>> res = {1000, nullptr};
-        for (auto &move : all_moves) {
+        std::pair<int, std::shared_ptr<Move>> res = {1e9, nullptr};
+        for (auto &[move, _] : all_moves) {
             if (alpha > beta)
                 break;
             Game copy(game);
@@ -91,5 +92,6 @@ std::shared_ptr<Move> AlphaBetaBot::makeMove(const Game &game) {
     Game gamecopy(game);
     auto colour = game.getColourCurrentPlayer();
     Colour = colour;
-    return make_virtual_move(gamecopy, colour, true, -1000, 1000, DEPTH).second;
+    auto res = make_virtual_move(gamecopy, colour, true, -1000, 1000, DEPTH);
+	return res.second;
 }
