@@ -1,15 +1,8 @@
 #include "AlphaBetaBot.hpp"
 #include "Game.hpp"
+#include "Evaluate.hpp"
 
 #include <cassert>
-
-PlayerColour other_colour(PlayerColour colour)
-{
-    if(colour == PlayerColour::black_)
-        return PlayerColour::white_;
-    else
-        return PlayerColour::black_;
-}
 
 const int DEPTH = 4;
 PlayerColour Colour;
@@ -20,7 +13,7 @@ std::pair<int, std::shared_ptr<SimpleMove>> AlphaBetaBot::make_virtual_move(cons
                                                                             int alpha,
                                                                             int beta,
                                                                             int depth) {
-    int value = evaluation_function_(game.getBoard(), Colour);
+    int value = evaluation_function_(game, Colour);
 
     if(abs(value) > 1e5)
     {
@@ -29,7 +22,7 @@ std::pair<int, std::shared_ptr<SimpleMove>> AlphaBetaBot::make_virtual_move(cons
 
     if (depth == 0) {
         return std::pair<int, std::shared_ptr<SimpleMove>>{
-            evaluation_function_(game.getBoard(), Colour),
+            evaluation_function_(game, Colour),
             nullptr};
     }
 

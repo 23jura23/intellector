@@ -1,6 +1,18 @@
+#ifndef _EVALUATE_HPP
+#define _EVALUATE_HPP
+
 #include <unordered_map>
 #include "Board.hpp"
 #include "Figure.hpp"
+#include "Game.hpp"
+
+static PlayerColour other_colour(PlayerColour colour)
+{
+    if(colour == PlayerColour::black_)
+        return PlayerColour::white_;
+    else
+        return PlayerColour::black_;
+}
 
 namespace evaluate
 {
@@ -14,8 +26,9 @@ namespace evaluate
 		{FigureType::PROGRESSOR ,   3}   //пешка
 	};
 
-	static int scoreSumFigurePoints(const Board& board, const PlayerColour colour)
+	static int scoreSumFigurePoints(const Game& game, const PlayerColour colour)
 	{
+		Board board = game.getBoard();
 		int sum = 0;
 		bool enemy_intellector = 0;
 		bool allied_intellector = 0;
@@ -44,4 +57,11 @@ namespace evaluate
 			return -1e9;
 		return sum;
 	}	
+
+	// static int scoreSumWithDangers(const Game& game, const PlayerColour colour)
+	// {
+
+	// }
 };
+
+#endif

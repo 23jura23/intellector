@@ -22,7 +22,7 @@ std::shared_ptr<SimpleMove> GreedyBot::makeMove(const Game &game)
     {
     	Game gamecopy(game);
     	gamecopy.makeMove(*move);	
-    	int eval = evaluation_finction_(gamecopy.getBoard(), colour);
+    	int eval = evaluation_finction_(gamecopy, colour);
     	if(eval > max)
     	{
     		res = move;
