@@ -10,7 +10,7 @@ class AlphaBetaBot : Bot {
     AlphaBetaBot() = delete;
     AlphaBetaBot(
         int depth,
-        std::function<int(const Board &board, const PlayerColour colour)> evaluation_function)
+        std::function<int(const Game& game, const PlayerColour colour)> evaluation_function)
             : depth_(depth)
             , evaluation_function_(evaluation_function){};
 

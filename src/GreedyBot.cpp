@@ -18,7 +18,7 @@ std::shared_ptr<Move> GreedyBot::makeMove(const Game &game) {
     for(auto &move : all_moves) {
         Game gamecopy(game);
         gamecopy.makeMove(*move);
-        int eval = evaluation_finction_(gamecopy.getBoard(), colour);
+        int eval = evaluation_finction_(gamecopy, colour);
         if (eval > max) {
             res = move;
             max = eval;
