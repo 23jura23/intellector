@@ -1,5 +1,4 @@
 #include "AlphaBetaBot.hpp"
-
 #include "Game.hpp"
 
 #include <cassert>
@@ -36,19 +35,19 @@ std::pair<int, std::shared_ptr<SimpleMove>> AlphaBetaBot::make_virtual_move(cons
 
     std::vector<std::shared_ptr<SimpleMove>> all_moves;
 
-    sort(all_moves.begin(), all_moves.end(), [&](auto a, auto b)
-    {
-        Game gamecopy1(game);
-        gamecopy1.makeMove(*a);
-        Game gamecopy2(game);
-        gamecopy2.makeMove(*b);
-        int eval1 = evaluation_function_(gamecopy1.getBoard(), colour);
-        int eval2 = evaluation_function_(gamecopy2.getBoard(), colour);
-        if(max)
-            return eval1 > eval2;
-        else 
-            return eval1 < eval2;
-    });
+    // sort(all_moves.begin(), all_moves.end(), [&](auto a, auto b)
+    // {
+    //     Game gamecopy1(game);
+    //     gamecopy1.makeMove(*a);
+    //     Game gamecopy2(game);
+    //     gamecopy2.makeMove(*b);
+    //     int eval1 = evaluation_function_(gamecopy1.getBoard(), colour);
+    //     int eval2 = evaluation_function_(gamecopy2.getBoard(), colour);
+    //     if(max)
+    //         return eval1 > eval2;
+    //     else 
+    //         return eval1 < eval2;
+    // });
 
     Board board = Board(game.getBoard());
 
