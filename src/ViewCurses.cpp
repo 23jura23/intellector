@@ -195,15 +195,14 @@ void viewCurses::makeUniStep() {
     currentPosStatus = CurrentPosStatus::UNSELECTED;
 }
 
-void viewCurses::makeMultiStep_TransformMove(std::vector<std::shared_ptr<SimpleMove>>& inMoves) {
+void viewCurses::makeMultiStep_TransformMove(std::vector<std::shared_ptr<Move>>& inMoves) {
     cerr << "transform move" << endl;
     // TODO(23jura23) unneeded?
     //                                        updatePositions(newPos);
     vector<shared_ptr<Figure>> potentialFigures(inMoves.size());
     for (size_t i = 0; i < inMoves.size(); ++i)
         potentialFigures[i] =
-            make_shared<Figure>(board_->turn,
-                                dynamic_pointer_cast<TransformMove>(inMoves[i])->figure_type_);
+            make_shared<Figure>(dynamic_pointer_cast<Move>(inMoves[i])->to_figure_new_);
 
     bool running_transform = 1;
     int currentIndex = 0;
@@ -242,12 +241,12 @@ void viewCurses::makeMultiStep() {
     auto& inMoves = (*board_)[currentPos].inMoves;
     cerr << "inMoves size: " << inMoves.size() << endl;
     //TODO(23jura23) first-match choice of succeeded MultiSteps' checks
-    constexpr auto transformMoveCheck = [](std::vector<std::shared_ptr<SimpleMove>>& inMoves_) {
+    constexpr auto transformMoveCheck = [](std::vector<std::shared_ptr<Move>>& inMoves_) {
         bool result = 1;
         if (!inMoves_.size())
             result = 0;
         for (size_t i = 0; i < inMoves_.size(); ++i) {
-            if (!dynamic_pointer_cast<TransformMove>(inMoves_[i])) {
+            if (!dynamic_pointer_cast<Move>(inMoves_[i])) {
                 result = 0;
                 break;
             }

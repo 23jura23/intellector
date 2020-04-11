@@ -36,9 +36,9 @@ std::pair<int, std::shared_ptr<SimpleMove>> AlphaBetaBot::make_virtual_move(cons
     {
         return it->second;
     }
-
     int value = evaluation_function_(game, Colour);
 
+    cnt++;
     if(abs(value) > 1e5)
     {
         answers[{game.getBoard(), std::make_pair(alpha, beta)}] = {value, nullptr};
@@ -96,7 +96,6 @@ std::pair<int, std::shared_ptr<SimpleMove>> AlphaBetaBot::make_virtual_move(cons
     int k = max ? 1 : -1;
     std::sort(all_moves.begin(), all_moves.end(), [&](const auto &a, const auto &b)
     {
-        return k * a.eval > k * b.eval;
     });
 
     // std::shuffle(all_moves.begin(), all_moves.end(), randoms);

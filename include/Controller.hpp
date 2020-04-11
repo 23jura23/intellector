@@ -20,7 +20,7 @@ class Controller {
     //    template <typename ViewType>
     //    inline void unSelectCell();
 
-    void makeMove(const SimpleMove& move);  // really void?
+    void makeMove(const Move& move);  // really void?
     GameStatus getGameStatus();
 
     template <typename ViewType>

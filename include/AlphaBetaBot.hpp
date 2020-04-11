@@ -5,7 +5,6 @@
 #include "Bot.hpp"
 // #pragma once
 
-
 class AlphaBetaBot : Bot
 {
 public:
