@@ -10,9 +10,13 @@
 #include "FigureMoveValidator.hpp"
 #include "MoveTypes.hpp"
 
-enum class GameStatus { game_running_, game_over_white_win_, game_over_black_win_, game_over_ };
+enum class GameStatus { game_running_, game_over_white_win_, game_over_black_win_ };
 
 class Game {
+    // TODO переделать Move
+    // TODO история ходов (откат и тд)
+    // TODO MakeMove синхронный?
+    // TODO MakeCopyForBot
    public:
     Game();
     Game(const Game& other)
