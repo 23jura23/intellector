@@ -9,6 +9,9 @@
 #include <chrono>
 #include <random>
 
+#include <thread>
+#include <chrono>
+
 std::mt19937 randoms(std::time(0));
 
 using std::cout;
@@ -16,6 +19,7 @@ using std::endl;
 
 const int DEPTH = 5;
 PlayerColour Colour;
+int cnt = 0;
 
 std::pair<int, std::shared_ptr<SimpleMove>> AlphaBetaBot::make_virtual_move(const Game &game,
                                                                             PlayerColour colour,
@@ -25,6 +29,7 @@ std::pair<int, std::shared_ptr<SimpleMove>> AlphaBetaBot::make_virtual_move(cons
                                                                             int depth) {
     int value = evaluation_function_(game, Colour);
 
+    cnt++;
     if(abs(value) > 1e5)
     {
         return {value, nullptr};
@@ -45,7 +50,7 @@ std::pair<int, std::shared_ptr<SimpleMove>> AlphaBetaBot::make_virtual_move(cons
         for (auto &cell : row) {
             std::vector<std::shared_ptr<SimpleMove>> moves = game.allFigureMoves(cell.pos_);
             for (auto &move : moves) 
-            	all_moves.emplace_back(move, evaluate::figure_value.at(cell.figure_.value().type_));
+                all_moves.emplace_back(move, evaluate::figure_value.at(cell.figure_.value().type_));
         }
 
     std::sort(all_moves.begin(), all_moves.end(), [&](auto a, auto b)
@@ -53,6 +58,7 @@ std::pair<int, std::shared_ptr<SimpleMove>> AlphaBetaBot::make_virtual_move(cons
         return a.second > b.second;
     });
 
+    // std::shuffle(all_moves.begin(), all_moves.end(), randoms);
 
     if (max) {
         std::pair<int, std::shared_ptr<SimpleMove>> res = {-1e9, nullptr};
@@ -61,13 +67,13 @@ std::pair<int, std::shared_ptr<SimpleMove>> AlphaBetaBot::make_virtual_move(cons
                 break;
             Game copy(game);
 
-			copy.makeMove(*move);
+            copy.makeMove(*move);
             auto mvm = make_virtual_move(copy, other_colour(colour), !max, alpha, beta, depth - 1);
 
             if(res.first < mvm.first)
             {
-            	res.first = mvm.first;
-            	res.second = move;
+                res.first = mvm.first;
+                res.second = move;
             }
 
             alpha = std::max(alpha, mvm.first);
@@ -79,13 +85,13 @@ std::pair<int, std::shared_ptr<SimpleMove>> AlphaBetaBot::make_virtual_move(cons
             if (alpha > beta)
                 break;
             Game copy(game);
-			copy.makeMove(*move);
+            copy.makeMove(*move);
             auto mvm = make_virtual_move(copy, other_colour(colour), !max, alpha, beta, depth - 1);
 
             if(res.first > mvm.first)
             {
-            	res.first = mvm.first;
-            	res.second = move;
+                res.first = mvm.first;
+                res.second = move;
             }
             beta = std::min(beta, mvm.first);
         }
@@ -94,9 +100,12 @@ std::pair<int, std::shared_ptr<SimpleMove>> AlphaBetaBot::make_virtual_move(cons
 }
 
 std::shared_ptr<SimpleMove> AlphaBetaBot::makeMove(const Game &game) {
-	Game gamecopy(game);
+    Game gamecopy(game);
+    cnt = 0;
     auto colour = game.getColourCurrentPlayer();
     Colour = colour;
     auto res = make_virtual_move(gamecopy, colour, true, -1000, 1000, DEPTH);
-	return res.second;
+    cout << cnt << endl;
+    std::this_thread::sleep_for (std::chrono::seconds(10));
+    return res.second;
 }

@@ -16,7 +16,7 @@ std::shared_ptr<SimpleMove> GreedyBot::makeMove(const Game &game)
             	all_moves.push_back(move);
         }
 
-    int max = -1000;
+    int max = -1e9;
     std::shared_ptr<SimpleMove> res = nullptr;
     for(auto &move : all_moves)
     {

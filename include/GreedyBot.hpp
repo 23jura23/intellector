@@ -8,12 +8,12 @@
 class GreedyBot : Bot
 {
 public:
-	GreedyBot() = delete;
-	GreedyBot(std::function<int(const Game& game, const PlayerColour colour)> eval_function) : evaluation_finction_(eval_function) {};
-	std::shared_ptr<SimpleMove> makeMove(const Game &game) override;
+    GreedyBot() = delete;
+    GreedyBot(std::function<int(const Game& game, const PlayerColour colour)> eval_function) : evaluation_finction_(eval_function) {};
+    std::shared_ptr<SimpleMove> makeMove(const Game &game) override;
 
 private:
-	std::function<int(const Game& game, const PlayerColour colour)> evaluation_finction_;
+    std::function<int(const Game& game, const PlayerColour colour)> evaluation_finction_;
 };
 
 #endif
