@@ -5,14 +5,14 @@
 #include "MoveTypes.hpp"
 #include <functional>
 
-class GreedyBot : Bot {
-   public:
+class GreedyBot : Bot
+{
+public:
     GreedyBot() = delete;
-    GreedyBot(std::function<int(const Game& game, const PlayerColour colour)> eval_function)
-            : evaluation_finction_(eval_function){};
-    std::shared_ptr<Move> makeMove(const Game& game) override;
+    GreedyBot(std::function<int(const Game& game, const PlayerColour colour)> eval_function) : evaluation_finction_(eval_function) {};
+    std::shared_ptr<Move> makeMove(const Game &game) override;
 
-   private:
+private:
     std::function<int(const Game& game, const PlayerColour colour)> evaluation_finction_;
 };
 
