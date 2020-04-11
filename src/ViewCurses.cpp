@@ -141,6 +141,7 @@ viewCurses::~viewCurses() {
 
 void viewCurses::updatePositions(Position& newPos) {
     if (inBoard(newPos)) {
+        cerr << "newPos is inBoard!" << endl;
         if (currentPosStatus == CurrentPosStatus::SELECTED &&
             currentPos.posW() == selectedPos.posW() && currentPos.posH() == selectedPos.posH())
             (*board_)[currentPos].status =
@@ -262,11 +263,10 @@ void viewCurses::makeMultiStep() {
 }
 
 void viewCurses::run() {
-    Position newPos = currentPos;
-
     GameStatus winner;
     bool running = 1;
     while (running) {
+        Position newPos = currentPos;
         refreshView();
         winner = controller_->getGameStatus();
         if (winner != GameStatus::game_running_) {
