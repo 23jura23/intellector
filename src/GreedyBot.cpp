@@ -2,7 +2,7 @@
 #include "Game.hpp"
 #include <vector>
 
-std::shared_ptr<SimpleMove> GreedyBot::makeMove(const Game &game) {
+std::shared_ptr<Move> GreedyBot::makeMove(const Game &game) {
     auto colour = game.getColourCurrentPlayer();
     Board board = Board(game.getBoard());
     std::vector<std::shared_ptr<Move>> all_moves;
@@ -14,7 +14,7 @@ std::shared_ptr<SimpleMove> GreedyBot::makeMove(const Game &game) {
         }
 
     int max = -1e9;
-    std::shared_ptr<SimpleMove> res = nullptr;
+    std::shared_ptr<Move> res = nullptr;
     for(auto &move : all_moves)
     {
     	Game gamecopy(game);

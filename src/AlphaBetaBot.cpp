@@ -22,9 +22,9 @@ const int DEPTH = 5;
 PlayerColour Colour;
 int cnt = 0;
 
-std::unordered_map<std::pair<Board, std::pair<int, int>>, std::pair<int, std::shared_ptr<SimpleMove>>> answers;
+std::unordered_map<std::pair<Board, std::pair<int, int>>, std::pair<int, std::shared_ptr<Move>>> answers;
 
-std::pair<int, std::shared_ptr<SimpleMove>> AlphaBetaBot::make_virtual_move(const Game &game,
+std::pair<int, std::shared_ptr<Move>> AlphaBetaBot::make_virtual_move(const Game &game,
                                                                             PlayerColour colour,
                                                                             bool max,
                                                                             int alpha,
@@ -49,7 +49,7 @@ std::pair<int, std::shared_ptr<SimpleMove>> AlphaBetaBot::make_virtual_move(cons
     cnt++;
 
     if (depth == 0) {
-        return std::pair<int, std::shared_ptr<SimpleMove>>{
+        return std::pair<int, std::shared_ptr<Move>>{
             evaluation_function_(game, Colour),
             nullptr};
     }
@@ -58,7 +58,7 @@ std::pair<int, std::shared_ptr<SimpleMove>> AlphaBetaBot::make_virtual_move(cons
     {
         ModifiedGame() = delete;
         std::shared_ptr<Game> gamecopy;
-        std::shared_ptr<SimpleMove> move;
+        std::shared_ptr<Move> move;
         int eval;
 
         ModifiedGame(const ModifiedGame &other)
@@ -68,7 +68,7 @@ std::pair<int, std::shared_ptr<SimpleMove>> AlphaBetaBot::make_virtual_move(cons
             eval = other.eval;
         }
 
-        ModifiedGame(const std::shared_ptr<Game> &game, std::shared_ptr<SimpleMove> mv, int val) : gamecopy(game), move(mv), eval(val) {};
+        ModifiedGame(const std::shared_ptr<Game> &game, std::shared_ptr<Move> mv, int val) : gamecopy(game), move(mv), eval(val) {};
 
         const std::shared_ptr<Game> get_gamecopy() const
         {
@@ -83,7 +83,7 @@ std::pair<int, std::shared_ptr<SimpleMove>> AlphaBetaBot::make_virtual_move(cons
     for (const auto &row : board.data_)
         for (const auto &cell : row) {
 
-            std::vector<std::shared_ptr<SimpleMove>> moves = game.allFigureMoves(cell.pos_);
+            std::vector<std::shared_ptr<Move>> moves = game.allFigureMoves(cell.pos_);
             for (const auto &move : moves) 
             {
                 Game gamecopy(game);
@@ -96,12 +96,13 @@ std::pair<int, std::shared_ptr<SimpleMove>> AlphaBetaBot::make_virtual_move(cons
     int k = max ? 1 : -1;
     std::sort(all_moves.begin(), all_moves.end(), [&](const auto &a, const auto &b)
     {
+        return k * a.eval > k * b.eval;
     });
 
     // std::shuffle(all_moves.begin(), all_moves.end(), randoms);
 
     if (max) {
-        std::pair<int, std::shared_ptr<SimpleMove>> res = {-1e9, nullptr};
+        std::pair<int, std::shared_ptr<Move>> res = {-1e9, nullptr};
         for (const auto &mod_game : all_moves) {
             if (alpha > beta)
                 break;
@@ -119,7 +120,7 @@ std::pair<int, std::shared_ptr<SimpleMove>> AlphaBetaBot::make_virtual_move(cons
         answers[{game.getBoard(), std::make_pair(alpha, beta)}] = res;
         return res;
     } else {
-        std::pair<int, std::shared_ptr<SimpleMove>> res = {1e9, nullptr};
+        std::pair<int, std::shared_ptr<Move>> res = {1e9, nullptr};
         for (const auto &mod_game : all_moves) {
             if (alpha > beta)
                 break;
@@ -138,7 +139,7 @@ std::pair<int, std::shared_ptr<SimpleMove>> AlphaBetaBot::make_virtual_move(cons
     }
 }
 
-std::shared_ptr<SimpleMove> AlphaBetaBot::makeMove(const Game &game) {
+std::shared_ptr<Move> AlphaBetaBot::makeMove(const Game &game) {
     Game gamecopy(game);
     cnt = 0;
     auto colour = game.getColourCurrentPlayer();
