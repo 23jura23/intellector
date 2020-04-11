@@ -8,7 +8,7 @@ Controller::Controller(std::shared_ptr<Game> game)
         : game_{game} {
 }
 
-void Controller::makeMove(const SimpleMove& move) {
+void Controller::makeMove(const Move& move) {
     game_->makeMove(move);
 }
 

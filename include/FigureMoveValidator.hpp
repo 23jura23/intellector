@@ -19,7 +19,7 @@ class FigureMoveValidator {
 
     virtual bool checkMove(Position to_pos) = 0;
 
-    virtual std::vector<std::shared_ptr<SimpleMove>> allMoves() = 0;
+    virtual std::vector<std::shared_ptr<Move>> allMoves() = 0;
 
     static std::shared_ptr<FigureMoveValidator> create(const Board& board,
                                                        Figure figure,
@@ -37,7 +37,7 @@ class IntellectorMoveValidator : public FigureMoveValidator {
 
     bool checkMove(Position to_pos) override;
 
-    std::vector<std::shared_ptr<SimpleMove>> allMoves() override;
+    std::vector<std::shared_ptr<Move>> allMoves() override;
 };
 
 class DominatorMoveValidator : public FigureMoveValidator {
@@ -46,7 +46,7 @@ class DominatorMoveValidator : public FigureMoveValidator {
 
     bool checkMove(Position to_pos) override;
 
-    std::vector<std::shared_ptr<SimpleMove>> allMoves() override;
+    std::vector<std::shared_ptr<Move>> allMoves() override;
 };
 
 class AggressorMoveValidator : public FigureMoveValidator {
@@ -55,7 +55,7 @@ class AggressorMoveValidator : public FigureMoveValidator {
 
     bool checkMove(Position to_pos) override;
 
-    std::vector<std::shared_ptr<SimpleMove>> allMoves() override;
+    std::vector<std::shared_ptr<Move>> allMoves() override;
 };
 
 class DefenssorMoveValidator : public FigureMoveValidator {
@@ -64,7 +64,7 @@ class DefenssorMoveValidator : public FigureMoveValidator {
 
     bool checkMove(Position to_pos) override;
 
-    std::vector<std::shared_ptr<SimpleMove>> allMoves() override;
+    std::vector<std::shared_ptr<Move>> allMoves() override;
 };
 
 class LiberatorMoveValidator : public FigureMoveValidator {
@@ -73,7 +73,7 @@ class LiberatorMoveValidator : public FigureMoveValidator {
 
     bool checkMove(Position to_pos) override;
 
-    std::vector<std::shared_ptr<SimpleMove>> allMoves() override;
+    std::vector<std::shared_ptr<Move>> allMoves() override;
 };
 
 class ProgressorMoveValidator : public FigureMoveValidator {
@@ -82,7 +82,7 @@ class ProgressorMoveValidator : public FigureMoveValidator {
 
     bool checkMove(Position to_pos) override;
 
-    std::vector<std::shared_ptr<SimpleMove>> allMoves() override;
+    std::vector<std::shared_ptr<Move>> allMoves() override;
 };
 
 #endif  //_INTELLECTOR_FIGUREMOVEVALIDATOR_HPP

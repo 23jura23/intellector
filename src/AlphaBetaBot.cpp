@@ -14,26 +14,24 @@ PlayerColour other_colour(PlayerColour colour)
 const int DEPTH = 4;
 PlayerColour Colour;
 
-std::pair<int, std::shared_ptr<SimpleMove>> AlphaBetaBot::make_virtual_move(const Game &game,
-                                                                            PlayerColour colour,
-                                                                            bool max,
-                                                                            int alpha,
-                                                                            int beta,
-                                                                            int depth) {
+std::pair<int, std::shared_ptr<Move>> AlphaBetaBot::make_virtual_move(const Game &game,
+                                                                      PlayerColour colour,
+                                                                      bool max,
+                                                                      int alpha,
+                                                                      int beta,
+                                                                      int depth) {
     int value = evaluation_function_(game.getBoard(), Colour);
 
-    if(abs(value) > 1e5)
-    {
+    if (abs(value) > 1e5) {
         return {value, nullptr};
     }
 
     if (depth == 0) {
-        return std::pair<int, std::shared_ptr<SimpleMove>>{
-            evaluation_function_(game.getBoard(), Colour),
-            nullptr};
+        return std::pair<int, std::shared_ptr<Move>>{evaluation_function_(game.getBoard(), Colour),
+                                                     nullptr};
     }
 
-    std::vector<std::shared_ptr<SimpleMove>> all_moves;
+    std::vector<std::shared_ptr<Move>> all_moves;
 
     // sort(all_moves.begin(), all_moves.end(), [&](auto a, auto b)
     // {
@@ -53,13 +51,13 @@ std::pair<int, std::shared_ptr<SimpleMove>> AlphaBetaBot::make_virtual_move(cons
 
     for (auto &row : board.data_)
         for (auto &cell : row) {
-            std::vector<std::shared_ptr<SimpleMove>> moves = game.allFigureMoves(cell.pos_);
+            std::vector<std::shared_ptr<Move>> moves = game.allFigureMoves(cell.pos_);
             for (auto &move : moves) 
             	all_moves.push_back(move);
         }
 
     if (max) {
-        std::pair<int, std::shared_ptr<SimpleMove>> res = {-1000, nullptr};
+        std::pair<int, std::shared_ptr<Move>> res = {-1000, nullptr};
         for (const auto &move : all_moves) {
             if (alpha > beta)
                 break;
@@ -81,7 +79,7 @@ std::pair<int, std::shared_ptr<SimpleMove>> AlphaBetaBot::make_virtual_move(cons
         }
         return res;
     } else {
-        std::pair<int, std::shared_ptr<SimpleMove>> res = {1000, nullptr};
+        std::pair<int, std::shared_ptr<Move>> res = {1000, nullptr};
         for (auto &move : all_moves) {
             if (alpha > beta)
                 break;
@@ -100,9 +98,9 @@ std::pair<int, std::shared_ptr<SimpleMove>> AlphaBetaBot::make_virtual_move(cons
     }
 }
 
-std::shared_ptr<SimpleMove> AlphaBetaBot::makeMove(const Game &game) {
-	Game gamecopy(game);
+std::shared_ptr<Move> AlphaBetaBot::makeMove(const Game &game) {
+    Game gamecopy(game);
     auto colour = game.getColourCurrentPlayer();
     Colour = colour;
-	return make_virtual_move(gamecopy, colour, true, -1000, 1000, DEPTH).second;
+    return make_virtual_move(gamecopy, colour, true, -1000, 1000, DEPTH).second;
 }

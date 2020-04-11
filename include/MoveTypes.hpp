@@ -5,41 +5,58 @@
 #ifndef _INTELLECTOR_MOVETYPES_HPP
 #define _INTELLECTOR_MOVETYPES_HPP
 
+#include <utility>
+
 #include "Board.hpp"
 #include "Figure.hpp"
 #include "Position.hpp"
 
-class SimpleMove {
+class Move {
    public:
-    SimpleMove(const Position& from_pos, const Position& to_pos)
+    Move(const Position& from_pos,
+         const Position& to_pos,
+         const Figure& from_figure,
+         std::optional<Figure> to_figure_old)
             : from_(from_pos)
-            , to_(to_pos) {
+            , to_(to_pos)
+            , from_figure_old_(from_figure)
+            , to_figure_new_(from_figure)
+            , from_figure_new_(std::nullopt)
+            , to_figure_old_(std::move(to_figure_old)) {
+    }
+
+    Move(const Position& from_pos,
+         const Position& to_pos,
+         const Figure& from_figure,
+         std::optional<Figure> to_figure_old,
+         const Figure& to_figure_new)
+            : from_(from_pos)
+            , to_(to_pos)
+            , from_figure_old_(from_figure)
+            , to_figure_new_(to_figure_new)
+            , from_figure_new_(std::nullopt)
+            , to_figure_old_(std::move(to_figure_old)) {
+    }
+
+    Move(const Position& from_pos,
+         const Position& to_pos,
+         const Figure& from_figure,
+         std::optional<Figure> to_figure_old,
+         const Figure& to_figure_new,
+         const Figure& from_figure_new)
+            : from_(from_pos)
+            , to_(to_pos)
+            , from_figure_old_(from_figure)
+            , to_figure_new_(to_figure_new)
+            , from_figure_new_(from_figure_new)
+            , to_figure_old_(std::move(to_figure_old)) {
     }
 
     virtual bool makeMove(Board& board) const;
 
     Position from_, to_;
-};
-
-class SwapMove : public SimpleMove {
-   public:
-    SwapMove(const Position& from_pos, const Position& to_pos)
-            : SimpleMove(from_pos, to_pos) {
-    }
-
-    bool makeMove(Board& board) const override;
-};
-
-class TransformMove : public SimpleMove {
-   public:
-    TransformMove(const Position& from_pos, const Position& to_pos, const FigureType figure_type)
-            : SimpleMove(from_pos, to_pos)
-            , figure_type_(figure_type) {
-    }
-
-    bool makeMove(Board& board) const override;
-
-    FigureType figure_type_;
+    Figure from_figure_old_, to_figure_new_;
+    std::optional<Figure> from_figure_new_, to_figure_old_;
 };
 
 #endif  //_INTELLECTOR_MOVETYPES_HPP

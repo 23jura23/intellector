@@ -15,7 +15,7 @@ void Game::setGameSettings(const GameSettings& settings) {
         black_bot_ = BotFactory(settings);
 }
 
-bool Game::makeMove(const SimpleMove& move) {
+bool Game::makeMove(const Move& move) {
     if (!board_[move.from_].figure_.has_value() || board_[move.from_].figure_->colour_ != turn_)
         return false;
     if (!inBoard(move.from_) || !inBoard(move.to_))
@@ -40,7 +40,7 @@ bool Game::makeMove(const SimpleMove& move) {
     return true;
 }
 
-std::vector<std::shared_ptr<SimpleMove>> Game::allFigureMoves(Position pos) const {
+std::vector<std::shared_ptr<Move>> Game::allFigureMoves(Position pos) const {
     if (!board_[pos].figure_.has_value() || board_[pos].figure_->colour_ != turn_)
         return {};
 
