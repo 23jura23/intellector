@@ -21,7 +21,7 @@ std::shared_ptr<Bot> BotFactory(const GameSettings &settings) {
             bot = std::reinterpret_pointer_cast<Bot>(std::make_shared<GreedyBot>(evaluate::scoreSumFigurePoints));
             break;
         default:
-            bot = std::reinterpret_pointer_cast<Bot>(std::make_shared<AlphaBetaBot>(6, evaluate::scoreSumFigurePoints));
+            bot = std::reinterpret_pointer_cast<Bot>(std::make_shared<AlphaBetaBot>(6, 0));
     }
     return bot;
 }

@@ -2,11 +2,14 @@
 #define _EVALUATE_HPP
 
 #include <unordered_map>
+#include <cassert>
 #include "Board.hpp"
 #include "Figure.hpp"
 #include "Game.hpp"
 #include <unordered_map>
 
+using evaluate_function_t = std::function<int(const Game &game, const PlayerColour &colour)>;
+using delta_function_t = std::function<int(const Move &move, const PlayerColour &colour)> ;
 
 namespace std
 {
@@ -59,26 +62,16 @@ namespace std
 
 };
 
-const bool operator==(const Board &a, const Board &b);
+bool operator==(const Board &a, const Board &b);
 
-const bool operator==(const Figure &a, const Figure &b);
+bool operator==(const Figure &a, const Figure &b);
 
-const bool operator==(const Cell &a, const Cell &b);
+bool operator==(const Cell &a, const Cell &b);
 
 PlayerColour other_colour(PlayerColour colour);
 
 namespace evaluate
 {
-    const std::unordered_map<FigureType, int> figure_value = 
-    {
-        {FigureType::INTELLECTOR, 1000000},  
-        {FigureType::DOMINATOR  ,       7},  // ферзь
-        {FigureType::AGGRESSOR  ,       6},  //по черным
-        {FigureType::DEFENSSOR  ,       4},  
-        {FigureType::LIBERATOR  ,       2},  // через один
-        {FigureType::PROGRESSOR ,       3}   //пешка
-    };
-
     int scoreSumFigurePoints(const Game& game, const PlayerColour colour);
 
     // static int scoreSumWithDangers(const Game& game, const PlayerColour colour)
@@ -86,5 +79,10 @@ namespace evaluate
 
     // }
 };
+
+namespace delta
+{
+    int deltaSumFigurePoints(const Move& move, const PlayerColour colour);
+}
 
 #endif

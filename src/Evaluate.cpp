@@ -4,17 +4,17 @@
 #include "Cell.hpp"
 #include "Game.hpp"
 
-const bool operator==(const Board &a, const Board &b)
+bool operator==(const Board &a, const Board &b)
 {
     return a.data_ == b.data_;
 }
 
-const bool operator==(const Figure &a, const Figure &b)
+bool operator==(const Figure &a, const Figure &b)
 {
     return (a.colour_ == b.colour_ && a.type_ == b.type_);
 }
 
-const bool operator==(const Cell &a, const Cell &b)
+bool operator==(const Cell &a, const Cell &b)
 {
     // return a.data_ == b.data_;
     if(a.pos_ != b.pos_ || a.colour_ != b.colour_)
@@ -42,21 +42,56 @@ PlayerColour other_colour(PlayerColour colour)
 
 namespace evaluate
 {
+    const std::unordered_map<FigureType, int> figure_value = 
+    {
+        {FigureType::INTELLECTOR, 1000000},  
+        {FigureType::DOMINATOR  ,       7},  // ферзь
+        {FigureType::AGGRESSOR  ,       6},  //по черным
+        {FigureType::DEFENSSOR  ,       4},  
+        {FigureType::LIBERATOR  ,       2},  // через один
+        {FigureType::PROGRESSOR ,       3}   //пешка
+    };
+
+    int figureValue(const std::optional<Figure> &figure, const PlayerColour colour)
+    {
+        if(figure.has_value())
+        {
+            if(figure->colour_ == colour)
+                return figure_value.at(figure->type_);
+            else
+                return -figure_value.at(figure->type_);
+        }
+        else
+            return 0;
+    }
+
 	int scoreSumFigurePoints(const Game& game, const PlayerColour colour)
     {
         Board board = game.getBoard();
         int sum = 0;
         for(const auto &row : board.data_)
             for(const auto &cell : row)
-                if(cell.figure_.has_value())
-                {
-                    Figure figure = *cell.figure_;
-
-                    if(figure.colour_ == colour)
-                        sum += figure_value.at(figure.type_);
-                    else
-                        sum -= figure_value.at(figure.type_);
-                }
+                sum += figureValue(cell.figure_, colour); 
         return sum;
     }   
 };
+
+namespace delta
+{
+    // const std::unordered_map<evaluate_function_t, delta_function_t> deltas = 
+    // {
+    //     {scoreSumFigurePoints, deltaSumFigurePoints}
+    // };
+
+
+    int deltaSumFigurePoints(const Move& move, const PlayerColour colour)
+    {
+        int delta = 0;
+        delta -= evaluate::figureValue(move.from_figure_old_, colour);
+        delta += evaluate::figureValue(move.from_figure_new_, colour);
+        delta -= evaluate::figureValue(move.to_figure_old_, colour);
+        delta += evaluate::figureValue(move.to_figure_new_, colour);
+        return delta;
+    }
+
+}

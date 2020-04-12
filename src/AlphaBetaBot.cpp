@@ -1,6 +1,7 @@
 #include "AlphaBetaBot.hpp"
 #include "Game.hpp"
-#include "Evaluate.hpp"
+#include "FunctionSet.hpp"
+#include "EvalGame.hpp"
 
 #include <cassert>
 
@@ -12,6 +13,7 @@
 #include <thread>
 #include <chrono>
 #include <unordered_map>
+#include <vector>
 
 std::mt19937 randoms(std::time(0));
 
@@ -22,7 +24,9 @@ const int DEPTH = 5;
 PlayerColour Colour;
 int cnt = 0;
 
-std::unordered_map<std::pair<Board, std::pair<int, int>>, std::pair<int, std::shared_ptr<Move>>> answers;
+// std::unordered_map<std::pair<Board, std::pair<int, int>>, std::pair<int, std::shared_ptr<Move>>> answers;
+std::vector<std::unordered_map<Board, std::pair<int, std::shared_ptr<Move>>>> answers(DEPTH + 1);
+
 
 std::pair<int, std::shared_ptr<Move>> AlphaBetaBot::make_virtual_move(const Game &game,
                                                                             PlayerColour colour,
@@ -31,17 +35,23 @@ std::pair<int, std::shared_ptr<Move>> AlphaBetaBot::make_virtual_move(const Game
                                                                             int beta,
                                                                             int depth) {
 
-    auto it = answers.find({game.getBoard(), std::make_pair(alpha, beta)});
-    if(it != answers.end())
+    
+    for(int i = depth; i <= DEPTH; i++)
     {
-        return it->second;
+        auto it = answers[i].find(game.getBoard());
+        if(it != answers[i].end())
+        {
+            return it->second;
+        }
     }
-    int value = evaluation_function_(game, Colour);
+
+    int value = functions_.evaluate(game, Colour);
 
     cnt++;
     if(abs(value) > 1e5)
     {
-        answers[{game.getBoard(), std::make_pair(alpha, beta)}] = {value, nullptr};
+        // answers[{game.getBoard(), std::make_pair(alpha, beta)}] = {value, nullptr};
+        answers[depth][game.getBoard()] = {value, nullptr};
         return {value, nullptr};
     }
 
@@ -50,7 +60,7 @@ std::pair<int, std::shared_ptr<Move>> AlphaBetaBot::make_virtual_move(const Game
 
     if (depth == 0) {
         return std::pair<int, std::shared_ptr<Move>>{
-            evaluation_function_(game, Colour),
+            value,
             nullptr};
     }
 
@@ -89,7 +99,7 @@ std::pair<int, std::shared_ptr<Move>> AlphaBetaBot::make_virtual_move(const Game
                 Game gamecopy(game);
                 gamecopy.makeMove(*move);
 
-                all_moves.emplace_back(std::make_shared<Game>(gamecopy), move, evaluation_function_(gamecopy, Colour));
+                all_moves.emplace_back(std::make_shared<Game>(gamecopy), move, functions_.delta(*move, Colour));
             }
         }
 
@@ -117,7 +127,7 @@ std::pair<int, std::shared_ptr<Move>> AlphaBetaBot::make_virtual_move(const Game
 
             alpha = std::max(alpha, mvm.first);
         }
-        answers[{game.getBoard(), std::make_pair(alpha, beta)}] = res;
+        answers[depth][game.getBoard()] = res;
         return res;
     } else {
         std::pair<int, std::shared_ptr<Move>> res = {1e9, nullptr};
@@ -133,7 +143,7 @@ std::pair<int, std::shared_ptr<Move>> AlphaBetaBot::make_virtual_move(const Game
             }
             beta = std::min(beta, mvm.first);
         }
-        answers[{game.getBoard(), std::make_pair(alpha, beta)}] = res;
+        answers[depth][game.getBoard()] = res;
 
         return res;
     }
@@ -147,7 +157,7 @@ std::shared_ptr<Move> AlphaBetaBot::makeMove(const Game &game) {
 
     auto res = make_virtual_move(gamecopy, colour, true, -1000, 1000, DEPTH);
 
-    // cout << cnt << ' ' << res.first << endl;
-    // std::this_thread::sleep_for (std::chrono::seconds(3));
+    cout << cnt << ' ' << res.first << endl;
+    std::this_thread::sleep_for (std::chrono::seconds(3));
     return res.second;
 }
