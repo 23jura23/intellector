@@ -18,7 +18,8 @@ struct ViewModelCurses : public ViewModelBase {
             ACTIVE,    // possible move
             INACTIVE,  // nothing special
             CURRENT,   // current pointer position
-            SELECTED   // selected to make move
+            SELECTED,  // selected to make move
+            PREVIOUS   // previous cell of moved figure
         };
 
         ViewCellCurses(Cell, ViewCellCursesStatus = ViewCellCursesStatus::INACTIVE);

@@ -19,6 +19,7 @@ ViewModelCurses::ViewModelCurses(const Board& board, PlayerColour turn)
 
 ViewModelCurses::ViewModelCurses(const Board& board_, PlayerColour turn_, MovesTable& movesTable)
     : ViewModelCurses(board_, turn_) {
+        //TODO(23jura23) receive previous position and highlight its status
     for (size_t i = 0; i < movesTable.size(); ++i) {
         int x = movesTable[i]->to_.posW();
         int y = movesTable[i]->to_.posH();

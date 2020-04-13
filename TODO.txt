@@ -27,6 +27,7 @@ Add upside-down rotate of black figures as feature
 Move only in available cells when selected a figure
 Decomposition
 Some tiny TODOs in ViewCurses
+Receive last position from Game 
 
 Git Hooks for autoformatting
 Debug and Release versions (with and without error.txt)

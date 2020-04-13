@@ -24,6 +24,7 @@ class viewCurses : public viewBase {
     void run();
     void fetchModel();
     void reloadModel();
+    void updateCellStatus(Position& pos, bool before = 1);
     void updatePositions(Position&);
     void updateModel(std::shared_ptr<ViewModelCurses>);
     void refreshView();
@@ -49,6 +50,7 @@ class viewCurses : public viewBase {
     Position currentPos;
     enum class CurrentPosStatus { UNSELECTED, SELECTED } currentPosStatus;
     Position selectedPos;
+    Position previousPos;
 
     // just decomposition functions
     void selectPosition();
