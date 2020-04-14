@@ -8,7 +8,7 @@
 namespace ViewCurses {
 
 struct ViewModelCurses : public ViewModelBase {
-    typedef std::vector<std::shared_ptr<Move>> MovesTable;
+    typedef std::vector<Move> MovesTable;
 
     ViewModelCurses(const Board&, PlayerColour);
     ViewModelCurses(const Board&, PlayerColour, MovesTable&);
@@ -26,7 +26,7 @@ struct ViewModelCurses : public ViewModelBase {
         ViewCellCurses(Cell, ViewCellCursesStatus = ViewCellCursesStatus::INACTIVE);
 
         Cell cell;
-        std::vector<std::shared_ptr<Move>> inMoves;
+        std::vector<Move> inMoves;
         ViewCellCursesStatus status;
     };
 

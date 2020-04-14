@@ -12,9 +12,9 @@ class GreedyBot : Bot
 public:
     GreedyBot() = delete;
     GreedyBot(evaluate_function_t eval_function) : evaluation_finction_(eval_function) {};
-    std::shared_ptr<Move> makeMove(const Game &game) override;
+    Move makeMove(const Game &game) override;
 
-private:
+   private:
     evaluate_function_t evaluation_finction_;
 };
 

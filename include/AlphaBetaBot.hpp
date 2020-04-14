@@ -15,10 +15,15 @@ public:
                  depth_(depth),  
                  functions_(set_number) {};
 
-    std::shared_ptr<Move> makeMove(const Game &g) override;
+    Move makeMove(const Game &g) override;
 
-private:
-    std::pair<int, std::shared_ptr<Move>> make_virtual_move(const Game &game, PlayerColour colour, bool max, int alpha, int beta, int depth);
+   private:
+    std::pair<int, Move> make_virtual_move(const Game &game,
+                                           PlayerColour colour,
+                                           bool max,
+                                           int alpha,
+                                           int beta,
+                                           int depth);
     int depth_;
     // evaluate_function_t evaluation_function_;
     FunctionSet functions_;

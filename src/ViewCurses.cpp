@@ -184,7 +184,6 @@ void viewCurses::updateCellStatus(const Position& pos, bool before) {
 }
 
 void viewCurses::setCellStatus(ViewCellCurses& cell, const CellStatus& status) {
-    
 }
 
 void viewCurses::setCellStatus(const Position& pos, const CellStatus& status) {
@@ -234,20 +233,19 @@ void viewCurses::unselectPosition() {
 
 void viewCurses::makeUniStep() {
     cerr << "UniStep " << currentPos.posW() << ' ' << currentPos.posH() << " was done" << endl;
-    controller_->makeMove(*board_->get(currentPos).inMoves[0]);
+    controller_->makeMove(board_->get(currentPos).inMoves[0]);
     reloadModel();
     board_->get(currentPos).status = CellStatus::INACTIVE;
     currentPosStatus = CurrentPosStatus::UNSELECTED;
 }
 
-void viewCurses::makeMultiStep_TransformMove(std::vector<std::shared_ptr<Move>>& inMoves) {
+void viewCurses::makeMultiStep_TransformMove(std::vector<Move>& inMoves) {
     cerr << "transform move" << endl;
     // TODO(23jura23) unneeded?
     //                                        updatePositions(newPos);
     vector<shared_ptr<Figure>> potentialFigures(inMoves.size());
     for (size_t i = 0; i < inMoves.size(); ++i)
-        potentialFigures[i] =
-            make_shared<Figure>(dynamic_pointer_cast<Move>(inMoves[i])->to_figure_new_);
+        potentialFigures[i] = make_shared<Figure>(inMoves[i].to_figure_new_);
 
     bool running_transform = 1;
     int currentIndex = 0;
@@ -267,7 +265,7 @@ void viewCurses::makeMultiStep_TransformMove(std::vector<std::shared_ptr<Move>>&
                 break;
             case 32:
                 // TODO(23jura23) function for local makeMove, lambda? function in run()?
-                controller_->makeMove(*board_->get(currentPos).inMoves[currentIndex]);
+                controller_->makeMove(board_->get(currentPos).inMoves[currentIndex]);
                 reloadModel();
                 board_->get(currentPos).status = CellStatus::INACTIVE;
                 currentPosStatus = CurrentPosStatus::UNSELECTED;
@@ -285,12 +283,12 @@ void viewCurses::makeMultiStep() {
     auto& inMoves = board_->get(currentPos).inMoves;
     cerr << "inMoves size: " << inMoves.size() << endl;
     //TODO(23jura23) first-match choice of succeeded MultiSteps' checks
-    constexpr auto transformMoveCheck = [](std::vector<std::shared_ptr<Move>>& inMoves_) {
+    constexpr auto transformMoveCheck = [](std::vector<Move>& inMoves_) {
         bool result = 1;
-        if (!inMoves_.size())
+        if (inMoves_.empty())
             result = 0;
-        for (size_t i = 0; i < inMoves_.size(); ++i) {
-            if (!dynamic_pointer_cast<Move>(inMoves_[i])) {
+        for (auto& inMove : inMoves_) {
+            if (inMove.from_figure_old_ == inMove.to_figure_new_) {
                 result = 0;
                 break;
             }
@@ -315,28 +313,23 @@ void viewCurses::run() {
         if (winner != GameStatus::game_running_) {
             // but you need to make universal interface of multistep, where unistep is just multistep with only one possible move. And blinking will be just the implementation for TransformMove
             // TODO(23jura23) think about appearing sliding menu in left or right part of screen
-            if (winner == GameStatus::game_over_white_win_)
-            {
+            if (winner == GameStatus::game_over_white_win_) {
                 clear();
-                move(0,0);
+                move(0, 0);
                 printw("White win!");
                 refresh();
                 usleep(7000000);
                 return;
-            }
-            else if (winner == GameStatus::game_over_black_win_)
-            {
+            } else if (winner == GameStatus::game_over_black_win_) {
                 clear();
-                move(0,0);
+                move(0, 0);
                 printw("Black win!");
                 refresh();
                 usleep(7000000);
                 return;
-            }
-            else
-            {
+            } else {
                 clear();
-                move(0,0);
+                move(0, 0);
                 printw("Unexcepectedly, game finished!..");
                 refresh();
                 usleep(15000000);
@@ -404,10 +397,10 @@ void viewCurses::run() {
         cerr << "newPos: " << newPos.posW() << ' ' << newPos.posH() << endl;
         cerr << "truepos" << newPos.x_ << ' ' << newPos.y_ << ' ' << newPos.z_ << endl;
         updatePositions(newPos);
-//        if (inBoard(newPos)) {
-//            currentPos = newPos;
-//            updateCellsStatus();
-//        }
+        //        if (inBoard(newPos)) {
+        //            currentPos = newPos;
+        //            updateCellsStatus();
+        //        }
     }
 }
 

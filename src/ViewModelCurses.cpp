@@ -7,9 +7,9 @@ using ViewCellCurses = ViewModelCurses::ViewCellCurses;
 using namespace std;
 
 ViewModelCurses::ViewModelCurses(const Board& board, PlayerColour turn)
-    : rows{board.rows_}
-    , cols{board.cols_}
-    , turn{turn} {
+        : rows{board.rows_}
+        , cols{board.cols_}
+        , turn{turn} {
     freopen("error.txt", "a", stderr);
     viewBoard.resize(board.cols_);
     for (size_t i = 0; i < board.data_.size(); ++i)
@@ -18,11 +18,11 @@ ViewModelCurses::ViewModelCurses(const Board& board, PlayerColour turn)
 }
 
 ViewModelCurses::ViewModelCurses(const Board& board_, PlayerColour turn_, MovesTable& movesTable)
-    : ViewModelCurses(board_, turn_) {
-        //TODO(23jura23) receive previous position and highlight its status
+        : ViewModelCurses(board_, turn_) {
+    //TODO(23jura23) receive previous position and highlight its status
     for (size_t i = 0; i < movesTable.size(); ++i) {
-        int x = movesTable[i]->to_.posW();
-        int y = movesTable[i]->to_.posH();
+        int x = movesTable[i].to_.posW();
+        int y = movesTable[i].to_.posH();
         viewBoard[x][y].inMoves.push_back(movesTable[i]);
         viewBoard[x][y].status = ViewCellCurses::ViewCellCursesStatus::ACTIVE;
         cerr << x << " and " << y << " are active!" << endl;
@@ -30,8 +30,8 @@ ViewModelCurses::ViewModelCurses(const Board& board_, PlayerColour turn_, MovesT
 }
 
 ViewModelCurses::ViewCellCurses::ViewCellCurses(Cell cell, ViewCellCursesStatus status)
-    : cell{cell}
-    , status{status} {
+        : cell{cell}
+        , status{status} {
 }
 
 ViewCellCurses& ViewModelCurses::get(const Position& pos) {

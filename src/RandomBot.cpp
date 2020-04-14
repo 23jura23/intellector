@@ -9,14 +9,14 @@ const int seed = 1337;
 
 std::mt19937 rnd(seed);
 
-std::shared_ptr<Move> RandomBot::makeMove(const Game &game) {
+Move RandomBot::makeMove(const Game &game) {
     Board board = Board(game.getBoard());
 
-    std::vector<std::shared_ptr<Move>> all_moves;
+    std::vector<Move> all_moves;
 
     for (auto &row : board.data_)
         for (auto &cell : row) {
-            std::vector<std::shared_ptr<Move>> moves = game.allFigureMoves(cell.pos_);
+            std::vector<Move> moves = game.allFigureMoves(cell.pos_);
             for (auto move : moves) all_moves.push_back(move);
         }
 

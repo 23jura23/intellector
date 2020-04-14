@@ -2,29 +2,27 @@
 #include "Game.hpp"
 #include <vector>
 
-std::shared_ptr<Move> GreedyBot::makeMove(const Game &game) {
+Move GreedyBot::makeMove(const Game &game) {
     auto colour = game.getColourCurrentPlayer();
     Board board = Board(game.getBoard());
-    std::vector<std::shared_ptr<Move>> all_moves;
+    std::vector<Move> all_moves;
 
     for (auto &row : board.data_)
         for (auto &cell : row) {
-            std::vector<std::shared_ptr<Move>> moves = game.allFigureMoves(cell.pos_);
+            std::vector<Move> moves = game.allFigureMoves(cell.pos_);
             for (auto &move : moves) all_moves.push_back(move);
         }
 
     int max = -1e9;
-    std::shared_ptr<Move> res = nullptr;
-    for(auto &move : all_moves)
-    {
-    	Game gamecopy(game);
-    	gamecopy.makeMove(*move);	
-    	int eval = evaluation_finction_(gamecopy, colour);
-    	if(eval > max)
-    	{
-    		res = move;
-    		max = eval;
-    	}
+    Move res;
+    for(auto &move : all_moves) {
+        Game gamecopy(game);
+        gamecopy.makeMove(move);
+        int eval = evaluation_finction_(gamecopy, colour);
+        if (eval > max) {
+            res = move;
+            max = eval;
+        }
     }
     return res;
 }

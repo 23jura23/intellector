@@ -60,7 +60,7 @@ class viewCurses : public viewBase {
     void unselectPosition();
     void makeUniStep();
     void makeMultiStep();
-    void makeMultiStep_TransformMove(std::vector<std::shared_ptr<Move>>&);
+    void makeMultiStep_TransformMove(std::vector<Move>&);
 };
 
 }  // namespace ViewCurses

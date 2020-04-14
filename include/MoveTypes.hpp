@@ -13,6 +13,15 @@
 
 class Move {
    public:
+    Move()
+            : from_(0, 0)
+            , to_(0, 0)
+            , from_figure_old_(PlayerColour::white_, FigureType::PROGRESSOR)
+            , to_figure_new_(PlayerColour::white_, FigureType::PROGRESSOR)
+            , from_figure_new_(std::nullopt)
+            , to_figure_old_(std::nullopt) {
+    }
+
     Move(const Position& from_pos,
          const Position& to_pos,
          const Figure& from_figure,

@@ -37,7 +37,7 @@ class Game {
 
     bool makeMove(const Move& move);
 
-    [[nodiscard]] std::vector<std::shared_ptr<Move>> allFigureMoves(Position pos) const;
+    [[nodiscard]] std::vector<Move> allFigureMoves(Position pos) const;
 
     [[nodiscard]] const Board& getBoard() const {
         return board_;

@@ -27,20 +27,20 @@ bool Game::makeMove(const Move& move) {
     if (turn_ == PlayerColour::white_) {
         turn_ = PlayerColour::black_;
         if (black_bot_) {
-            (*black_bot_->makeMove(*this)).makeMove(board_);
+            black_bot_->makeMove(*this).makeMove(board_);
             turn_ = PlayerColour::white_;
         }
     } else {
         turn_ = PlayerColour::white_;
         if (white_bot_) {
-            (*white_bot_->makeMove(*this)).makeMove(board_);
+            white_bot_->makeMove(*this).makeMove(board_);
             turn_ = PlayerColour::black_;
         }
     }
     return true;
 }
 
-std::vector<std::shared_ptr<Move>> Game::allFigureMoves(Position pos) const {
+std::vector<Move> Game::allFigureMoves(Position pos) const {
     if (!board_[pos].figure_.has_value() || board_[pos].figure_->colour_ != turn_)
         return {};
 
@@ -56,18 +56,17 @@ GameStatus Game::getGameStatus() const {  // может можно получш�
     bool is_white_intellector = false;
     bool is_black_intellector = false;
     bool player_can_move = false;
-    freopen("error.txt","a",stderr);
+    freopen("error.txt", "a", stderr);
 
     for (const auto& row : board_.data_)
         for (const auto& cell : row) {
             if (!cell.figure_.has_value())
                 continue;
-            if (cell.figure_->type_ == FigureType::INTELLECTOR)
-            {
+            if (cell.figure_->type_ == FigureType::INTELLECTOR) {
                 if (cell.figure_->colour_ == PlayerColour::white_)
                     is_white_intellector = true;
                 else
-                 is_black_intellector = true;
+                    is_black_intellector = true;
             }
 
             std::shared_ptr<FigureMoveValidator> figure =

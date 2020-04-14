@@ -12,7 +12,7 @@ class Game;
 class Bot {
    public:
     Bot() = default;
-    virtual std::shared_ptr<Move> makeMove(const Game &g) = 0;
+    virtual Move makeMove(const Game &g) = 0;
 };
 
 #endif  // _BOT_HPP
