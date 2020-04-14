@@ -49,10 +49,18 @@ class Game {
 
     [[nodiscard]] GameStatus getGameStatus() const;
 
+    bool cancelMove();
+
+    bool nextMove();
+    bool prevMove();
+
    private:
     Board board_;
     PlayerColour turn_ = PlayerColour::white_;
     std::shared_ptr<Bot> white_bot_ = nullptr, black_bot_ = nullptr;
+
+    std::vector<Move> history_of_moves_ = {};
+    size_t point_of_history_ = 0;
 };
 
 #endif  //_INTELLECTOR_CONTROLLER_HPP

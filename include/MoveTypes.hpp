@@ -62,6 +62,7 @@ class Move {
     }
 
     virtual bool makeMove(Board& board) const;
+    virtual bool cancelMove(Board& board) const;  // turn должен быть не правильным
 
     Position from_, to_;
     Figure from_figure_old_, to_figure_new_;

@@ -24,17 +24,28 @@ bool Game::makeMove(const Move& move) {
     if (!move.makeMove(board_))
         return false;
 
+    history_of_moves_.push_back(move);
+    ++point_of_history_;
+
     if (turn_ == PlayerColour::white_) {
         turn_ = PlayerColour::black_;
         if (black_bot_) {
-            black_bot_->makeMove(*this).makeMove(board_);
+            Move bot_move = black_bot_->makeMove(*this);
+            bot_move.makeMove(board_);
             turn_ = PlayerColour::white_;
+
+            history_of_moves_.push_back(bot_move);
+            ++point_of_history_;
         }
     } else {
         turn_ = PlayerColour::white_;
         if (white_bot_) {
-            white_bot_->makeMove(*this).makeMove(board_);
+            Move bot_move = white_bot_->makeMove(*this);
+            bot_move.makeMove(board_);
             turn_ = PlayerColour::black_;
+
+            history_of_moves_.push_back(bot_move);
+            ++point_of_history_;
         }
     }
     return true;
@@ -89,4 +100,47 @@ GameStatus Game::getGameStatus() const {  // может можно получш�
 
     return turn_ == PlayerColour::black_ ? GameStatus::game_over_white_win_
                                          : GameStatus::game_over_black_win_;
+}
+
+bool Game::cancelMove() {
+    if (point_of_history_ != history_of_moves_.size() || point_of_history_ == 0)
+        return false;
+
+    --point_of_history_;
+    turn_ = other_colour(turn_);
+
+    if (history_of_moves_[point_of_history_].cancelMove(board_)) {
+        history_of_moves_.pop_back();
+        return true;
+    }
+    turn_ = other_colour(turn_);
+    ++point_of_history_;
+    return false;
+}
+
+bool Game::nextMove() {
+    if (point_of_history_ == history_of_moves_.size())
+        return false;
+
+    if (!history_of_moves_[point_of_history_].makeMove(board_))
+        return false;
+
+    turn_ = other_colour(turn_);
+    ++point_of_history_;
+    return true;
+}
+
+bool Game::prevMove() {
+    if (point_of_history_ == 0)
+        return false;
+
+    --point_of_history_;
+    turn_ = other_colour(turn_);
+
+    if (history_of_moves_[point_of_history_].cancelMove(board_)) {
+        return true;
+    }
+    turn_ = other_colour(turn_);
+    ++point_of_history_;
+    return false;
 }
