@@ -15,11 +15,12 @@ struct ViewModelCurses : public ViewModelBase {
 
     struct ViewCellCurses {
         enum class ViewCellCursesStatus {
-            ACTIVE,    // possible move
-            INACTIVE,  // nothing special
-            CURRENT,   // current pointer position
-            SELECTED,  // selected to make move
-            PREVIOUS   // previous cell of moved figure
+            ACTIVE,         // possible move
+            INACTIVE,       // nothing special
+            CURRENT,        // current pointer position
+            SELECTED,       // selected to make move
+            PREVIOUS_FROM,  // previous cell of moved figure
+            PREVIOUS_TO     // current cell of moved figure
         };
 
         ViewCellCurses(Cell, ViewCellCursesStatus = ViewCellCursesStatus::INACTIVE);
@@ -28,13 +29,18 @@ struct ViewModelCurses : public ViewModelBase {
         std::vector<std::shared_ptr<Move>> inMoves;
         ViewCellCursesStatus status;
     };
-    ViewCellCurses& operator[](const Position& pos);
-    const ViewCellCurses& operator[](const Position& pos) const;
+
+    ViewCellCurses& get(const Position& pos);
+    const ViewCellCurses& get(const Position& pos) const;
 
     const int cols, rows;
     std::vector<std::vector<ViewCellCurses>> viewBoard;
     PlayerColour turn;
 };
+
+
+using CellStatus = ViewModelCurses::ViewCellCurses::ViewCellCursesStatus;
+using ViewCellCurses = ViewModelCurses::ViewCellCurses;
 
 }  // namespace ViewCurses
 

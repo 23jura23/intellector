@@ -34,10 +34,10 @@ ViewModelCurses::ViewCellCurses::ViewCellCurses(Cell cell, ViewCellCursesStatus 
     , status{status} {
 }
 
-ViewCellCurses& ViewModelCurses::operator[](const Position& pos) {
+ViewCellCurses& ViewModelCurses::get(const Position& pos) {
     return viewBoard[pos.posW()][pos.posH()];
 }
-const ViewCellCurses& ViewModelCurses::operator[](const Position& pos) const {
+const ViewCellCurses& ViewModelCurses::get(const Position& pos) const {
     return viewBoard[pos.posW()][pos.posH()];
 }
 

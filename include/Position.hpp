@@ -80,6 +80,9 @@ class Position {
         return !(*this == other);
     }
 
+    template <int dim = 2>
+    [[nodiscard]] inline bool equal(const Position& other) const;
+
     [[nodiscard]] int posW() const {
         return -x_ + z_;
     }
@@ -90,5 +93,15 @@ class Position {
 
     int x_, y_, z_;
 };
+
+template <>
+[[nodiscard]] inline bool Position::equal<3>(const Position& other) const {
+    return *this == other;
+}
+
+template <>
+[[nodiscard]] inline bool Position::equal<2>(const Position& other) const {
+    return (this->posW() == other.posW() && this->posH() == other.posH());
+}
 
 #endif  //_INTELLECTOR_POSITION_HPP
