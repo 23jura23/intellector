@@ -69,13 +69,13 @@ GameStatus Game::getGameStatus() const {  // может можно получш�
                     is_black_intellector = true;
             }
 
-            std::shared_ptr<FigureMoveValidator> figure =
-                FigureMoveValidator::create(board_, board_[cell.pos_].figure_.value(), cell.pos_);
-
             if (cell.figure_->colour_ != turn_ || player_can_move)
                 continue;
 
-            player_can_move |= !figure->allMoves().empty();
+            std::shared_ptr<FigureMoveValidator> figure =
+                FigureMoveValidator::create(board_, board_[cell.pos_].figure_.value(), cell.pos_);
+
+            player_can_move = !figure->allMoves().empty();
         }
 
     cerr << player_can_move << endl;
