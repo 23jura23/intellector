@@ -49,35 +49,44 @@ std::vector<std::shared_ptr<Move>> Game::allFigureMoves(Position pos) const {
     return figure->allMoves();
 }
 
+#include <iostream>
+using namespace std;
+
 GameStatus Game::getGameStatus() const {  // может можно получше
     bool is_white_intellector = false;
     bool is_black_intellector = false;
     bool player_can_move = false;
+    freopen("error.txt","a",stderr);
 
     for (const auto& row : board_.data_)
         for (const auto& cell : row) {
             if (!cell.figure_.has_value())
                 continue;
             if (cell.figure_->type_ == FigureType::INTELLECTOR)
-                cell.figure_->colour_ == PlayerColour::white_ ? is_white_intellector = true
-                                                              : is_black_intellector = true;
+            {
+                if (cell.figure_->colour_ == PlayerColour::white_)
+                    is_white_intellector = true;
+                else
+                 is_black_intellector = true;
+            }
 
             std::shared_ptr<FigureMoveValidator> figure =
                 FigureMoveValidator::create(board_, board_[cell.pos_].figure_.value(), cell.pos_);
 
-            if (cell.figure_->colour_ == turn_ && player_can_move)
+            if (cell.figure_->colour_ != turn_ || player_can_move)
                 continue;
 
-            player_can_move = !figure->allMoves().empty();
+            player_can_move |= !figure->allMoves().empty();
         }
 
+    cerr << player_can_move << endl;
     if (is_black_intellector && is_white_intellector && player_can_move)
         return GameStatus::game_running_;
 
     if (!is_black_intellector)
-        return GameStatus::game_over_black_win_;
-    if (!is_white_intellector)
         return GameStatus::game_over_white_win_;
+    if (!is_white_intellector)
+        return GameStatus::game_over_black_win_;
 
     return turn_ == PlayerColour::black_ ? GameStatus::game_over_white_win_
                                          : GameStatus::game_over_black_win_;

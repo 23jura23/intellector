@@ -315,6 +315,33 @@ void viewCurses::run() {
         if (winner != GameStatus::game_running_) {
             // but you need to make universal interface of multistep, where unistep is just multistep with only one possible move. And blinking will be just the implementation for TransformMove
             // TODO(23jura23) think about appearing sliding menu in left or right part of screen
+            if (winner == GameStatus::game_over_white_win_)
+            {
+                clear();
+                move(0,0);
+                printw("White win!");
+                refresh();
+                usleep(7000000);
+                return;
+            }
+            else if (winner == GameStatus::game_over_black_win_)
+            {
+                clear();
+                move(0,0);
+                printw("Black win!");
+                refresh();
+                usleep(7000000);
+                return;
+            }
+            else
+            {
+                clear();
+                move(0,0);
+                printw("Unexcepectedly, game finished!..");
+                refresh();
+                usleep(15000000);
+                return;
+            }
         }
         chtype c = getch();
 
@@ -377,6 +404,10 @@ void viewCurses::run() {
         cerr << "newPos: " << newPos.posW() << ' ' << newPos.posH() << endl;
         cerr << "truepos" << newPos.x_ << ' ' << newPos.y_ << ' ' << newPos.z_ << endl;
         updatePositions(newPos);
+//        if (inBoard(newPos)) {
+//            currentPos = newPos;
+//            updateCellsStatus();
+//        }
     }
 }
 
