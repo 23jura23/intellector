@@ -4,42 +4,6 @@
 #include "Cell.hpp"
 #include "Game.hpp"
 
-bool operator==(const Board &a, const Board &b)
-{
-    return a.data_ == b.data_;
-}
-
-bool operator==(const Figure &a, const Figure &b)
-{
-    return (a.colour_ == b.colour_ && a.type_ == b.type_);
-}
-
-bool operator==(const Cell &a, const Cell &b)
-{
-    // return a.data_ == b.data_;
-    if(a.pos_ != b.pos_ || a.colour_ != b.colour_)
-        return 0;
-
-    if((a.figure_.has_value() && !b.figure_.has_value()) || (!a.figure_.has_value() && b.figure_.has_value()))
-        return 0;
-
-    if(a.figure_.has_value())
-    {
-        if(!(*a.figure_ == *b.figure_))
-            return 0;
-    }
-
-    return 1;
-}
-
-PlayerColour other_colour(PlayerColour colour)
-{
-    if(colour == PlayerColour::black_)
-        return PlayerColour::white_;
-    else
-        return PlayerColour::black_;
-}
-
 namespace evaluate
 {
     const std::unordered_map<FigureType, int> figure_value = 

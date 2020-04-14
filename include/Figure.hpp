@@ -20,11 +20,11 @@ class Figure {
     Figure(const Figure&) = default;
     Figure& operator=(const Figure&) = default;
 
-    bool inline operator==(const Figure& other) {
+    bool inline operator==(const Figure& other) const {
         return colour_ == other.colour_ && type_ == other.type_;
     }
 
-    bool inline operator!=(const Figure& other) {
+    bool inline operator!=(const Figure& other) const {
         return colour_ != other.colour_ || type_ != other.type_;
     }
 
@@ -43,6 +43,13 @@ bool inline operator==(const std::optional<Figure>& a, const std::optional<Figur
 
 bool inline operator!=(const std::optional<Figure>& a, const std::optional<Figure>& b) {
     return !(a == b);
+}
+
+PlayerColour inline other_colour(PlayerColour colour) {
+    if (colour == PlayerColour::black_)
+        return PlayerColour::white_;
+    else
+        return PlayerColour::black_;
 }
 
 #endif  //MY_FOLDER_FIGURE_HPP

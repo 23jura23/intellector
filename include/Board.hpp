@@ -23,6 +23,10 @@ class Board {
 
     std::vector<std::vector<Cell>> data_;
     static constexpr int cols_ = 9, rows_ = 7;  // ширина и высота
+
+    [[nodiscard]] bool inline operator==(const Board& other) const {
+        return data_ == other.data_;
+    }
 };
 
 [[nodiscard]] inline bool inBoard(Position pos) {

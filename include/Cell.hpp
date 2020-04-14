@@ -23,6 +23,13 @@ class Cell {
     std::optional<Figure> figure_;
     const CellColour colour_;
     const Position pos_;
+
+    [[nodiscard]] bool inline operator==(const Cell& other) const {
+        return pos_.equal<2>(other.pos_) && figure_ == other.figure_;
+    }
+    [[nodiscard]] bool inline operator!=(const Cell& other) const {
+        return !(*this == other);
+    }
 };
 
 #endif  //_PROJECT_CELL_HPP
