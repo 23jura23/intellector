@@ -8,7 +8,8 @@
 #include "Evaluate.hpp"
 
 
-std::shared_ptr<Bot> BotFactory(const GameSettings &settings) {
+std::shared_ptr<Bot> BotFactory(const GameSettings &settings) 
+{
     // void(settings.difficulty());
     int difficulty = settings.difficulty();
     std::shared_ptr<Bot> bot;

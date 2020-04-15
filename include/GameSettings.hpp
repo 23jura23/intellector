@@ -6,18 +6,20 @@ class GameSettings {
     GameSettings(int diff, bool first, bool second)
             : difficulty_(diff)
             , first_player_(first)
-            , second_player_(second) {
-    }
+            , second_player_(second) {};
 
-    [[nodiscard]] int difficulty() const {
+    [[nodiscard]] int difficulty() const 
+    {
         return difficulty_;
     }
 
-    [[nodiscard]] bool first_player() const {
+    [[nodiscard]] bool first_player() const 
+    {
         return first_player_;
     }
 
-    [[nodiscard]] bool second_player() const {
+    [[nodiscard]] bool second_player() const 
+    {
         return second_player_;
     }
 

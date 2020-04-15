@@ -9,7 +9,8 @@
 
 class Game;
 
-class Bot {
+class Bot 
+{
    public:
     Bot() = default;
     virtual Move makeMove(const Game &g) = 0;
