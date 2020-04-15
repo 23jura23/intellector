@@ -3,8 +3,8 @@
 #define _ALPHABETABOT_HPP
 
 #include "Bot.hpp"
-// #include "Evaluate.hpp"
 #include "FunctionSet.hpp"
+#include "FigureKeeper.hpp"
 // #pragma once
 
 class AlphaBetaBot : Bot
@@ -18,16 +18,18 @@ public:
     Move makeMove(const Game &g) override;
 
    private:
-    std::pair<int, Move> make_virtual_move(const Game &game,
+    std::pair<int, Move> make_virtual_move(Game &game,
                                            PlayerColour colour,
                                            bool max,
                                            int alpha,
                                            int beta,
-                                           int depth);
+                                           int depth, 
+                                           int prev_value);
+
     int depth_;
     // evaluate_function_t evaluation_function_;
     FunctionSet functions_;
-
+    FigureKeeper figures_;
 };
 
 #endif  //_ALPHABETABOT_HPP

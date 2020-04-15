@@ -11,7 +11,7 @@ class Game;
 
 class Bot 
 {
-   public:
+public:
     Bot() = default;
     virtual Move makeMove(const Game &g) = 0;
 };

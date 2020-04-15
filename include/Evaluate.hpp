@@ -71,7 +71,18 @@ namespace std
         }
     };
 
+    template <>
+    struct hash<Position>
+    {
+        size_t operator()(const Position &pos) const
+        {
+            return std::hash<int>()(pos.x_) * 31 * 31 + std::hash<int>()(pos.y_) * 31 + std::hash<int>()(pos.z_);
+        } 
+
+    };
 };  // namespace std
+
+bool operator==(const Move &a, const Move& b);
 
 namespace evaluate 
 {

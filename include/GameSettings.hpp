@@ -1,7 +1,8 @@
 #ifndef _GAMESETTINGS_HPP
 #define _GAMESETTINGS_HPP
 
-class GameSettings {
+class GameSettings 
+{
    public:
     GameSettings(int diff, bool first, bool second)
             : difficulty_(diff)
