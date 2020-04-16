@@ -17,3 +17,5 @@ ConstructorInitializerIndentWidth: 8
 IndentPPDirectives: BeforeHash
 AllowShortBlocksOnASingleLine: false
 AllowShortIfStatementsOnASingleLine: false
+AlwaysBreakBeforeMultilineStrings: false
+BreakStringLiterals: true
