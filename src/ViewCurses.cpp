@@ -172,13 +172,13 @@ void viewCurses::updateCellStatus(const Position& pos, bool before) {
                 board_->get(pos).status = CellStatus::INACTIVE;
         } else {
             // update status after pointer moves
-            if (!(currentPosStatus == CurrentPosStatus::SELECTED &&
-                  currentPos.equal<2>(selectedPos)))
-                board_->get(pos).status = CellStatus::CURRENT;
-            else if (pos == previousFromPos)
+            if (pos == previousFromPos)
                 board_->get(pos).status = CellStatus::PREVIOUS_FROM;
             else if (pos == previousToPos)
                 board_->get(pos).status = CellStatus::PREVIOUS_TO;
+            else if (!(currentPosStatus == CurrentPosStatus::SELECTED &&
+                       currentPos.equal<2>(selectedPos)))
+                board_->get(pos).status = CellStatus::CURRENT;
         }
     }
 }
