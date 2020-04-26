@@ -12,17 +12,19 @@
 
 using namespace std;
 
-#define CLASSIC
+#define BLACK_AND_WHITE
 
 #ifdef BLACK_AND_WHITE
     #define COLOR_WHITE_CELL          255
     #define COLOR_BLACK_CELL          237
     #define COLOR_WHITE_FIGURE        187
     #define COLOR_BLACK_FIGURE        137
-    #define COLOR_WHITE_ACTIVE        82
-    #define COLOR_BLACK_ACTIVE        70
+    #define COLOR_WHITE_ACTIVE        88
+    #define COLOR_BLACK_ACTIVE        88
     #define COLOR_WHITE_CURRENT       123
     #define COLOR_BLACK_CURRENT       111
+    #define COLOR_WHITE_SELECTED      56
+    #define COLOR_BLACK_SELECTED      55
     #define COLOR_WHITE_PREVIOUS_FROM 78
     #define COLOR_BLACK_PREVIOUS_FROM 76
     #define COLOR_WHITE_PREVIOUS_TO   79
@@ -124,6 +126,7 @@ viewCurses::viewCurses(std::shared_ptr<Controller> controller)
         endwin();
         throw ViewBaseException("Your terminal does not support colors");
     }
+    use_default_colors();
     start_color();
     cerr << "COLORS:" << COLORS << endl;
 
