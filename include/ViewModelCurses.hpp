@@ -25,17 +25,17 @@ struct ViewModelCurses : public ViewModelBase {
 
         ViewCellCurses(Cell, ViewCellCursesStatus = ViewCellCursesStatus::INACTIVE);
 
-        Cell cell;
-        std::vector<Move> inMoves;
-        ViewCellCursesStatus status;
+        Cell cell_;
+        std::vector<Move> inMoves_;
+        ViewCellCursesStatus status_;
     };
 
     ViewCellCurses& get(const Position& pos);
     const ViewCellCurses& get(const Position& pos) const;
 
-    const int cols, rows;
-    std::vector<std::vector<ViewCellCurses>> viewBoard;
-    PlayerColour turn;
+    const int cols_, rows_;
+    std::vector<std::vector<ViewCellCurses>> viewBoard_;
+    PlayerColour turn_;
 };
 
 

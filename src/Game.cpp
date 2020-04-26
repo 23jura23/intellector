@@ -60,14 +60,10 @@ std::vector<Move> Game::allFigureMoves(Position pos) const {
     return figure->allMoves();
 }
 
-#include <iostream>
-using namespace std;
-
 GameStatus Game::getGameStatus() const {  // может можно получше
     bool is_white_intellector = false;
     bool is_black_intellector = false;
     bool player_can_move = false;
-    freopen("error.txt", "a", stderr);
 
     for (const auto& row : board_.data_)
         for (const auto& cell : row) {
@@ -89,7 +85,6 @@ GameStatus Game::getGameStatus() const {  // может можно получш�
             player_can_move = !figure->allMoves().empty();
         }
 
-    cerr << player_can_move << endl;
     if (is_black_intellector && is_white_intellector && player_can_move)
         return GameStatus::game_running_;
 

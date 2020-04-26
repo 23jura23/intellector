@@ -89,15 +89,15 @@ void viewCurses::calculateTL() {
 
     if (CENTER_ALIGN) {
         size_t leny = 0;
-        for (size_t i = 0; i < board_->viewBoard.size(); ++i) {
-            size_t j = board_->viewBoard[i].size();
+        for (size_t i = 0; i < board_->viewBoard_.size(); ++i) {
+            size_t j = board_->viewBoard_[i].size();
             leny = max(leny, getTL({i, j}).second);
         }
         size_t lenx = 0;
-        if (board_->cols <= 0)
+        if (board_->cols_ <= 0)
             throw ViewBaseException("Width of board must be positive");
-        for (size_t j = 0; j < board_->viewBoard[board_->cols - 1].size(); ++j) {
-            lenx = max(lenx, getTL({board_->cols, j}).first);
+        for (size_t j = 0; j < board_->viewBoard_[board_->cols_ - 1].size(); ++j) {
+            lenx = max(lenx, getTL({board_->cols_, j}).first);
         }
         tlx = maxx / 2 - lenx / 2;
         tly = maxy / 2 - leny / 2;
@@ -113,7 +113,9 @@ viewCurses::viewCurses(std::shared_ptr<Controller> controller)
         , tly{0}
         , currentPos{-2, 3, 2}
         , currentPosStatus{CurrentPosStatus::UNSELECTED} {
-    freopen("error.txt", "a", stderr);
+    auto rv = freopen("error.txt", "a", stderr);
+    static_cast<void>(rv);
+    // avoiding warning. May be harmful, but later there must be a well-done logging.
 
     fetchModel();
     updateCellStatus(currentPos, 1);
@@ -166,32 +168,32 @@ viewCurses::~viewCurses() {
 void viewCurses::updateCellStatus(const Position& pos, bool before) {
     if (inBoard(pos)) {
         if (before) {
-            // update status before pointer moves
+            // update status_ before pointer moves
             if (currentPosStatus == CurrentPosStatus::SELECTED && currentPos.equal<2>(selectedPos))
-                board_->get(pos).status = CellStatus::SELECTED;
-            else if (board_->get(pos).inMoves.size())
-                board_->get(pos).status = CellStatus::ACTIVE;
+                board_->get(pos).status_ = CellStatus::SELECTED;
+            else if (board_->get(pos).inMoves_.size())
+                board_->get(pos).status_ = CellStatus::ACTIVE;
             else
-                board_->get(pos).status = CellStatus::INACTIVE;
+                board_->get(pos).status_ = CellStatus::INACTIVE;
         } else {
-            // update status after pointer moves
+            // update status_ after pointer moves
             if (pos == previousFromPos)
-                board_->get(pos).status = CellStatus::PREVIOUS_FROM;
+                board_->get(pos).status_ = CellStatus::PREVIOUS_FROM;
             else if (pos == previousToPos)
-                board_->get(pos).status = CellStatus::PREVIOUS_TO;
+                board_->get(pos).status_ = CellStatus::PREVIOUS_TO;
             else if (!(currentPosStatus == CurrentPosStatus::SELECTED &&
                        currentPos.equal<2>(selectedPos)))
-                board_->get(pos).status = CellStatus::CURRENT;
+                board_->get(pos).status_ = CellStatus::CURRENT;
         }
     }
 }
 
-void viewCurses::setCellStatus(ViewCellCurses& cell, const CellStatus& status) {
-}
-
-void viewCurses::setCellStatus(const Position& pos, const CellStatus& status) {
-    setCellStatus(board_->get(pos), status);
-}
+//void viewCurses::setCellStatus(ViewCellCurses& cell, const CellStatus& status_) {
+//}
+//
+//void viewCurses::setCellStatus(const Position& pos, const CellStatus& status_) {
+//    setCellStatus(board_->get(pos), status_);
+//}
 
 void viewCurses::updatePositions(const Position& newPos) {
     if (inBoard(newPos)) {
@@ -208,16 +210,16 @@ void viewCurses::updatePositions(const Position& newPos) {
 
 // TODO(23jura23) rename markSelection? and 0/1 for select/unselect. or markSelected?
 void viewCurses::selectPosition() {
-    if (board_->get(currentPos).cell.figure_.has_value() &&
-        board_->get(currentPos).cell.figure_->colour_ == controller_->getCurrentPlayer()) {
+    if (board_->get(currentPos).cell_.figure_.has_value() &&
+        board_->get(currentPos).cell_.figure_->colour_ == controller_->getCurrentPlayer()) {
         cerr << "Cell " << currentPos.posW() << ' ' << currentPos.posH() << " was selected" << endl;
         // Cell with figure was selected
 
         currentPosStatus = CurrentPosStatus::SELECTED;
         selectedPos = currentPos;
-        controller_->selectCell<ViewCurses::viewCurses>(board_->get(selectedPos).cell);
+        controller_->selectCell<ViewCurses::viewCurses>(board_->get(selectedPos).cell_);
         fetchModel();
-        board_->get(selectedPos).status = CellStatus::SELECTED;
+        board_->get(selectedPos).status_ = CellStatus::SELECTED;
     } else {
         cerr << "Empty cell " << currentPos.posW() << ' ' << currentPos.posH()
              << " was tried to be selected (unsuccessfully)" << endl;
@@ -230,47 +232,47 @@ void viewCurses::unselectPosition() {
     // Cell was unselected
 
     reloadModel();
-    board_->get(currentPos).status = CellStatus::INACTIVE;
+    board_->get(currentPos).status_ = CellStatus::INACTIVE;
     currentPosStatus = CurrentPosStatus::UNSELECTED;
 }
 
 void viewCurses::makeUniStep() {
     cerr << "UniStep " << currentPos.posW() << ' ' << currentPos.posH() << " was done" << endl;
-    controller_->makeMove(board_->get(currentPos).inMoves[0]);
+    controller_->makeMove(board_->get(currentPos).inMoves_[0]);
     reloadModel();
-    board_->get(currentPos).status = CellStatus::INACTIVE;
+    board_->get(currentPos).status_ = CellStatus::INACTIVE;
     currentPosStatus = CurrentPosStatus::UNSELECTED;
 }
 
-void viewCurses::makeMultiStep_TransformMove(std::vector<Move>& inMoves) {
+void viewCurses::makeMultiStep_TransformMove(std::vector<Move>& inMoves_) {
     cerr << "transform move" << endl;
     // TODO(23jura23) unneeded?
     //                                        updatePositions(newPos);
-    vector<shared_ptr<Figure>> potentialFigures(inMoves.size());
-    for (size_t i = 0; i < inMoves.size(); ++i)
-        potentialFigures[i] = make_shared<Figure>(inMoves[i].to_figure_new_);
+    vector<shared_ptr<Figure>> potentialFigures(inMoves_.size());
+    for (size_t i = 0; i < inMoves_.size(); ++i)
+        potentialFigures[i] = make_shared<Figure>(inMoves_[i].to_figure_new_);
 
     bool running_transform = 1;
     int currentIndex = 0;
-    auto& currentCell = board_->viewBoard[currentPos.posW()][currentPos.posH()];
+    auto& currentCell = board_->viewBoard_[currentPos.posW()][currentPos.posH()];
     char c_transform;
     while (running_transform) {
-        currentCell.cell.figure_.emplace(*potentialFigures[currentIndex]);
+        currentCell.cell_.figure_.emplace(*potentialFigures[currentIndex]);
         refreshView();
         c_transform = getch();
         //TODO(23jura23) blinking
         switch (c_transform) {
             case 'r':
-                currentIndex = (currentIndex + 1) % inMoves.size();
+                currentIndex = (currentIndex + 1) % inMoves_.size();
                 break;
             case 'f':
-                currentIndex = (currentIndex - 1 + inMoves.size()) % inMoves.size();
+                currentIndex = (currentIndex - 1 + inMoves_.size()) % inMoves_.size();
                 break;
             case 32:
                 // TODO(23jura23) function for local makeMove, lambda? function in run()?
-                controller_->makeMove(board_->get(currentPos).inMoves[currentIndex]);
+                controller_->makeMove(board_->get(currentPos).inMoves_[currentIndex]);
                 reloadModel();
-                board_->get(currentPos).status = CellStatus::INACTIVE;
+                board_->get(currentPos).status_ = CellStatus::INACTIVE;
                 currentPosStatus = CurrentPosStatus::UNSELECTED;
                 running_transform = 0;
                 break;
@@ -283,14 +285,14 @@ void viewCurses::makeMultiStep() {
          << " was triedto be done (yet "
             "unsuccessfully)"
          << endl;
-    auto& inMoves = board_->get(currentPos).inMoves;
-    cerr << "inMoves size: " << inMoves.size() << endl;
+    auto& inMoves_ = board_->get(currentPos).inMoves_;
+    cerr << "inMoves size: " << inMoves_.size() << endl;
     //TODO(23jura23) first-match choice of succeeded MultiSteps' checks
-    constexpr auto transformMoveCheck = [](std::vector<Move>& inMoves_) {
+    constexpr auto transformMoveCheck = [](std::vector<Move>& inMoves) {
         bool result = 1;
-        if (inMoves_.empty())
+        if (inMoves.empty())
             result = 0;
-        for (auto& inMove : inMoves_) {
+        for (auto& inMove : inMoves) {
             if (inMove.from_figure_old_ == inMove.to_figure_new_) {
                 result = 0;
                 break;
@@ -298,9 +300,9 @@ void viewCurses::makeMultiStep() {
         }
         return result;
     };
-    cerr << "Check result: " << transformMoveCheck(inMoves) << endl;
-    if (transformMoveCheck(inMoves)) {
-        makeMultiStep_TransformMove(inMoves);
+    cerr << "Check result: " << transformMoveCheck(inMoves_) << endl;
+    if (transformMoveCheck(inMoves_)) {
+        makeMultiStep_TransformMove(inMoves_);
     }
     // multiple steps to the same cell are
     // possible
@@ -365,7 +367,7 @@ void viewCurses::run() {
                 break;
             case 27:
                 reloadModel();
-                board_->get(currentPos).status = CellStatus::INACTIVE;
+                board_->get(currentPos).status_ = CellStatus::INACTIVE;
                 currentPosStatus = CurrentPosStatus::UNSELECTED;
                 break;
             case 32:
@@ -379,10 +381,10 @@ void viewCurses::run() {
                         if (currentPos.equal<2>(selectedPos)) {
                             unselectPosition();
                         } else {
-                            if (board_->get(currentPos).inMoves.size()) {
+                            if (board_->get(currentPos).inMoves_.size()) {
                                 cerr << "Step " << currentPos.posW() << ' ' << currentPos.posH()
                                      << " was tried to be done" << endl;
-                                if (board_->get(currentPos).inMoves.size() == 1) {
+                                if (board_->get(currentPos).inMoves_.size() == 1) {
                                     makeUniStep();
                                 } else {
                                     makeMultiStep();
@@ -436,11 +438,11 @@ auto viewCurses::getTL(pair corner) -> pair {
 }
 
 void viewCurses::outBoard() {
-    for (size_t x = 0; x < board_->viewBoard.size(); ++x)
-        for (size_t y = 0; y < board_->viewBoard[x].size(); ++y) {
+    for (size_t x = 0; x < board_->viewBoard_.size(); ++x)
+        for (size_t y = 0; y < board_->viewBoard_[x].size(); ++y) {
             size_t cor_x = x;
-            size_t cor_y = board_->viewBoard[x].size() - 1 - y;
-            outCell(board_->viewBoard[cor_x][cor_y], getTL({x, y}));
+            size_t cor_y = board_->viewBoard_[x].size() - 1 - y;
+            outCell(board_->viewBoard_[cor_x][cor_y], getTL({x, y}));
         }
 }
 
@@ -448,46 +450,46 @@ void viewCurses::outCell(const ViewModelCurses::ViewCellCurses& cell, pair TL) {
     int FIGURE_COLOR = -1;
     int CELL_COLOR = -1;
     int LETTER_COLOR = -1;
-    switch (cell.status) {
+    switch (cell.status_) {
         case CellStatus::INACTIVE:
-            if (cell.cell.colour_ == CellColour::WHITE)
+            if (cell.cell_.colour_ == CellColour::WHITE)
                 CELL_COLOR = CELL_WHITE;
             else
                 CELL_COLOR = CELL_BLACK;
             break;
         case CellStatus::ACTIVE:
-            if (cell.cell.colour_ == CellColour::WHITE)
+            if (cell.cell_.colour_ == CellColour::WHITE)
                 CELL_COLOR = CELL_WHITE_ACTIVE;
             else
                 CELL_COLOR = CELL_BLACK_ACTIVE;
             break;
         case CellStatus::CURRENT:
-            if (cell.cell.colour_ == CellColour::WHITE)
+            if (cell.cell_.colour_ == CellColour::WHITE)
                 CELL_COLOR = CELL_WHITE_CURRENT;
             else
                 CELL_COLOR = CELL_BLACK_CURRENT;
             break;
         case CellStatus::SELECTED:
-            if (cell.cell.colour_ == CellColour::WHITE)
+            if (cell.cell_.colour_ == CellColour::WHITE)
                 CELL_COLOR = CELL_WHITE_SELECTED;
             else
                 CELL_COLOR = CELL_BLACK_SELECTED;
             break;
         case CellStatus::PREVIOUS_FROM:
-            if (cell.cell.colour_ == CellColour::WHITE)
+            if (cell.cell_.colour_ == CellColour::WHITE)
                 CELL_COLOR = CELL_WHITE_PREVIOUS_FROM;
             else
                 CELL_COLOR = CELL_BLACK_PREVIOUS_FROM;
             break;
         case CellStatus::PREVIOUS_TO:
-            if (cell.cell.colour_ == CellColour::WHITE)
+            if (cell.cell_.colour_ == CellColour::WHITE)
                 CELL_COLOR = CELL_WHITE_PREVIOUS_TO;
             else
                 CELL_COLOR = CELL_BLACK_PREVIOUS_TO;
             break;
     }
     std::vector<const char*> draw;
-    if (!cell.cell.figure_.has_value()) {
+    if (!cell.cell_.figure_.has_value()) {
         draw = {
             "````###########````",
             "```#           #```",
@@ -500,7 +502,7 @@ void viewCurses::outCell(const ViewModelCurses::ViewCellCurses& cell, pair TL) {
             "````###########````",
         };
     } else {
-        FigureType figureT = cell.cell.figure_.value().type_;
+        FigureType figureT = cell.cell_.figure_.value().type_;
         switch (figureT) {
             case FigureType::INTELLECTOR:
                 draw = {
@@ -573,15 +575,15 @@ void viewCurses::outCell(const ViewModelCurses::ViewCellCurses& cell, pair TL) {
                         "````###########````"};
                 break;
         }
-        if (cell.cell.figure_->colour_ == PlayerColour::white_) {
-            if (cell.cell.colour_ == CellColour::WHITE) {
+        if (cell.cell_.figure_->colour_ == PlayerColour::white_) {
+            if (cell.cell_.colour_ == CellColour::WHITE) {
                 FIGURE_COLOR = WOW;
             } else {
                 FIGURE_COLOR = WOB;
             }
             LETTER_COLOR = LETTER_WHITE;
         } else {
-            if (cell.cell.colour_ == CellColour::WHITE) {
+            if (cell.cell_.colour_ == CellColour::WHITE) {
                 FIGURE_COLOR = BOW;
             } else {
                 FIGURE_COLOR = BOB;
