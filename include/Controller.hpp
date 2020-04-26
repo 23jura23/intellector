@@ -47,9 +47,9 @@ inline std::shared_ptr<ViewModelBase>& Controller::getViewModel() {
 }
 
 template <>
-inline std::shared_ptr<ViewModelBase>& Controller::getViewModel<ViewCurses::viewCurses>() {
+inline std::shared_ptr<ViewModelBase>& Controller::getViewModel<viewCurses::ViewCurses>() {
     static std::shared_ptr<ViewModelBase> model = std::dynamic_pointer_cast<ViewModelBase>(
-        std::make_shared<ViewCurses::ViewModelCurses>(game_->getBoard(),
+        std::make_shared<viewCurses::ViewModelCurses>(game_->getBoard(),
                                                       game_->getColourCurrentPlayer()));
     return model;
 }
@@ -59,9 +59,9 @@ inline void Controller::updateViewModel() {
 }
 
 template <>
-inline void Controller::updateViewModel<ViewCurses::viewCurses>() {
-    getViewModel<ViewCurses::viewCurses>() =
-        std::make_shared<ViewCurses::ViewModelCurses>(game_->getBoard(),
+inline void Controller::updateViewModel<viewCurses::ViewCurses>() {
+    getViewModel<viewCurses::ViewCurses>() =
+        std::make_shared<viewCurses::ViewModelCurses>(game_->getBoard(),
                                                       game_->getColourCurrentPlayer());
 }
 
@@ -70,10 +70,10 @@ inline void Controller::selectCell(const Cell& selected) {
 }
 
 template <>
-inline void Controller::selectCell<ViewCurses::viewCurses>(const Cell& selected) {
+inline void Controller::selectCell<viewCurses::ViewCurses>(const Cell& selected) {
     auto steps = game_->allFigureMoves(selected.pos_);
-    getViewModel<ViewCurses::viewCurses>() =
-        std::make_shared<ViewCurses::ViewModelCurses>(game_->getBoard(),
+    getViewModel<viewCurses::ViewCurses>() =
+        std::make_shared<viewCurses::ViewModelCurses>(game_->getBoard(),
                                                       game_->getColourCurrentPlayer(),
                                                       steps);
 }
@@ -85,9 +85,9 @@ inline void Controller::selectCell<ViewCurses::viewCurses>(const Cell& selected)
 //}
 //
 //template <>
-//inline void Controller::unSelectCell<ViewCurses::viewCurses>()
+//inline void Controller::unSelectCell<viewCurses::ViewCurses>()
 //{
-//    updateViewModel<ViewCurses::viewCurses>();
+//    updateViewModel<viewCurses::ViewCurses>();
 //}
 
 #endif  //_PROJECT_GAME_HPP

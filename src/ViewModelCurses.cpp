@@ -1,6 +1,6 @@
 #include "ViewModelCurses.hpp"
 
-using namespace ViewCurses;
+using namespace viewCurses;
 using ViewCellCurses = ViewModelCurses::ViewCellCurses;
 
 #include <iostream>

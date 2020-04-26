@@ -5,7 +5,7 @@
 #include "Game.hpp"
 #include "ViewModelBase.hpp"
 
-namespace ViewCurses {
+namespace viewCurses {
 
 struct ViewModelCurses : public ViewModelBase {
     typedef std::vector<Move> MovesTable;
@@ -42,6 +42,6 @@ struct ViewModelCurses : public ViewModelBase {
 using CellStatus = ViewModelCurses::ViewCellCurses::ViewCellCursesStatus;
 using ViewCellCurses = ViewModelCurses::ViewCellCurses;
 
-}  // namespace ViewCurses
+}  // namespace viewCurses
 
 #endif

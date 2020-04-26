@@ -12,14 +12,14 @@
 
 class Controller;
 
-namespace ViewCurses {
+namespace viewCurses {
 
-class viewCurses : public viewBase {
+class ViewCurses : public viewBase {
     using pair = std::pair<size_t, size_t>;
 
    public:
-    viewCurses(std::shared_ptr<Controller>);
-    ~viewCurses();
+    ViewCurses(std::shared_ptr<Controller>);
+    ~ViewCurses();
 
     void run();
     void fetchModel();
@@ -63,6 +63,6 @@ class viewCurses : public viewBase {
     void makeMultiStep_TransformMove(std::vector<Move>&);
 };
 
-}  // namespace ViewCurses
+}  // namespace viewCurses
 
 #endif
