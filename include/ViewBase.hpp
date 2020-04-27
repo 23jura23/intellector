@@ -3,7 +3,7 @@
 
 #include "Board.hpp"
 
-class ViewBaseException final : public std::exception {
+class ViewBaseException: public std::exception {
    public:
     explicit ViewBaseException(const char* val) noexcept;
 

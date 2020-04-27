@@ -8,6 +8,7 @@
 #include "Board.hpp"
 #include "Controller.hpp"
 #include "Figure.hpp"
+#include "ViewMainMenuCurses.hpp"
 
 using namespace std;
 
@@ -80,7 +81,7 @@ using namespace std;
 
 using namespace viewCurses;
 
-void ViewCurses::calculateTL() {
+void ViewCurses::calculateTL() {  // top left angle
     tlx = 0;
     tly = 0;
     maxy = getmaxy(stdscr);
@@ -308,6 +309,9 @@ void ViewCurses::makeMultiStep() {
 }
 
 void ViewCurses::run() {
+    MainMenuCurses mainMenu;
+    mainMenu.show();
+    getch();
     GameStatus winner;
     bool running = 1;
     while (running) {
@@ -487,7 +491,7 @@ void ViewCurses::outCell(const ViewModelCurses::ViewCellCurses& cell, pair TL) {
                 CELL_COLOR = CELL_BLACK_PREVIOUS_TO;
             break;
     }
-    std::vector<const char*> draw;
+    std::vector<const char*> draw;  // TODO(23jura23) move to files
     if (!cell.cell_.figure_.has_value()) {
         draw = {
             "````###########````",
