@@ -7,7 +7,7 @@
 #include <vector>
 #include <istream>
 
-#include "PictureCurses.hpp"
+#include "ViewPictureCurses.hpp"
 
 namespace viewCurses {
 

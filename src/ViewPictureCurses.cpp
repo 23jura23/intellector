@@ -1,4 +1,4 @@
-#include "PictureCurses.hpp"
+#include "ViewPictureCurses.hpp"
 
 #include <string>
 
