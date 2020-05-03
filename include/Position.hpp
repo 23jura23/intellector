@@ -77,7 +77,7 @@ class Position {
     }
 
     [[nodiscard]] bool operator!=(const Position& other) const {
-        return !(*this == other);
+        return this->posW() != other.posW() || this->posH() != other.posH();
     }
 
     template <int dim = 2>
