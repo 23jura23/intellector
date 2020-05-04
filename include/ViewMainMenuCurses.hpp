@@ -1,12 +1,14 @@
 #ifndef _VIEW_MAIN_MENU_CURSES_HPP_
 #define _VIEW_MAIN_MENU_CURSES_HPP_
 
+#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
 
-#include "ViewPictureCurses.hpp"
+#include "ViewButtonCurses.hpp"
 #include "ViewMenuCurses.hpp"
+#include "ViewPictureCurses.hpp"
 
 namespace viewCurses {
 
@@ -19,16 +21,11 @@ class MainMenuCurses final : MenuCurses {
     void draw();
     void run();  // TODO class runner with its own state
 
-    enum class BUTTON_STYLE { RECTANGLE, ZIGZAG };
-
-    Picture wrapInButton_RECTANGLE(Picture pic);
-    Picture wrapInButton_ZIGZAG(Picture pic);
-
-    Picture wrapInButton(Picture, BUTTON_STYLE);
-
-    void alignWidth(Picture&, size_t);
-    void addButton(const Picture&);
+    void alignWidth(Picture&, size_t);  // TODO separe it, but where to...
+    void addButton(std::shared_ptr<Button>);
     void drawButton(std::pair<size_t, size_t> TL, const Picture&);  // top left angle
+
+    void buttonsStateUpdate();
 
     int currentButtonIndex_;  // optional - allow to be unselected?
 
@@ -39,7 +36,7 @@ class MainMenuCurses final : MenuCurses {
         {"resources/exit.btn", BUTTON_STYLE::RECTANGLE}};
 
     size_t maxButtonWidth_;
-    std::vector<Picture> buttons_; // need object Button
+    std::vector<std::shared_ptr<Button>> buttons_;  // need object Button
     const size_t topInitial_ = 5;  // y coordinate of top left angle, x is computed in runtime
     const size_t verticalInterval_ = 3;
 };  // class MainMenuCurses

@@ -1,9 +1,12 @@
 #include "ViewMainMenuCurses.hpp"
 
+#include <assert.h>
 #include <ncurses.h>
 
 #include <fstream>
 #include <iostream>  // TODO delete
+
+#include "ViewColorSchemeCurses.hpp"
 
 namespace viewCurses {
 using std::string;
@@ -12,6 +15,9 @@ MainMenuCurses::MainMenuCurses()
         : currentButtonIndex_{0} {
     auto rv = freopen("error.txt", "a", stderr);
     static_cast<void>(rv);
+
+    initColors();
+
     // TODO common ncurses initializer, that initialize ncurses only 1 time
     // for now here is an assumption that ncurses is already initialized
     std::vector<std::pair<Picture, BUTTON_STYLE>> buttons_Buffer;
@@ -24,13 +30,15 @@ MainMenuCurses::MainMenuCurses()
     }
 
     maxButtonWidth_ = 0;
-    for (const auto& [button, style] : buttons_Buffer)
-        maxButtonWidth_ = std::max(maxButtonWidth_, button.maxWidth());
+    for (const auto& [pic, style] : buttons_Buffer)
+        maxButtonWidth_ = std::max(maxButtonWidth_, pic.maxWidth());
     std::cerr << "maxButtonWidth_: " << maxButtonWidth_ << std::endl;
 
-    for (auto& [button, style] : buttons_Buffer) {
-        alignWidth(button, maxButtonWidth_);
-        addButton(wrapInButton(button, style));
+    for (auto& [pic, style] : buttons_Buffer) {
+        alignWidth(pic, maxButtonWidth_);
+        std::shared_ptr<Button> buttonPtr = ButtonFactory(pic, style);
+        assert(buttonPtr != nullptr);
+        addButton(buttonPtr);
     }
 }
 
@@ -65,88 +73,63 @@ void MainMenuCurses::draw() {
     int maxx = getmaxx(stdscr);
     std::pair<size_t, size_t> TL{maxx / 2 - maxButtonWidth_ / 2, topInitial_};
 
-    for (const auto& button : buttons_) {
-        drawButton(TL, button);
-        TL.second += button.maxHeight() + verticalInterval_;
+    buttonsStateUpdate();
+
+    for (const auto& buttonPtr : buttons_) {
+        buttonPtr->draw(TL);
+        TL.second += buttonPtr->getPicture().maxHeight() + verticalInterval_;
     }
 }
 
-void MainMenuCurses::drawButton(std::pair<size_t, size_t> TL, const Picture& pic) {
-    move(TL.second, TL.first);
-    for (const auto& line : pic) {
-        for (chtype c : line) {
-            // TODO ignore chars
-            addch(c);
-        }
-        TL.second++;
-        move(TL.second, TL.first);
-    }
+void MainMenuCurses::buttonsStateUpdate() {
+    
 }
 
-Picture MainMenuCurses::wrapInButton_RECTANGLE(Picture pic) {
-    const size_t upperMargin = 0;
-    const size_t bottomMargin = 0;
-    const size_t leftMargin = 0;   // TODO align here
-    const size_t rightMargin = 0;  // TODO align here
+//void MainMenuCurses::drawButton(std::pair<size_t, size_t> TL, const Picture& pic) {
+//    cerr << "initColorsDone: " << initColorsDone << endl;
+//    cerr << "ignoredChars: " << pic.getIgnoredChars() << endl;
+//    cerr << "backgroundChars: " << pic.getBackgroundChars() << endl;
+//    move(TL.second, TL.first);
+//    for (const auto& line : pic) {
+//        cerr << "line: " << line << endl;
+//        for (chtype c : line) {
+//            if (pic.isIgnoredChar(c)) {
+//            } else if (pic.isBackgroundChar(c)) {
+//                attron(COLOR_PAIR(BUTTON_EMPTY));
+//                addch(' ');
+//                attroff(COLOR_PAIR(BUTTON_EMPTY));
+//            } else {
+//                attron(COLOR_PAIR(BUTTON_TEXT));
+//                addch(c);
+//                attroff(COLOR_PAIR(BUTTON_TEXT));
+//            }
+//        }
+//        TL.second++;
+//        move(TL.second, TL.first);
+//    }
+//}
 
-    Picture newPic(pic, 1);
-    std::cerr << pic.maxWidth() << std::endl;
-    string upper(leftMargin + pic.maxWidth() + rightMargin, '_');
-    newPic.pushBackLine(upper);
-
-    for (size_t i = 0; i < upperMargin; ++i) newPic.pushBackLine("");
-
-    for (size_t i = 0; i < pic.maxHeight(); ++i) newPic.pushBackLine(pic(i));
-
-    for (size_t i = 0; i < bottomMargin; ++i) newPic.pushBackLine("");
-
-    string bottom = upper;
-    newPic.pushBackLine(bottom);
-
-    newPic.updateState();
-
-    for (size_t i = 0; i < newPic.maxHeight(); ++i) {
-        string prefix = "|" + string(leftMargin, ' ');
-        string suffix = string(rightMargin, ' ') + '|';
-        newPic(i) = prefix + newPic(i) + suffix;
-    }
-    return newPic;
-}
-
-Picture MainMenuCurses::wrapInButton_ZIGZAG(Picture pic) {
-    // WIP
-    return pic;
-}
-
-Picture MainMenuCurses::wrapInButton(Picture pic, BUTTON_STYLE style) {
-    switch (style) {
-        case BUTTON_STYLE::RECTANGLE:
-            return wrapInButton_RECTANGLE(pic);
-            break;
-        case BUTTON_STYLE::ZIGZAG:
-            return wrapInButton_ZIGZAG(pic);
-            break;
-    }
-    throw PictureException("Unknown button style");  // TODO MainMenuException?
-}
-
+// TODO put into Button class
 void MainMenuCurses::alignWidth(Picture& pic, size_t width) {
-    pic.updateState();
+    //    pic.updateState();
+    char anyBackgroundChar = pic.getBackgroundChars().at(0);
+    size_t prevMaxWidth = pic.maxWidth();
     for (auto& line : pic) {
-        if (pic.maxWidth() < line.size())
-            throw PictureException("Internal error: Picture.maxWidth() calculated incorrectly");
-        line += string(pic.maxWidth() - line.size(), ' ');
+        assert(line.size() <= pic.maxWidth());
+        //            throw PictureException("Internal error: Picture.maxWidth() calculated incorrectly");
+        line += string(pic.maxWidth() - line.size(), anyBackgroundChar);
     }
     for (auto& line : pic) {
-        if (pic.maxWidth() < width) {
-            string prefix = string((width - pic.maxWidth()) / 2, ' ');
-            string suffix = string((width + 1 - pic.maxWidth()) / 2, ' ');
+        if (prevMaxWidth < width) {
+            string prefix = string((width - prevMaxWidth) / 2, anyBackgroundChar);
+            string suffix = string((width + 1 - prevMaxWidth) / 2, anyBackgroundChar);
             line = prefix + line + suffix;
         }
     }
 }
 
-void MainMenuCurses::addButton(const Picture& pic) {
+void MainMenuCurses::addButton(std::shared_ptr<Button> pic) {
+    assert(pic != nullptr);
     buttons_.push_back(pic);
 }
 

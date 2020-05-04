@@ -1,16 +1,14 @@
 #ifndef _VIEW_BASE_H_
 #define _VIEW_BASE_H_
 
+#include <stdexcept>
+
 #include "Board.hpp"
 
-class ViewBaseException: public std::exception {
+class ViewBaseException : public std::runtime_error {
    public:
-    explicit ViewBaseException(const char* val) noexcept;
-
-    virtual const char* what() const noexcept;
-
-   private:
-    const char* _msg;
+    using std::runtime_error::runtime_error;
+    using std::runtime_error::what;
 };
 
 class viewBase {

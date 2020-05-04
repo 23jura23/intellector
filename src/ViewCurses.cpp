@@ -8,73 +8,10 @@
 #include "Board.hpp"
 #include "Controller.hpp"
 #include "Figure.hpp"
+#include "ViewColorSchemeCurses.hpp"
 #include "ViewMainMenuCurses.hpp"
 
 using namespace std;
-
-#define BLACK_AND_WHITE
-
-#ifdef BLACK_AND_WHITE
-    #define COLOR_WHITE_CELL          255
-    #define COLOR_BLACK_CELL          237
-    #define COLOR_WHITE_FIGURE        187
-    #define COLOR_BLACK_FIGURE        137
-    #define COLOR_WHITE_ACTIVE        88
-    #define COLOR_BLACK_ACTIVE        88
-    #define COLOR_WHITE_CURRENT       123
-    #define COLOR_BLACK_CURRENT       111
-    #define COLOR_WHITE_SELECTED      56
-    #define COLOR_BLACK_SELECTED      55
-    #define COLOR_WHITE_PREVIOUS_FROM 78
-    #define COLOR_BLACK_PREVIOUS_FROM 76
-    #define COLOR_WHITE_PREVIOUS_TO   79
-    #define COLOR_BLACK_PREVIOUS_TO   77
-    #define COLOR_WHITE_LETTER        196
-    #define COLOR_BLACK_LETTER        226
-    #define COLOR_FORE_BORDER         238
-    #define COLOR_BACK_BORDER         241
-#elif defined(CLASSIC)
-    #define COLOR_WHITE_CELL          187
-    #define COLOR_BLACK_CELL          137
-    #define COLOR_WHITE_FIGURE        231
-    #define COLOR_BLACK_FIGURE        0
-    #define COLOR_WHITE_ACTIVE        82
-    #define COLOR_BLACK_ACTIVE        70
-    #define COLOR_WHITE_CURRENT       123
-    #define COLOR_BLACK_CURRENT       111
-    #define COLOR_WHITE_SELECTED      56
-    #define COLOR_BLACK_SELECTED      55
-    #define COLOR_WHITE_PREVIOUS_FROM 79
-    #define COLOR_BLACK_PREVIOUS_FROM 77
-    #define COLOR_WHITE_PREVIOUS_TO   83
-    #define COLOR_BLACK_PREVIOUS_TO   84
-    #define COLOR_WHITE_LETTER        196
-    #define COLOR_BLACK_LETTER        226
-    #define COLOR_FORE_BORDER         238
-    #define COLOR_BACK_BORDER         241
-#endif
-
-#define WOW 100  // White On White
-#define WOB 101  // White On Black
-#define BOW 102  // Black On White
-#define BOB 103  // Black On Black
-// #define WOA 104  // White On Active
-// #define BOA 105  // Black On Active
-#define CELL_WHITE               200  // INACTIVE
-#define CELL_BLACK               201  // INACTIVE
-#define CELL_WHITE_ACTIVE        202  // ACTIVE
-#define CELL_BLACK_ACTIVE        203  // ACTIVE
-#define CELL_WHITE_CURRENT       204  // CURRENT
-#define CELL_BLACK_CURRENT       205  // CURRENT
-#define CELL_WHITE_SELECTED      206  // SELECTED
-#define CELL_BLACK_SELECTED      207  // SELECTED
-#define CELL_WHITE_PREVIOUS_FROM 208  // PREVIOUS_FROM
-#define CELL_BLACK_PREVIOUS_FROM 209  // PREVIOUS_FROM
-#define CELL_WHITE_PREVIOUS_TO   210  // PREVIOUS_TO
-#define CELL_BLACK_PREVIOUS_TO   211  // PREVIOUS_TO
-#define CELL_BORDER              220
-#define LETTER_BLACK             221
-#define LETTER_WHITE             222
 
 #define CENTER_ALIGN 1
 // TODO add to config/settings
@@ -124,34 +61,7 @@ ViewCurses::ViewCurses(std::shared_ptr<Controller> controller)
     initscr();
     calculateTL();
 
-    if (!has_colors()) {
-        endwin();
-        throw ViewBaseException("Your terminal does not support colors");
-    }
-    use_default_colors();
-    start_color();
-    cerr << "COLORS:" << COLORS << endl;
-
-    init_pair(WOW, COLOR_BLACK_FIGURE, COLOR_WHITE_FIGURE);
-    init_pair(WOB, COLOR_BLACK_FIGURE, COLOR_WHITE_FIGURE);
-    init_pair(BOW, COLOR_WHITE_FIGURE, COLOR_BLACK_FIGURE);
-    init_pair(BOB, COLOR_WHITE_FIGURE, COLOR_BLACK_FIGURE);
-    init_pair(CELL_WHITE, COLOR_WHITE_CELL, COLOR_WHITE_CELL);
-    init_pair(CELL_BLACK, COLOR_BLACK_CELL, COLOR_BLACK_CELL);
-    init_pair(CELL_WHITE_ACTIVE, COLOR_WHITE_ACTIVE, COLOR_WHITE_ACTIVE);
-    init_pair(CELL_BLACK_ACTIVE, COLOR_BLACK_ACTIVE, COLOR_BLACK_ACTIVE);
-    init_pair(CELL_WHITE_CURRENT, COLOR_WHITE_CURRENT, COLOR_WHITE_CURRENT);
-    init_pair(CELL_BLACK_CURRENT, COLOR_BLACK_CURRENT, COLOR_BLACK_CURRENT);
-    init_pair(CELL_WHITE_SELECTED, COLOR_WHITE_SELECTED, COLOR_WHITE_SELECTED);
-    init_pair(CELL_BLACK_SELECTED, COLOR_BLACK_SELECTED, COLOR_BLACK_SELECTED);
-    init_pair(CELL_WHITE_PREVIOUS_FROM, COLOR_WHITE_PREVIOUS_FROM, COLOR_WHITE_PREVIOUS_FROM);
-    init_pair(CELL_BLACK_PREVIOUS_FROM, COLOR_BLACK_PREVIOUS_FROM, COLOR_BLACK_PREVIOUS_FROM);
-    init_pair(CELL_WHITE_PREVIOUS_TO, COLOR_WHITE_PREVIOUS_TO, COLOR_WHITE_PREVIOUS_TO);
-    init_pair(CELL_BLACK_PREVIOUS_TO, COLOR_BLACK_PREVIOUS_TO, COLOR_BLACK_PREVIOUS_TO);
-    init_pair(CELL_BORDER, COLOR_FORE_BORDER, COLOR_BACK_BORDER);
-    init_pair(LETTER_WHITE, COLOR_WHITE_LETTER, COLOR_WHITE_FIGURE);
-    init_pair(LETTER_BLACK, COLOR_BLACK_LETTER, COLOR_BLACK_FIGURE);
-
+    initColors();
     //    keypad(stdscr, true);
     //    otherwise ESC does not work, see
     //    https://www.daniweb.com/programming/software-development/threads/259439/keycode-of-esc-in-curses-h
