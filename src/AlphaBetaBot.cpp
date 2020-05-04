@@ -92,7 +92,7 @@ std::pair<int, Move> AlphaBetaBot::make_virtual_move(const Game &game,
             std::vector<Move> moves = game.allFigureMoves(cell.pos_);
             for (const auto &move : moves) 
             {
-                Game gamecopy(game);
+                Game gamecopy = game.makeCopyForBot();
                 gamecopy.makeMove(move);
 
                 all_moves.emplace_back(std::make_shared<Game>(gamecopy),
@@ -163,7 +163,7 @@ std::pair<int, Move> AlphaBetaBot::make_virtual_move(const Game &game,
 
 Move AlphaBetaBot::makeMove(const Game &game) 
 {
-    Game gamecopy(game);
+    Game gamecopy(game.makeCopyForBot());
     cnt = 0;
     auto colour = game.getColourCurrentPlayer();
     Colour = colour;

@@ -13,8 +13,7 @@
 enum class GameStatus { game_running_, game_over_white_win_, game_over_black_win_ };
 
 class Game {
-    // TODO переделать Move
-    // TODO история ходов (откат и тд)
+    // TODO первые 4 байта случайное число + в конце проверить размер ???crc32???
     // TODO MakeMove синхронный?
     // TODO MakeCopyForBot
    public:
@@ -31,6 +30,18 @@ class Game {
             white_bot_ = BotFactory(settings);
         if (settings.second_player())
             black_bot_ = BotFactory(settings);
+    }
+
+    [[nodiscard]] Game makeCopyForBot() const {
+        Game result;
+        result.board_ = board_;
+        result.turn_ = turn_;
+        result.white_bot_ = nullptr;
+        result.black_bot_ = nullptr;
+
+        result.history_of_moves_ = {};
+        result.point_of_history_ = 0;
+        return result;
     }
 
     void setGameSettings(const GameSettings& settings);

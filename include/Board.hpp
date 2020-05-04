@@ -15,7 +15,11 @@ class Board {
    public:
     Board();
     ~Board() = default;
-    Board& operator=(const Board&) = default;
+    Board& operator=(const Board& other) {
+        std::vector<std::vector<Cell>> data(other.data_);
+        swap(data_, data);
+        return *this;
+    }
     Board(const Board& other);
 
     [[nodiscard]] const Cell& operator[](Position pos) const;

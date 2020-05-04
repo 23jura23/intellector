@@ -19,7 +19,7 @@ Move GreedyBot::makeMove(const Game &game)
     Move res;
     for(auto &move : all_moves) 
     {
-        Game gamecopy(game);
+        Game gamecopy(game.makeCopyForBot());
         gamecopy.makeMove(move);
         int eval = evaluation_finction_(gamecopy, colour);
         if (eval > max) 
