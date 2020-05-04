@@ -65,7 +65,7 @@ void ViewCurses::updateCellStatus(const Position& pos, bool before) {
     if (inBoard(pos)) {
         if (before) {
             // update status_ before pointer moves
-            if (currentPosStatus == CurrentPosStatus::SELECTED && currentPos.equal<2>(selectedPos))
+            if (currentPosStatus == CurrentPosStatus::SELECTED && currentPos == selectedPos)
                 board_->get(pos).status_ = CellStatus::SELECTED;
             else if (board_->get(pos).inMoves_.size())
                 board_->get(pos).status_ = CellStatus::ACTIVE;
@@ -77,8 +77,7 @@ void ViewCurses::updateCellStatus(const Position& pos, bool before) {
                 board_->get(pos).status_ = CellStatus::PREVIOUS_FROM;
             else if (pos == previousToPos)
                 board_->get(pos).status_ = CellStatus::PREVIOUS_TO;
-            else if (!(currentPosStatus == CurrentPosStatus::SELECTED &&
-                       currentPos.equal<2>(selectedPos)))
+            else if (!(currentPosStatus == CurrentPosStatus::SELECTED && currentPos == selectedPos))
                 board_->get(pos).status_ = CellStatus::CURRENT;
         }
     }
@@ -284,7 +283,7 @@ void ViewCurses::run() {
                     case CurrentPosStatus::SELECTED:
                         cerr << "Trying to do smth with Cell " << currentPos.posW() << ' '
                              << currentPos.posH() << endl;
-                        if (currentPos.equal<2>(selectedPos)) {
+                        if (currentPos == selectedPos) {
                             unselectPosition();
                         } else {
                             if (board_->get(currentPos).inMoves_.size()) {

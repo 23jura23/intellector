@@ -62,9 +62,9 @@ bool IntellectorMoveValidator::checkMove(Position to_pos) {
         return false;
 
     Position diff = to_pos - pos_;
-    if (!(diff.makeX() == diff.makeY() && abs(diff.makeX().z_) == 1) &&
-        !(diff.makeX() == diff.makeZ() && abs(diff.makeX().y_) == 1) &&
-        !(diff.makeY() == diff.makeZ() && abs(diff.makeY().x_) == 1))
+    if (!(diff.makeX().y_ == 0 && abs(diff.makeX().z_) == 1) &&
+        !(diff.makeZ().x_ == 0 && abs(diff.makeX().y_) == 1) &&
+        !(diff.makeY().z_ == 0 && abs(diff.makeY().x_) == 1))
         return false;
 
     if (!board_[to_pos].figure_.has_value())
@@ -110,11 +110,11 @@ bool DominatorMoveValidator::checkMove(Position to_pos) {
 
     Position diff = to_pos - pos_;
     Position path_to_pos(0, 0, 0);
-    if (diff.makeX() == diff.makeY())
+    if (diff.makeX().y_ == 0)
         path_to_pos = Position(0, 0, sgn(diff.makeX().z_));
-    if (diff.makeX() == diff.makeZ())
-        path_to_pos = Position(0, sgn(diff.makeX().y_), 0);
-    if (diff.makeY() == diff.makeZ())
+    if (diff.makeZ().x_ == 0)
+        path_to_pos = Position(0, sgn(diff.makeZ().y_), 0);
+    if (diff.makeY().z_ == 0)
         path_to_pos = Position(sgn(diff.makeY().x_), 0, 0);
 
     if (path_to_pos == Position(0, 0, 0))
@@ -218,9 +218,9 @@ bool DefenssorMoveValidator::checkMove(Position to_pos) {
         return false;
 
     Position diff = to_pos - pos_;
-    if (!(diff.makeX() == diff.makeY() && abs(diff.makeX().z_) == 1) &&
-        !(diff.makeX() == diff.makeZ() && abs(diff.makeX().y_) == 1) &&
-        !(diff.makeY() == diff.makeZ() && abs(diff.makeY().x_) == 1))
+    if (!(diff.makeX().y_ == 0 && abs(diff.makeX().z_) == 1) &&
+        !(diff.makeZ().x_ == 0 && abs(diff.makeZ().y_) == 1) &&
+        !(diff.makeY().z_ == 0 && abs(diff.makeY().x_) == 1))
         return false;
 
     return !board_[to_pos].figure_.has_value() ||
@@ -262,9 +262,9 @@ bool LiberatorMoveValidator::checkMove(Position to_pos) {
         return false;
 
     Position diff = to_pos - pos_;
-    if (!(diff.makeX() == diff.makeY() && abs(diff.makeX().z_) == 2) &&
-        !(diff.makeX() == diff.makeZ() && abs(diff.makeX().y_) == 2) &&
-        !(diff.makeY() == diff.makeZ() && abs(diff.makeY().x_) == 2))
+    if (!(diff.makeX().y_ == 0 && abs(diff.makeX().z_) == 2) &&
+        !(diff.makeZ().x_ == 0 && abs(diff.makeZ().y_) == 2) &&
+        !(diff.makeY().z_ == 0 && abs(diff.makeY().x_) == 2))
         return false;
 
     return !board_[to_pos].figure_.has_value() ||
@@ -307,14 +307,14 @@ bool ProgressorMoveValidator::checkMove(Position to_pos) {
 
     Position diff = to_pos - pos_;
     if (figure_.colour_ == PlayerColour::white_) {
-        if (!(diff.makeX() == diff.makeY() && diff.makeX().z_ == 1) &&
-            !(diff.makeX() == diff.makeZ() && diff.makeX().y_ == 1) &&
-            !(diff.makeY() == diff.makeZ() && diff.makeY().x_ == 1))
+        if (!(diff.makeX().y_ == 0 && diff.makeX().z_ == 1) &&
+            !(diff.makeZ().x_ == 0 && diff.makeZ().y_ == 1) &&
+            !(diff.makeY().z_ == 0 && diff.makeY().x_ == 1))
             return false;
     } else {
-        if (!(diff.makeX() == diff.makeY() && diff.makeX().z_ == -1) &&
-            !(diff.makeX() == diff.makeZ() && diff.makeX().y_ == -1) &&
-            !(diff.makeY() == diff.makeZ() && diff.makeY().x_ == -1))
+        if (!(diff.makeX().y_ == 0 && diff.makeX().z_ == -1) &&
+            !(diff.makeZ().x_ == 0 && diff.makeZ().y_ == -1) &&
+            !(diff.makeY().z_ == 0 && diff.makeY().x_ == -1))
             return false;
     }
 

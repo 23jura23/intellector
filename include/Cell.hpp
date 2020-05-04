@@ -25,7 +25,7 @@ class Cell {
     const Position pos_;
 
     [[nodiscard]] bool inline operator==(const Cell& other) const {
-        return pos_.equal<2>(other.pos_) && figure_ == other.figure_;
+        return pos_ == other.pos_ && figure_ == other.figure_;
     }
     [[nodiscard]] bool inline operator!=(const Cell& other) const {
         return !(*this == other);
