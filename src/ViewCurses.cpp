@@ -295,8 +295,8 @@ void ViewCurses::run() {
                                 } else {
                                     makeMultiStep();
                                 }
-                                previousFromPos = selectedPos;
-                                previousToPos = currentPos;
+//                                previousFromPos = selectedPos;
+//                                previousToPos = currentPos;
                             } else {
                                 // Impossible move
                             }
@@ -327,6 +327,10 @@ void ViewCurses::fetchModel() {
 void ViewCurses::reloadModel() {
     controller_->updateViewModel<ViewCurses>();
     fetchModel();
+    if (board_->history_of_moves_.size()) {
+        previousFromPos = board_->history_of_moves_.back().from_;
+        previousToPos = board_->history_of_moves_.back().to_;
+    }
 }
 
 void ViewCurses::refreshView() {

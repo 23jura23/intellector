@@ -49,8 +49,7 @@ inline std::shared_ptr<ViewModelBase>& Controller::getViewModel() {
 template <>
 inline std::shared_ptr<ViewModelBase>& Controller::getViewModel<viewCurses::ViewCurses>() {
     static std::shared_ptr<ViewModelBase> model = std::dynamic_pointer_cast<ViewModelBase>(
-        std::make_shared<viewCurses::ViewModelCurses>(game_->getBoard(),
-                                                      game_->getColourCurrentPlayer()));
+        std::make_shared<viewCurses::ViewModelCurses>(*game_));
     return model;
 }
 
@@ -61,8 +60,7 @@ inline void Controller::updateViewModel() {
 template <>
 inline void Controller::updateViewModel<viewCurses::ViewCurses>() {
     getViewModel<viewCurses::ViewCurses>() =
-        std::make_shared<viewCurses::ViewModelCurses>(game_->getBoard(),
-                                                      game_->getColourCurrentPlayer());
+        std::make_shared<viewCurses::ViewModelCurses>(*game_);
 }
 
 template <typename ViewType>
@@ -73,8 +71,7 @@ template <>
 inline void Controller::selectCell<viewCurses::ViewCurses>(const Cell& selected) {
     auto steps = game_->allFigureMoves(selected.pos_);
     getViewModel<viewCurses::ViewCurses>() =
-        std::make_shared<viewCurses::ViewModelCurses>(game_->getBoard(),
-                                                      game_->getColourCurrentPlayer(),
+        std::make_shared<viewCurses::ViewModelCurses>(*game_,
                                                       steps);
 }
 

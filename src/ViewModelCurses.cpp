@@ -1,27 +1,29 @@
 #include "ViewModelCurses.hpp"
 
 using namespace viewCurses;
-using ViewCellCurses = ViewModelCurses::ViewCellCurses;
+//using ViewCellCurses = ViewModelCurses::ViewCellCurses;
 
 #include <iostream>
 using namespace std;
 
-ViewModelCurses::ViewModelCurses(const Board& board, PlayerColour turn)
-        : cols_{board.cols_}
-        , rows_{board.rows_}
-        , turn_{turn} {
+ViewModelCurses::ViewModelCurses(const Game& game)
+        : cols_{game.getBoard().cols_}
+        , rows_{game.getBoard().rows_}
+        , turn_{game.getColourCurrentPlayer()}
+        , history_of_moves_{game.getHistoryOfMoves()} {
     auto rv = freopen("error.txt", "a", stderr);
     static_cast<void>(rv);
     // avoiding warning. May be harmful, but later there must be a well-done logging.
 
+    const auto& board = game.getBoard();
     viewBoard_.resize(board.cols_);
     for (size_t i = 0; i < board.data_.size(); ++i)
         for (size_t j = 0; j < board.data_[i].size(); ++j)
             viewBoard_[i].emplace_back(board.data_[i][j]);
 }
 
-ViewModelCurses::ViewModelCurses(const Board& board, PlayerColour turn, MovesTable& movesTable)
-        : ViewModelCurses(board, turn) {
+ViewModelCurses::ViewModelCurses(const Game& game, MovesTable& movesTable)
+        : ViewModelCurses{game} {
     //TODO(23jura23) receive previous position and highlight its status_
     for (size_t i = 0; i < movesTable.size(); ++i) {
         int x = movesTable[i].to_.posW();

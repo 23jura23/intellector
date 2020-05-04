@@ -38,6 +38,19 @@ Redraw Intellector: like big and small triangles, small directed down, big direc
 /      \
 --------
 
+interesting color scheme:
+/*
+
+    #define COLOR_BUTTON_SELECTED_TEXT_FOREGROUND   105
+    #define COLOR_BUTTON_SELECTED_TEXT_BACKGROUND   195
+    #define COLOR_BUTTON_SELECTED_EMPTY_FOREGROUND  195
+    #define COLOR_BUTTON_SELECTED_EMPTY_BACKGROUND  195
+    #define COLOR_BUTTON_SELECTED_BORDER_FOREGROUND 137
+    #define COLOR_BUTTON_SELECTED_BORDER_BACKGROUND 137
+*/  now it's SNOW_BLUE
+
+!!! Menu further plans: multiplexer gets key, and send it to created and stored menus
+
 Git Hooks for autoformatting
 Debug and Release versions (with and without error.txt)
 

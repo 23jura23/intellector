@@ -1,6 +1,8 @@
 #ifndef _VIEW_MODEL_CURSES_HPP
 #define _VIEW_MODEL_CURSES_HPP
 
+#include <vector>
+
 #include "Board.hpp"
 #include "Game.hpp"
 #include "ViewModelBase.hpp"
@@ -10,8 +12,8 @@ namespace viewCurses {
 struct ViewModelCurses : public ViewModelBase {
     typedef std::vector<Move> MovesTable;
 
-    ViewModelCurses(const Board&, PlayerColour);
-    ViewModelCurses(const Board&, PlayerColour, MovesTable&);
+    ViewModelCurses(const Game&);
+    ViewModelCurses(const Game&, MovesTable&);
 
     struct ViewCellCurses {
         enum class ViewCellCursesStatus {
@@ -36,8 +38,8 @@ struct ViewModelCurses : public ViewModelBase {
     const int cols_, rows_;
     std::vector<std::vector<ViewCellCurses>> viewBoard_;
     PlayerColour turn_;
+    std::vector<Move> history_of_moves_;
 };
-
 
 using CellStatus = ViewModelCurses::ViewCellCurses::ViewCellCursesStatus;
 using ViewCellCurses = ViewModelCurses::ViewCellCurses;

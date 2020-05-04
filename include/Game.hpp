@@ -47,6 +47,8 @@ class Game {
         return turn_;
     }
 
+    const std::vector<Move>& getHistoryOfMoves() const;
+
     [[nodiscard]] GameStatus getGameStatus() const;
 
     bool cancelMove();
