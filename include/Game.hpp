@@ -18,12 +18,7 @@ class Game {
     // TODO MakeCopyForBot
    public:
     Game();
-    Game(const Game& other)
-            : board_(other.board_)
-            , turn_(other.turn_)
-            , white_bot_(nullptr)
-            , black_bot_(nullptr) {
-    }
+    Game(const Game& other) = default;
 
     explicit Game(const GameSettings& settings) {
         if (settings.first_player())
