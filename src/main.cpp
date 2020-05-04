@@ -2,20 +2,16 @@
 
 #include <iostream>
 
-#include "Board.hpp"
-#include "Controller.hpp"
-#include "Game.hpp"
-#include "ViewCurses.hpp"
-#include "ViewModelCurses.hpp"
+#include "ViewMenuMultiplexerCurses.hpp"
+#include "ViewInitCurses.hpp"
 
 int main() {
     try {
-        std::shared_ptr<Game> game = std::make_shared<Game>();
-        std::shared_ptr<Controller> controller = std::make_shared<Controller>(game);
-        std::shared_ptr<viewCurses::ViewCurses> view =
-            std::make_shared<viewCurses::ViewCurses>(controller);
-
-        view->run();
+        viewCurses::MenuMultiplexerCurses menuMultiplexer;
+        viewCurses::RET_CODE rc = menuMultiplexer.show();
+        static_cast<void>(rc);
+//        if (initCursesDone != 0)
+//            throw MenuException("Not all menus were closed and ncurses is still running");
         //    Board* board = new Board;
         //        viewCurses::ViewModelCurses tmp = viewCurses::ViewModelCurses
         //        { *board, PlayerColour::white_ }; viewCurses::ViewCurses

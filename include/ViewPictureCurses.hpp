@@ -21,6 +21,7 @@ struct Picture {
     explicit Picture(const std::vector<std::string>&,
                      std::string ignoredChars = "\x1E",
                      std::string backgroundChars = "\x1F");
+    explicit Picture(std::istream& is);
     //    Picture(const Picture&, bool attrOnly = 0);
     size_t maxHeight() const;
     size_t maxWidth() const;

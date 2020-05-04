@@ -7,6 +7,8 @@
 #include <iostream>  // TODO delete
 
 #include "ViewColorSchemeCurses.hpp"
+#include "ViewInitCurses.hpp"
+#include "ViewMenuMultiplexerCurses.hpp"
 
 namespace viewCurses {
 using std::string;
@@ -16,15 +18,13 @@ MainMenuCurses::MainMenuCurses()
     auto rv = freopen("error.txt", "a", stderr);
     static_cast<void>(rv);
 
-    initColors();
-
     // TODO common ncurses initializer, that initialize ncurses only 1 time
     // for now here is an assumption that ncurses is already initialized
     std::vector<std::pair<Picture, BUTTON_STYLE>> buttons_Buffer;
     for (auto [filename, style] : buttonsFilenames_) {
         auto is = std::ifstream(filename, std::ios::in);
         is.exceptions(std::ifstream::badbit);
-        Picture read = readPicture(is);
+        Picture read(is);
         buttons_Buffer.emplace_back(read, style);
         is.close();
     }
@@ -42,30 +42,62 @@ MainMenuCurses::MainMenuCurses()
     }
 }
 
-void MainMenuCurses::show() {
+RET_CODE MainMenuCurses::show() {
+    initCurses();
     draw();
-}
-
-void MainMenuCurses::run() {
-    draw();
+    RET_CODE rc = RET_CODE::NOTHING;
+    bool running = 1;
     chtype c;
-    c = getch();
-    switch (c) {
-        case 'w':
-        case KEY_UP:
-            if (buttons_.size() > 0) {
-                currentButtonIndex_ = (currentButtonIndex_ - 1 + buttons_.size()) % buttons_.size();
+    while (running) {
+        c = getch();
+        switch (c) {
+            case 'w':
+            case KEY_UP:
+                if (buttons_.size() > 0) {
+                    currentButtonIndex_ =
+                        (currentButtonIndex_ - 1 + buttons_.size()) % buttons_.size();
+                    draw();
+                }
+                break;
+            case 's':
+            case KEY_DOWN:
+                if (buttons_.size() > 0) {
+                    currentButtonIndex_ = (currentButtonIndex_ + 1) % buttons_.size();
+                    draw();
+                }
+                break;
+            case 27:  // ESC
+                running = 0;
+                break;
+            case 32:
+                // suggesting correct buttons order:
+                // new game
+                // rules
+                // contacts
+                // exit
+                switch (currentButtonIndex_) {
+                    case 0:  // new game
+                        rc = RET_CODE::START_NEW_GAME;
+                        running = 0;
+                        break;
+                    case 1:  // rules
+                        break;
+                    case 2:  // contacts
+                        break;
+                    case 3:  // exit
+                        rc = RET_CODE::EXIT;
+                        running = 0;
+                        break;
+                    default:
+                        assert(0);
+                }
+                break;
+            default:
                 draw();
-            }
-            break;
-        case 's':
-        case KEY_DOWN:
-            if (buttons_.size() > 0) {
-                currentButtonIndex_ = (currentButtonIndex_ + 1) % buttons_.size();
-                draw();
-            }
-            break;
+        }
     }
+    terminateCurses();
+    return rc;
 }
 
 void MainMenuCurses::draw() {
@@ -82,7 +114,8 @@ void MainMenuCurses::draw() {
 }
 
 void MainMenuCurses::buttonsStateUpdate() {
-    
+    for (const auto& i : buttons_) i->setMode(BUTTON_MODE::DEFAULT);
+    buttons_[currentButtonIndex_]->setMode(BUTTON_MODE::SELECTED);
 }
 
 //void MainMenuCurses::drawButton(std::pair<size_t, size_t> TL, const Picture& pic) {

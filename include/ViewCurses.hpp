@@ -5,22 +5,27 @@
 #include <ncurses.h>
 
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "ViewBase.hpp"
+#include "ViewMenuCurses.hpp"
 #include "ViewModelCurses.hpp"
 
 class Controller;
 
 namespace viewCurses {
 
-class ViewCurses : public viewBase {
+class ViewCurses : public viewBase, public MenuCurses {
     using pair = std::pair<size_t, size_t>;
 
    public:
-    ViewCurses(std::shared_ptr<Controller>);
-    ~ViewCurses();
+    RET_CODE show();
 
+    explicit ViewCurses(std::shared_ptr<Controller>);
+//    ~ViewCurses();  // rule of 5?
+
+   private:
     void run();
     void fetchModel();
     void reloadModel();
@@ -31,7 +36,6 @@ class ViewCurses : public viewBase {
     void updateModel(std::shared_ptr<ViewModelCurses>);
     void refreshView();
 
-   private:
     std::shared_ptr<ViewModelCurses> board_;
     std::shared_ptr<Controller> controller_;
 

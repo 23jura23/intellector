@@ -15,14 +15,24 @@ class ButtonException : public PictureException {
 };
 
 enum class BUTTON_STYLE { RECTANGLE, ZIGZAG };
+enum class BUTTON_MODE{ DEFAULT, SELECTED };
+
+struct buttonColorScheme /* : localColorScheme */ {
+    int text{};
+    int empty{};
+    int border{};
+};
 
 struct Button {
     Button(const Picture& pic);
     virtual const Picture& getPicture() const;
     virtual void draw(std::pair<size_t, size_t> TL) const = 0;
+    virtual void setMode(BUTTON_MODE);
 
    protected:
     Picture buttonPicture;
+    buttonColorScheme colorScheme;
+    
 };  // struct Button
 
 struct ButtonRectangle final : Button {

@@ -15,11 +15,11 @@ namespace viewCurses {
 class MainMenuCurses final : MenuCurses {
    public:
     MainMenuCurses();
-    void show() override;
+    RET_CODE show() override;
 
    private:
     void draw();
-    void run();  // TODO class runner with its own state
+    //    int run();  // TODO class runner with its own state
 
     void alignWidth(Picture&, size_t);  // TODO separe it, but where to...
     void addButton(std::shared_ptr<Button>);

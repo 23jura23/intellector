@@ -11,12 +11,30 @@
 using std::string;
 namespace viewCurses {
 
+buttonColorScheme DEFAULT_SCHEME{BUTTON_DEFAULT_TEXT, BUTTON_DEFAULT_EMPTY, BUTTON_DEFAULT_BORDER};
+buttonColorScheme SELECTED_SCHEME{BUTTON_SELECTED_TEXT,
+                                  BUTTON_SELECTED_EMPTY,
+                                  BUTTON_SELECTED_BORDER};
+
 Button::Button(const Picture& pic)
-        : buttonPicture{pic} {
+        : buttonPicture{pic}
+        , colorScheme{DEFAULT_SCHEME} {
 }
 
 const Picture& Button::getPicture() const {
     return buttonPicture;
+}
+
+void Button::setMode(BUTTON_MODE mode) {
+    switch (mode) {
+        case BUTTON_MODE::DEFAULT:
+            colorScheme = DEFAULT_SCHEME;
+            return;
+        case BUTTON_MODE::SELECTED:
+            colorScheme = SELECTED_SCHEME;
+            return;
+    }
+    throw ButtonException("Incorrect button mode " + std::to_string(static_cast<int>(mode)));
 }
 
 ButtonRectangle::ButtonRectangle(const Picture& pic)
@@ -41,20 +59,14 @@ ButtonRectangle::ButtonRectangle(const Picture& pic)
     bottom = '|' + bottom + '|';
     buttonPicture.pushBackLine(bottom);
 
-    //    buttonPicture.updateState();
-
     for (size_t i = 1; i + 1 < buttonPicture.maxHeight(); ++i) {
         string prefix = "|" + string(leftMargin, backgroundChar);
         string suffix = string(rightMargin, backgroundChar) + '|';
         buttonPicture(i) = prefix + buttonPicture(i) + suffix;
     }
-    //    buttonPicture.updateState();
 }
 
 void ButtonRectangle::draw(std::pair<size_t, size_t> TL) const {
-    //    cerr << "initColorsDone: " << initColorsDone << endl;
-    //    cerr << "ignoredChars: " << pic.getIgnoredChars() << endl;
-    //    cerr << "backgroundChars: " << pic.getBackgroundChars() << endl;
     assert(stdscr != 0);
     assert(initColorsDone);
     move(TL.second, TL.first);
@@ -64,9 +76,9 @@ void ButtonRectangle::draw(std::pair<size_t, size_t> TL) const {
     if (buttonPicture.maxHeight()) {
         for (size_t j = 0; j < buttonPicture(0).size(); ++j) {
             c = buttonPicture(0, j);
-            attron(COLOR_PAIR(BUTTON_BORDER));
+            attron(COLOR_PAIR(colorScheme.border));
             addch(c);
-            attroff(COLOR_PAIR(BUTTON_BORDER));
+            attroff(COLOR_PAIR(colorScheme.border));
         }
         TL.second++;
         move(TL.second, TL.first);
@@ -74,9 +86,9 @@ void ButtonRectangle::draw(std::pair<size_t, size_t> TL) const {
         for (size_t i = 1; i + 1 < buttonPicture.maxHeight(); ++i) {
             if (buttonPicture(i).size()) {
                 c = buttonPicture(i, 0);
-                attron(COLOR_PAIR(BUTTON_BORDER));
+                attron(COLOR_PAIR(colorScheme.border));
                 addch(c);
-                attroff(COLOR_PAIR(BUTTON_BORDER));
+                attroff(COLOR_PAIR(colorScheme.border));
                 for (size_t j = 1; j + 1 < buttonPicture(i).size(); ++j) {
                     c = buttonPicture(i, j);
                     if (buttonPicture.isIgnoredChar(c)) {
@@ -84,19 +96,19 @@ void ButtonRectangle::draw(std::pair<size_t, size_t> TL) const {
                         getyx(stdscr, cy, cx);
                         move(cy, cx + 1);
                     } else if (buttonPicture.isBackgroundChar(c)) {
-                        attron(COLOR_PAIR(BUTTON_EMPTY));
-                        addch(' ');
-                        attroff(COLOR_PAIR(BUTTON_EMPTY));
+                        attron(COLOR_PAIR(colorScheme.empty));
+                        addch(' ');  // TODO is it always a space?
+                        attroff(COLOR_PAIR(colorScheme.empty));
                     } else {
-                        attron(COLOR_PAIR(BUTTON_TEXT));
+                        attron(COLOR_PAIR(colorScheme.text));
                         addch(c);
-                        attroff(COLOR_PAIR(BUTTON_TEXT));
+                        attroff(COLOR_PAIR(colorScheme.text));
                     }
                 }
                 c = buttonPicture(i, buttonPicture(i).size() - 1);
-                attron(COLOR_PAIR(BUTTON_BORDER));
+                attron(COLOR_PAIR(colorScheme.border));
                 addch(c);
-                attroff(COLOR_PAIR(BUTTON_BORDER));
+                attroff(COLOR_PAIR(colorScheme.border));
             }
             TL.second++;
             move(TL.second, TL.first);
@@ -105,9 +117,9 @@ void ButtonRectangle::draw(std::pair<size_t, size_t> TL) const {
         size_t lastIndex = buttonPicture.maxHeight() - 1;
         for (size_t j = 0; j < buttonPicture(lastIndex).size(); ++j) {
             c = buttonPicture(lastIndex, j);
-            attron(COLOR_PAIR(BUTTON_BORDER));
+            attron(COLOR_PAIR(colorScheme.border));
             addch(c);
-            attroff(COLOR_PAIR(BUTTON_BORDER));
+            attroff(COLOR_PAIR(colorScheme.border));
         }
     }
 }
@@ -117,7 +129,6 @@ void ButtonZigZag::draw(std::pair<size_t, size_t>) const {
 
 ButtonZigZag::ButtonZigZag(const Picture& pic)
         : Button{pic} {
-    //    buttonPicture.updateState();
 }
 
 std::shared_ptr<Button> ButtonFactory(const Picture& pic, BUTTON_STYLE style) {

@@ -9,7 +9,9 @@
 #include "Controller.hpp"
 #include "Figure.hpp"
 #include "ViewColorSchemeCurses.hpp"
+#include "ViewInitCurses.hpp"
 #include "ViewMainMenuCurses.hpp"
+#include "ViewMenuMultiplexerCurses.hpp"
 
 using namespace std;
 
@@ -57,22 +59,6 @@ ViewCurses::ViewCurses(std::shared_ptr<Controller> controller)
     fetchModel();
     updateCellStatus(currentPos, 1);
     updateCellStatus(currentPos, 0);
-
-    initscr();
-    calculateTL();
-
-    initColors();
-    //    keypad(stdscr, true);
-    //    otherwise ESC does not work, see
-    //    https://www.daniweb.com/programming/software-development/threads/259439/keycode-of-esc-in-curses-h
-    //    other solutions: nocbreak(); or timeout(0); or not using ESC to cancel
-    curs_set(0);
-    noecho();
-}
-
-ViewCurses::~ViewCurses() {
-    use_default_colors();
-    endwin();
 }
 
 void ViewCurses::updateCellStatus(const Position& pos, bool before) {
@@ -218,10 +204,14 @@ void ViewCurses::makeMultiStep() {
     // possible
 }
 
+RET_CODE ViewCurses::show() {
+    initCurses();
+    run();
+    terminateCurses();
+    return RET_CODE::NOTHING;
+}
+
 void ViewCurses::run() {
-    MainMenuCurses mainMenu;
-    mainMenu.show();
-    getch();
     GameStatus winner;
     bool running = 1;
     while (running) {
@@ -278,10 +268,13 @@ void ViewCurses::run() {
             case 'q':
                 newPos.x_ += 1;
                 break;
-            case 27:
+            case 'c':
                 reloadModel();
                 board_->get(currentPos).status_ = CellStatus::INACTIVE;
                 currentPosStatus = CurrentPosStatus::UNSELECTED;
+                break;
+            case 27:
+                running = 0;
                 break;
             case 32:
                 switch (currentPosStatus) {

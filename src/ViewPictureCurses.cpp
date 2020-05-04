@@ -1,5 +1,6 @@
 #include "ViewPictureCurses.hpp"
 
+#include <istream>
 #include <string>
 
 namespace viewCurses {
@@ -17,6 +18,41 @@ Picture::Picture(const std::vector<std::string>& picture,
     for (auto c : ignoredChars) addIgnoredChar(c);
     for (auto c : backgroundChars) addBackgroundChar(c);
     //    updateState();
+}
+
+Picture::Picture(std::istream& is) {
+    std::string newLine;
+
+    std::string ignoredChars;
+    std::string backgroundChars;
+    char haveConf{};
+    haveConf = is.peek();
+    if (haveConf == '#') {
+        getline(is, ignoredChars);
+        if (ignoredChars.length())
+            ignoredChars = ignoredChars.substr(1, ignoredChars.length() - 1);
+
+        haveConf = is.peek();
+        if (haveConf == '#') {
+            getline(is, backgroundChars);
+            if (backgroundChars.length())
+                backgroundChars = backgroundChars.substr(1, backgroundChars.length() - 1);
+        }
+    }
+    if (ignoredChars.empty())
+        ignoredChars = "\x1E";
+    if (backgroundChars.empty())
+        backgroundChars = "\x1F";
+
+    for (auto i : ignoredChars) addIgnoredChar(i);
+    for (auto i : backgroundChars) addBackgroundChar(i);
+
+    while (true) {
+        getline(is, newLine);
+        if (is.fail())
+            break;
+        picture_.push_back(newLine);
+    }
 }
 
 //Picture::Picture(const Picture& pic/*, bool attrOnly*/) {
