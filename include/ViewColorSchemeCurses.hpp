@@ -17,7 +17,7 @@ namespace viewCurses {
 #define DRACULA   1
 #define SNOW_BLUE 2
 
-#define COLOR_MODE CLASSIC
+#define COLOR_MODE DRACULA
 
 //#define CLASSIC
 //#define BLACK_AND_WHITE
@@ -57,7 +57,7 @@ namespace viewCurses {
     #define COLOR_BUTTON_SELECTED_BORDER_FOREGROUND 137
     #define COLOR_BUTTON_SELECTED_BORDER_BACKGROUND 137
 #elif COLOR_MODE == DRACULA
-    #define COLOR_WHITE_CELL          255
+    #define COLOR_WHITE_CELL          231
     #define COLOR_BLACK_CELL          237
     #define COLOR_WHITE_FIGURE        187
     #define COLOR_BLACK_FIGURE        137

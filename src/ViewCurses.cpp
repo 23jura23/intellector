@@ -12,6 +12,7 @@
 #include "ViewInitCurses.hpp"
 #include "ViewMainMenuCurses.hpp"
 #include "ViewMenuMultiplexerCurses.hpp"
+#include "ViewMenuTypes.hpp"
 
 using namespace std;
 
@@ -56,9 +57,19 @@ ViewCurses::ViewCurses(std::shared_ptr<Controller> controller)
     static_cast<void>(rv);
     // avoiding warning. May be harmful, but later there must be a well-done logging.
 
+    initCurses();
+
     fetchModel();
     updateCellStatus(currentPos, 1);
     updateCellStatus(currentPos, 0);
+}
+
+ViewCurses::~ViewCurses() {
+    terminateCurses();
+}
+
+MENU_TYPE ViewCurses::type() const {
+    return MENU_TYPE::GAME_MENU;
 }
 
 void ViewCurses::updateCellStatus(const Position& pos, bool before) {
@@ -154,7 +165,7 @@ void ViewCurses::makeMultiStep_TransformMove(std::vector<Move>& inMoves_) {
     while (running_transform) {
         currentCell.cell_.figure_.emplace(*potentialFigures[currentIndex]);
         refreshView();
-        c_transform = getch();
+        c_transform = getch(); // TODO(23jura23) AAAAA. All getch must be in multiplexer
         //TODO(23jura23) blinking
         switch (c_transform) {
             case 'r':
@@ -203,115 +214,118 @@ void ViewCurses::makeMultiStep() {
     // possible
 }
 
-RET_CODE ViewCurses::show() {
-    initCurses();
-    run();
-    terminateCurses();
-    return RET_CODE::NOTHING;
-}
+RET_CODE ViewCurses::show(int c) {
+    //    run();
+    //    terminateCurses();
+    //}
+    //
+    //void ViewCurses::run() {
+    //    bool running = 1;
+    //    while (running) {
+    Position newPos = currentPos;
+    refreshView();
+    winner = controller_->getGameStatus();
 
-void ViewCurses::run() {
-    GameStatus winner;
-    bool running = 1;
-    while (running) {
-        Position newPos = currentPos;
-        refreshView();
-        winner = controller_->getGameStatus();
-        if (winner != GameStatus::game_running_) {
-            // but you need to make universal interface of multistep, where unistep is just multistep with only one possible move. And blinking will be just the implementation for TransformMove
-            // TODO(23jura23) think about appearing sliding menu in left or right part of screen
-            if (winner == GameStatus::game_over_white_win_) {
-                clear();
-                move(0, 0);
-                printw("White win!");
-                refresh();
-                usleep(7000000);
-                return;
-            } else if (winner == GameStatus::game_over_black_win_) {
-                clear();
-                move(0, 0);
-                printw("Black win!");
-                refresh();
-                usleep(7000000);
-                return;
-            } else {
-                clear();
-                move(0, 0);
-                printw("Unexcepectedly, game finished!..");
-                refresh();
-                usleep(15000000);
-                return;
-            }
+    // !!! TODO(23jura23) move this bottom!
+    
+    if (winner != GameStatus::game_running_) {
+        // but you need to make universal interface of multistep, where unistep is just multistep with only one possible move. And blinking will be just the implementation for TransformMove
+        // TODO(23jura23) think about appearing sliding menu in left or right part of screen
+        if (winner == GameStatus::game_over_white_win_) {
+            clear();
+            move(0, 0);
+            printw("White win!");
+            refresh();
+            usleep(7000000);
+            return RET_CODE::GAME_OVER_WHITE_WIN;
+        } else if (winner == GameStatus::game_over_black_win_) {
+            clear();
+            move(0, 0);
+            printw("Black win!");
+            refresh();
+            usleep(7000000);
+            return RET_CODE::GAME_OVER_BLACK_WIN;
+        } else {
+            clear();
+            move(0, 0);
+            printw("Unexcepectedly, game finished!..");
+            refresh();
+            usleep(15000000);
+            return RET_CODE::GAME_OVER_UNEXPECTEDLY;
         }
-        chtype c = getch();
-
-        switch (c) {
-            case 'x':
-                running = 0;
-                break;
-            case 'w':
-                newPos.y_ += 1;
-                break;
-            case 's':
-                newPos.y_ -= 1;
-                break;
-            case 'a':
-                newPos.z_ -= 1;
-                break;
-            case 'e':
-                newPos.z_ += 1;
-                break;
-            case 'd':
-                newPos.x_ -= 1;
-                break;
-            case 'q':
-                newPos.x_ += 1;
-                break;
-            case 'c':
-                reloadModel();
-                board_->get(currentPos).status_ = CellStatus::INACTIVE;
-                currentPosStatus = CurrentPosStatus::UNSELECTED;
-                break;
-            case 27:
-                running = 0;
-                break;
-            case 32:
-                switch (currentPosStatus) {
-                    case CurrentPosStatus::UNSELECTED:
-                        selectPosition();
-                        break;
-                    case CurrentPosStatus::SELECTED:
-                        cerr << "Trying to do smth with Cell " << currentPos.posW() << ' '
-                             << currentPos.posH() << endl;
-                        if (currentPos == selectedPos) {
-                            unselectPosition();
-                        } else {
-                            if (board_->get(currentPos).inMoves_.size()) {
-                                cerr << "Step " << currentPos.posW() << ' ' << currentPos.posH()
-                                     << " was tried to be done" << endl;
-                                if (board_->get(currentPos).inMoves_.size() == 1) {
-                                    makeUniStep();
-                                } else {
-                                    makeMultiStep();
-                                }
-//                                previousFromPos = selectedPos;
-//                                previousToPos = currentPos;
-                            } else {
-                                // Impossible move
-                            }
-                        }
-                        break;
-                }
-                break;
-        }
-        cerr << "newPos: " << newPos.posW() << ' ' << newPos.posH() << endl;
-        cerr << "truepos" << newPos.x_ << ' ' << newPos.y_ << ' ' << newPos.z_ << endl;
-        updatePositions(newPos);
-        //        if (inBoard(newPos)) {
-        //            currentPos = newPos;
-        //            updateCellsStatus();
-        //        }
     }
+//    chtype c = getch();
+
+    switch (c) {
+        case 'x':
+            return RET_CODE::GAME_EXIT;
+            break;
+        case 'w':
+            newPos.y_ += 1;
+            break;
+        case 's':
+            newPos.y_ -= 1;
+            break;
+        case 'a':
+            newPos.z_ -= 1;
+            break;
+        case 'e':
+            newPos.z_ += 1;
+            break;
+        case 'd':
+            newPos.x_ -= 1;
+            break;
+        case 'q':
+            newPos.x_ += 1;
+            break;
+        case 'c':
+            reloadModel();
+            board_->get(currentPos).status_ = CellStatus::INACTIVE;
+            currentPosStatus = CurrentPosStatus::UNSELECTED;
+            break;
+        case 27:
+            return RET_CODE::GAME_EXIT;
+            break;
+        case 32:
+            switch (currentPosStatus) {
+                case CurrentPosStatus::UNSELECTED:
+                    selectPosition();
+                    break;
+                case CurrentPosStatus::SELECTED:
+                    cerr << "Trying to do smth with Cell " << currentPos.posW() << ' '
+                         << currentPos.posH() << endl;
+                    if (currentPos == selectedPos) {
+                        unselectPosition();
+                    } else {
+                        if (board_->get(currentPos).inMoves_.size()) {
+                            cerr << "Step " << currentPos.posW() << ' ' << currentPos.posH()
+                                 << " was tried to be done" << endl;
+                            if (board_->get(currentPos).inMoves_.size() == 1) {
+                                makeUniStep();
+                            } else {
+                                makeMultiStep();
+                            }
+                            //                                previousFromPos = selectedPos;
+                            //                                previousToPos = currentPos;
+                        } else {
+                            // Impossible move
+                        }
+                    }
+                    break;
+            }
+            break;
+        default:
+            break;
+    }
+    cerr << "newPos: " << newPos.posW() << ' ' << newPos.posH() << endl;
+    cerr << "truepos" << newPos.x_ << ' ' << newPos.y_ << ' ' << newPos.z_ << endl;
+    updatePositions(newPos);
+    refreshView();
+    //        if (inBoard(newPos)) {
+    //            currentPos = newPos;
+    //            updateCellsStatus();
+    //        }
+    return RET_CODE::NOTHING;
 }
 
 void ViewCurses::updateModel(std::shared_ptr<ViewModelCurses> newModel) {

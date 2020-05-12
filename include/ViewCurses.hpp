@@ -20,10 +20,12 @@ class ViewCurses : public viewBase, public MenuCurses {
     using pair = std::pair<size_t, size_t>;
 
    public:
-    RET_CODE show();
+    RET_CODE show(int) override;
 
     explicit ViewCurses(std::shared_ptr<Controller>);
-//    ~ViewCurses();  // rule of 5?
+    ~ViewCurses();  // rule of 5?
+
+    MENU_TYPE type() const override;
 
    private:
     void run();
@@ -58,6 +60,8 @@ class ViewCurses : public viewBase, public MenuCurses {
     Position selectedPos;
     std::optional<Position> previousFromPos;
     std::optional<Position> previousToPos;
+    
+    GameStatus winner;
 
     // just decomposition functions
     void selectPosition();

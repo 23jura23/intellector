@@ -12,10 +12,13 @@
 
 namespace viewCurses {
 
-class MainMenuCurses final : MenuCurses {
+class MainMenuCurses final : public MenuCurses {
    public:
     MainMenuCurses();
-    RET_CODE show() override;
+    ~MainMenuCurses();  // rule of 5?
+    RET_CODE show(int) override;
+
+    MENU_TYPE type() const override;
 
    private:
     void draw();

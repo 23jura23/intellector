@@ -9,6 +9,7 @@
 #include "ViewColorSchemeCurses.hpp"
 #include "ViewInitCurses.hpp"
 #include "ViewMenuMultiplexerCurses.hpp"
+#include "ViewMenuTypes.hpp"
 
 namespace viewCurses {
 using std::string;
@@ -17,6 +18,8 @@ MainMenuCurses::MainMenuCurses()
         : currentButtonIndex_{0} {
     auto rv = freopen("error.txt", "a", stderr);
     static_cast<void>(rv);
+    
+    initCurses();
 
     // TODO common ncurses initializer, that initialize ncurses only 1 time
     // for now here is an assumption that ncurses is already initialized
@@ -42,61 +45,59 @@ MainMenuCurses::MainMenuCurses()
     }
 }
 
-RET_CODE MainMenuCurses::show() {
-    initCurses();
+MainMenuCurses::~MainMenuCurses() {
+    terminateCurses();
+}
+
+MENU_TYPE MainMenuCurses::type() const {
+    return MENU_TYPE::MAIN_MENU;
+}
+
+RET_CODE MainMenuCurses::show(int c) {
     draw();
     RET_CODE rc = RET_CODE::NOTHING;
-    bool running = 1;
-    chtype c;
-    while (running) {
-        c = getch();
-        switch (c) {
-            case 'w':
-            case KEY_UP:
-                if (buttons_.size() > 0) {
-                    currentButtonIndex_ =
-                        (currentButtonIndex_ - 1 + buttons_.size()) % buttons_.size();
-                    draw();
-                }
-                break;
-            case 's':
-            case KEY_DOWN:
-                if (buttons_.size() > 0) {
-                    currentButtonIndex_ = (currentButtonIndex_ + 1) % buttons_.size();
-                    draw();
-                }
-                break;
-            case 27:  // ESC
-                running = 0;
-                break;
-            case 32:
-                // suggesting correct buttons order:
-                // new game
-                // rules
-                // contacts
-                // exit
-                switch (currentButtonIndex_) {
-                    case 0:  // new game
-                        rc = RET_CODE::START_NEW_GAME;
-                        running = 0;
-                        break;
-                    case 1:  // rules
-                        break;
-                    case 2:  // contacts
-                        break;
-                    case 3:  // exit
-                        rc = RET_CODE::EXIT;
-                        running = 0;
-                        break;
-                    default:
-                        assert(0);
-                }
-                break;
-            default:
+    switch (c) {
+        case 'w':
+        case KEY_UP:
+            if (buttons_.size() > 0) {
+                currentButtonIndex_ = (currentButtonIndex_ - 1 + buttons_.size()) % buttons_.size();
                 draw();
-        }
+            }
+            break;
+        case 's':
+        case KEY_DOWN:
+            if (buttons_.size() > 0) {
+                currentButtonIndex_ = (currentButtonIndex_ + 1) % buttons_.size();
+                draw();
+            }
+            break;
+        case 27:  // ESC
+            break;
+        case 32:
+            // assuming correct buttons order:
+            // new game
+            // rules
+            // contacts
+            // exit
+            switch (currentButtonIndex_) {
+                case 0:  // new game
+                    rc = RET_CODE::START_NEW_GAME;
+                    break;
+                case 1:  // rules
+                    break;
+                case 2:  // contacts
+                    break;
+                case 3:  // exit
+                    rc = RET_CODE::EXIT;
+                    break;
+                default:
+                    assert(0);
+            }
+            break;
+        default:
+            // do nothing
+            break;
     }
-    terminateCurses();
     return rc;
 }
 

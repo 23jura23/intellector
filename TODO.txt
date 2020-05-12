@@ -49,6 +49,10 @@ interesting color scheme:
     #define COLOR_BUTTON_SELECTED_BORDER_BACKGROUND 137
 */  now it's SNOW_BLUE
 
+SNOW_BLUE theme: border blends with the body by color.
+Classic and snow_blue text is not constrast enough
+
+
 !!! Menu further plans: multiplexer gets key, and send it to created and stored menus
 
 Git Hooks for autoformatting

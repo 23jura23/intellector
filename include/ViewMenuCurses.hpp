@@ -18,11 +18,13 @@ class MenuException : public std::runtime_error {
 };
 
 enum class RET_CODE;
+enum class MENU_TYPE;
 
 class MenuCurses {
    public:
     virtual ~MenuCurses() = default;
-    virtual RET_CODE show() = 0;
+    virtual RET_CODE show(int c) = 0;
+    virtual MENU_TYPE type() const;
 };  // class MenuCurses
 
 }  // namespace viewCurses
