@@ -14,15 +14,16 @@
 namespace viewCurses {
 using std::string;
 
-MainMenuCurses::MainMenuCurses()
+MainMenuCurses::MainMenuCurses(buttonsVectorT buttonsFilenames_)
         : currentButtonIndex_{0} {
     auto rv = freopen("error.txt", "a", stderr);
     static_cast<void>(rv);
-    
+
     initCurses();
 
     // TODO common ncurses initializer, that initialize ncurses only 1 time
     // for now here is an assumption that ncurses is already initialized
+//    auto buttonsFilenames_ = getButtonFilenames();
     std::vector<std::pair<Picture, BUTTON_STYLE>> buttons_Buffer;
     for (auto [filename, style] : buttonsFilenames_) {
         auto is = std::ifstream(filename, std::ios::in);
@@ -51,54 +52,6 @@ MainMenuCurses::~MainMenuCurses() {
 
 MENU_TYPE MainMenuCurses::type() const {
     return MENU_TYPE::MAIN_MENU;
-}
-
-RET_CODE MainMenuCurses::show(int c) {
-    draw();
-    RET_CODE rc = RET_CODE::NOTHING;
-    switch (c) {
-        case 'w':
-        case KEY_UP:
-            if (buttons_.size() > 0) {
-                currentButtonIndex_ = (currentButtonIndex_ - 1 + buttons_.size()) % buttons_.size();
-                draw();
-            }
-            break;
-        case 's':
-        case KEY_DOWN:
-            if (buttons_.size() > 0) {
-                currentButtonIndex_ = (currentButtonIndex_ + 1) % buttons_.size();
-                draw();
-            }
-            break;
-        case 27:  // ESC
-            break;
-        case 32:
-            // assuming correct buttons order:
-            // new game
-            // rules
-            // contacts
-            // exit
-            switch (currentButtonIndex_) {
-                case 0:  // new game
-                    rc = RET_CODE::START_NEW_GAME;
-                    break;
-                case 1:  // rules
-                    break;
-                case 2:  // contacts
-                    break;
-                case 3:  // exit
-                    rc = RET_CODE::EXIT;
-                    break;
-                default:
-                    assert(0);
-            }
-            break;
-        default:
-            // do nothing
-            break;
-    }
-    return rc;
 }
 
 void MainMenuCurses::draw() {

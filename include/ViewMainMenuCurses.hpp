@@ -11,17 +11,18 @@
 #include "ViewPictureCurses.hpp"
 
 namespace viewCurses {
+using buttonsVectorT = std::vector<std::pair<std::string, BUTTON_STYLE>>;
 
-class MainMenuCurses final : public MenuCurses {
+class MainMenuCurses : public MenuCurses {
    public:
-    MainMenuCurses();
+    MainMenuCurses(buttonsVectorT);
     ~MainMenuCurses();  // rule of 5?
-    RET_CODE show(int) override;
+//    /*virtual ? */ RET_CODE show(int) = 0;
 
     MENU_TYPE type() const override;
 
-   private:
-    void draw();
+   protected:
+    virtual void draw();
     //    int run();  // TODO class runner with its own state
 
     void alignWidth(Picture&, size_t);  // TODO separe it, but where to...
@@ -31,12 +32,6 @@ class MainMenuCurses final : public MenuCurses {
     void buttonsStateUpdate();
 
     int currentButtonIndex_;  // optional - allow to be unselected?
-
-    const std::vector<std::pair<std::string, BUTTON_STYLE>> buttonsFilenames_ = {
-        {"resources/newgame.btn", BUTTON_STYLE::RECTANGLE},
-        {"resources/rules.btn", BUTTON_STYLE::RECTANGLE},
-        {"resources/contacts.btn", BUTTON_STYLE::RECTANGLE},
-        {"resources/exit.btn", BUTTON_STYLE::RECTANGLE}};
 
     size_t maxButtonWidth_;
     std::vector<std::shared_ptr<Button>> buttons_;  // need object Button

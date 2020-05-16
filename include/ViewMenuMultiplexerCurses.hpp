@@ -13,7 +13,9 @@ enum class RET_CODE {
     FAILURE,
 
     START_NEW_GAME,
-    EXIT, // TODO rename to MAIN_MENU_EXIT
+    OPTIONS_MENU,
+    EXIT, // TODO rename to START_MENU_EXIT
+    BACK,
 
     GAME_OVER_WHITE_WIN,
     GAME_OVER_BLACK_WIN,
@@ -44,9 +46,10 @@ class MenuMultiplexerCurses final : public MenuCurses {
     //    std::shared_ptr<MenuCurses> createMenu(const Args&...);
     std::vector<MenuWithRC> aliveMenus;
 
-    RET_CODE processMainMenu(MenuWithRC&);
-    RET_CODE processGameMenu(MenuWithRC&);
     RET_CODE processWelcomeMenu(MenuWithRC&);
+    RET_CODE processStartMenu(MenuWithRC&);
+    RET_CODE processGameMenu(MenuWithRC&);
+    RET_CODE processOptionsMenu(MenuWithRC&);
 
 };  // class MenuMultiplexerCurses
 
