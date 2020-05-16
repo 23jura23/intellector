@@ -33,6 +33,7 @@ RET_CODE OptionsMenuCurses::show(int c) {
             }
             break;
         case 27:  // ESC
+            rc = RET_CODE::BACK;
             break;
         case 32:
             // assuming correct buttons order:

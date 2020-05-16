@@ -12,6 +12,18 @@ void Controller::makeMove(const Move& move) {
     game_->makeMove(move);
 }
 
+void Controller::cancelMove() {
+    game_->cancelMove();
+}
+
+void Controller::nextMove() {
+    game_->nextMove();
+}
+
+void Controller::prevMove() {
+    game_->prevMove();
+}
+
 GameStatus Controller::getGameStatus() {
     return game_->getGameStatus();
 }

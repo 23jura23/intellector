@@ -21,6 +21,10 @@ class Controller {
     //    inline void unSelectCell();
 
     void makeMove(const Move& move);  // really void?
+    void cancelMove();
+    void nextMove();
+    void prevMove();
+
     GameStatus getGameStatus();
 
     template <typename ViewType>
@@ -64,7 +68,7 @@ inline void Controller::updateViewModel<viewCurses::ViewCurses>() {
 }
 
 template <typename ViewType>
-inline void Controller::selectCell(const Cell& selected) {
+inline void Controller::selectCell(const Cell&) {
 }
 
 template <>

@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include "Controller.hpp"
 #include "ViewMenuCurses.hpp"
 
 namespace viewCurses {
@@ -15,8 +16,12 @@ enum class RET_CODE {
     START_NEW_GAME,
     RULES_MENU,
     OPTIONS_MENU,
-    EXIT, // TODO rename to START_MENU_EXIT
+    EXIT,  // TODO rename to START_MENU_EXIT
     BACK,
+
+    HISTORY_MENU_ENABLE,
+    HISTORY_MENU_DISABLE,
+    DO_RELOAD_MODEL,
 
     GAME_OVER_WHITE_WIN,
     GAME_OVER_BLACK_WIN,
@@ -41,17 +46,25 @@ class MenuMultiplexerCurses final : public MenuCurses {
     MENU_TYPE type() const override;
 
    private:
+    std::shared_ptr<Controller> getController();
+    std::optional<std::shared_ptr<Controller>> controller__;
+    std::shared_ptr<Game> getGame();
+    std::optional<std::shared_ptr<Game>> game__;
+    
     std::shared_ptr<MenuCurses> launchNewGame();
 
     //    template <MULTIPLEXABLE_MENU, typename... Args>
     //    std::shared_ptr<MenuCurses> createMenu(const Args&...);
     std::vector<MenuWithRC> aliveMenus;
 
+    bool forceRedraw = 0;
+
     RET_CODE processWelcomeMenu(MenuWithRC&);
     RET_CODE processStartMenu(MenuWithRC&);
     RET_CODE processGameMenu(MenuWithRC&);
     RET_CODE processRulesMenu(MenuWithRC&);
     RET_CODE processOptionsMenu(MenuWithRC&);
+    RET_CODE processHistoryMenu(MenuWithRC&);
 
 };  // class MenuMultiplexerCurses
 

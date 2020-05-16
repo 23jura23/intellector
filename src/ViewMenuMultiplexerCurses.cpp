@@ -9,11 +9,12 @@ using std::cerr, std::endl;
 #include "Controller.hpp"
 #include "Game.hpp"
 #include "ViewCurses.hpp"
+#include "ViewHistoryMenuCurses.hpp"
 #include "ViewInitCurses.hpp"
 #include "ViewMainMenuCurses.hpp"
 #include "ViewMenuTypes.hpp"
-#include "ViewRulesMenuCurses.hpp"
 #include "ViewOptionsMenuCurses.hpp"
+#include "ViewRulesMenuCurses.hpp"
 #include "ViewStartMenuCurses.hpp"
 
 using std::vector, std::shared_ptr, std::make_shared, std::dynamic_pointer_cast;
@@ -24,59 +25,9 @@ bool MenuWithRC::operator==(const MenuWithRC& other) {
     return menu == other.menu && rc == other.rc;
 }
 
-//RET_CODE MenuMultiplexerCurses::show_old() {
-//    auto er = freopen("error.txt", "a", stderr);
-//    static_cast<void>(er);
-//    initCurses();
-//
-//    MainMenuCurses mainMenu;
-//    bool running = 1;
-//    RET_CODE rc;
-//    while (running) {
-//        RET_CODE act = mainMenu.show();
-//        switch (act) {
-//            case RET_CODE::NOTHING:
-//                break;
-//            case RET_CODE::FAILURE:
-//                throw MenuException("MainMenu crashed");
-//                break;
-//            case RET_CODE::START_NEW_GAME:
-//                rc = launchNewGame();
-//                static_cast<void>(rc);
-//                break;
-//            case RET_CODE::EXIT:
-//                running = 0;
-//                break;
-//        }
-//    }
-//    terminateCurses();
-//    assert(initCursesDone == 0);
-//    return RET_CODE::NOTHING;
-//}
-
-//template <>
-//shared_ptr<MenuCurses> MenuMultiplexerCurses::createMenu<MULTIPLEXABLE_MENU::MAIN_MENU>() {
-//    return dynamic_pointer_cast<MenuCurses>(make_shared<MainMenuCurses>());
-//}
-//
-//template <>
-//shared_ptr<MenuCurses> MenuMultiplexerCurses::createMenu<MULTIPLEXABLE_MENU::GAME_MENU, Args...>(const Args& args) {
-//    return dynamic_pointer_cast<MenuCurses>(make_shared<MainMenuCurses>(args));
-//}
-
-//template <typename... Args>
-//shared_ptr<MenuCurses> MenuMultiplexerCurses::createMenu(MULTIPLEXABLE_MENU menu,
-//                                                         const Args&... args) {
-//    switch (menu) {
-//        case MULTIPLEXABLE_MENU::WELCOME_MENU:
-//            break;
-//        case MULTIPLEXABLE_MENU::MAIN_MENU:
-//            return dynamic_pointer_cast<MenuCurses>(make_shared<MainMenuCurses>());
-//        case MULTIPLEXABLE_MENU::GAME_MENU:
-//            return dynamic_pointer_cast<MenuCurses>(make_shared<ViewCurses>(args...));
-//    }
-//    throw MenuException("createMenu: tried to create unknown menu");
-//}
+auto lambdaFindersFactory(MENU_TYPE type) {
+    return [type](const MenuWithRC& menuRC_) { return menuRC_.menu->type() == type; };
+}
 
 MenuMultiplexerCurses::MenuMultiplexerCurses() {
     auto er = freopen("error.txt", "a", stderr);
@@ -108,7 +59,19 @@ RET_CODE MenuMultiplexerCurses::show(int) {
     bool running = 1;
     while (running) {
         // sending stage
+        if (forceRedraw) {
+            clear();
+            for (auto& menuRC : aliveMenus) {
+                menuRC.rc = menuRC.menu->show(0);
+            }
+            forceRedraw = 0;
+        }
+
         int c = getch();
+
+        cerr << "GOT " << c << '\n';
+
+        clear();
         for (auto& menuRC : aliveMenus) {
             menuRC.rc = menuRC.menu->show(c);
         }
@@ -137,6 +100,11 @@ RET_CODE MenuMultiplexerCurses::show(int) {
                 case MENU_TYPE::WELCOME_MENU:
                     processRC = processWelcomeMenu(menuRC);
                     break;
+                case MENU_TYPE::HISTORY_MENU:
+                    processRC = processHistoryMenu(menuRC);
+                    break;
+                default:
+                    throw MenuException("Menu type not handled!");
             }
             switch (processRC) {
                 case RET_CODE::EXIT:
@@ -167,6 +135,8 @@ RET_CODE MenuMultiplexerCurses::show(int) {
 // write in processMENUNAME some logic with multiplexing it: who creates it (in other processNAME-s), how to exit it (some BACK code, mm?), and so on
 // processMENUNAME may either: createNewMenu, deleting the old one (also somewhere starting the game); something else?
 
+// TODO exception if find(...) or find_if(...) failed
+
 RET_CODE MenuMultiplexerCurses::processStartMenu(MenuWithRC& menuRC) {
     RET_CODE rc = RET_CODE::NOTHING;
     switch (menuRC.rc) {
@@ -174,15 +144,16 @@ RET_CODE MenuMultiplexerCurses::processStartMenu(MenuWithRC& menuRC) {
             break;
         case RET_CODE::START_NEW_GAME: {
             auto newGameMenu = launchNewGame();
-            newGameMenu->show(0);  // initial show
+            forceRedraw = 1;
+            //            newGameMenu->show(0);  // initial show
             aliveMenus.push_back({newGameMenu, RET_CODE::NOTHING});
             aliveMenus.erase(find(aliveMenus.begin(), aliveMenus.end(), menuRC));
             break;
         }
         case RET_CODE::RULES_MENU: {
-            auto newOptionsMenu =
-                dynamic_pointer_cast<MenuCurses>(make_shared<RulesMenuCurses>());
-            newOptionsMenu->show(0);  // initial show
+            auto newOptionsMenu = dynamic_pointer_cast<MenuCurses>(make_shared<RulesMenuCurses>());
+            forceRedraw = 1;
+            //            newOptionsMenu->show(0);  // initial show
             aliveMenus.push_back({newOptionsMenu, RET_CODE::NOTHING});
             aliveMenus.erase(find(aliveMenus.begin(), aliveMenus.end(), menuRC));
             break;
@@ -190,7 +161,8 @@ RET_CODE MenuMultiplexerCurses::processStartMenu(MenuWithRC& menuRC) {
         case RET_CODE::OPTIONS_MENU: {
             auto newOptionsMenu =
                 dynamic_pointer_cast<MenuCurses>(make_shared<OptionsMenuCurses>());
-            newOptionsMenu->show(0);  // initial show
+            forceRedraw = 1;
+            //            newOptionsMenu->show(0);  // initial show
             aliveMenus.push_back({newOptionsMenu, RET_CODE::NOTHING});
             aliveMenus.erase(find(aliveMenus.begin(), aliveMenus.end(), menuRC));
             break;
@@ -210,14 +182,38 @@ RET_CODE MenuMultiplexerCurses::processGameMenu(MenuWithRC& menuRC) {
     switch (menuRC.rc) {
         case RET_CODE::NOTHING:
             break;
+        case RET_CODE::HISTORY_MENU_ENABLE: {
+            auto newHistoryMenu =
+                dynamic_pointer_cast<MenuCurses>(make_shared<HistoryMenuCurses>(getController()));
+            forceRedraw = 1;
+            //            newHistoryMenu->show(0);  // initial show
+            aliveMenus.push_back({newHistoryMenu, RET_CODE::NOTHING});
+            break;
+        }
+        case RET_CODE::HISTORY_MENU_DISABLE: {
+            auto findHistoryMenuLambda = lambdaFindersFactory(MENU_TYPE::HISTORY_MENU);
+            cerr << "aliveMenus size before " << aliveMenus.size() << endl;
+            aliveMenus.erase(find_if(aliveMenus.begin(), aliveMenus.end(), findHistoryMenuLambda));
+            forceRedraw = 1;
+            //            menuRC.menu->show(0);
+            cerr << "aliveMenus size after " << aliveMenus.size() << endl;
+            break;
+        }
         case RET_CODE::GAME_OVER_WHITE_WIN:  // TODO(23jura23) distinguish them some way?
         case RET_CODE::GAME_OVER_BLACK_WIN:
         case RET_CODE::GAME_OVER_UNEXPECTEDLY:
         case RET_CODE::GAME_EXIT: {
             auto newMainMenu = dynamic_pointer_cast<MenuCurses>(make_shared<StartMenuCurses>());
-            newMainMenu->show(0);  // initial show
+            forceRedraw = 1;
+            //            newMainMenu->show(0);  // initial show
             aliveMenus.push_back({newMainMenu, RET_CODE::NOTHING});
             aliveMenus.erase(find(aliveMenus.begin(), aliveMenus.end(), menuRC));
+            auto findHistoryMenuLambda = lambdaFindersFactory(MENU_TYPE::HISTORY_MENU);
+            auto historyMenuRC =
+                find_if(aliveMenus.begin(), aliveMenus.end(), findHistoryMenuLambda);
+            if (historyMenuRC != aliveMenus.end()) {
+                aliveMenus.erase(historyMenuRC);
+            }
             break;
         }
         default:
@@ -240,7 +236,7 @@ RET_CODE MenuMultiplexerCurses::processRulesMenu(MenuWithRC& menuRC) {
             break;
         }
         default:
-            throw MenuException("processOptionsMenu: wrong return code");
+            throw MenuException("processRulesMenu: wrong return code");
             break;
     }
     return rc;
@@ -270,9 +266,41 @@ RET_CODE MenuMultiplexerCurses::processWelcomeMenu(MenuWithRC& menuRC) {
     return RET_CODE::NOTHING;
 }
 
+RET_CODE MenuMultiplexerCurses::processHistoryMenu(MenuWithRC& menuRC) {
+    RET_CODE rc = RET_CODE::NOTHING;
+    switch (menuRC.rc) {
+        case RET_CODE::NOTHING:
+            break;
+        case RET_CODE::DO_RELOAD_MODEL: {
+            cerr << "aliveMenus size " << aliveMenus.size() << endl;
+            auto findGameMenuLambda = lambdaFindersFactory(MENU_TYPE::GAME_MENU);
+            auto foundMenu = find_if(aliveMenus.begin(), aliveMenus.end(), findGameMenuLambda);
+            foundMenu->menu->show(-10);  // special code to ask reload
+            break;
+        }
+        default:
+            throw MenuException("processHistoryMenu: wrong return code");
+            break;
+    }
+    return rc;
+}
+
+std::shared_ptr<Controller> MenuMultiplexerCurses::getController() {
+    if (!controller__.has_value())
+        controller__ = std::make_shared<Controller>(getGame());
+    return *controller__;
+}
+
+std::shared_ptr<Game> MenuMultiplexerCurses::getGame() {
+    if (!game__.has_value())
+        game__ = std::make_shared<Game>();
+    return *game__;
+}
+
 shared_ptr<MenuCurses> MenuMultiplexerCurses::launchNewGame() {
-    std::shared_ptr<Game> game = std::make_shared<Game>();
-    std::shared_ptr<Controller> controller = std::make_shared<Controller>(game);
+    game__.reset();
+    controller__.reset();
+    std::shared_ptr<Controller> controller = getController();
     // if one wants to add a network game, then the controller must be probably
     // not recreated each time, but created once with a game and passed here
     // as an argument

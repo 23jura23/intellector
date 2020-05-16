@@ -36,7 +36,7 @@ class ViewCurses : public viewBase, public MenuCurses {
     void setCellStatus(ViewCellCurses& cell, const CellStatus& status);
     void setCellStatus(const Position& pos, const CellStatus& status);
     void updateModel(std::shared_ptr<ViewModelCurses>);
-    void refreshView();
+    void draw();
 
     std::shared_ptr<ViewModelCurses> board_;
     std::shared_ptr<Controller> controller_;
@@ -62,6 +62,8 @@ class ViewCurses : public viewBase, public MenuCurses {
     std::optional<Position> previousToPos;
     
     GameStatus winner;
+
+    bool historyMenuEnabled = 0;
 
     // just decomposition functions
     void selectPosition();

@@ -164,8 +164,8 @@ void ViewCurses::makeMultiStep_TransformMove(std::vector<Move>& inMoves_) {
     char c_transform;
     while (running_transform) {
         currentCell.cell_.figure_.emplace(*potentialFigures[currentIndex]);
-        refreshView();
-        c_transform = getch(); // TODO(23jura23) AAAAA. All getch must be in multiplexer
+        draw();
+        c_transform = getch();  // TODO(23jura23) AAAAA. All getch must be in multiplexer
         //TODO(23jura23) blinking
         switch (c_transform) {
             case 'r':
@@ -222,12 +222,14 @@ RET_CODE ViewCurses::show(int c) {
     //void ViewCurses::run() {
     //    bool running = 1;
     //    while (running) {
+    RET_CODE rc = RET_CODE::NOTHING;
+
     Position newPos = currentPos;
-    refreshView();
+    draw();
     winner = controller_->getGameStatus();
 
     // !!! TODO(23jura23) move this bottom!
-    
+
     if (winner != GameStatus::game_running_) {
         // but you need to make universal interface of multistep, where unistep is just multistep with only one possible move. And blinking will be just the implementation for TransformMove
         // TODO(23jura23) think about appearing sliding menu in left or right part of screen
@@ -254,11 +256,22 @@ RET_CODE ViewCurses::show(int c) {
             return RET_CODE::GAME_OVER_UNEXPECTEDLY;
         }
     }
-//    chtype c = getch();
+    //    chtype c = getch();
 
     switch (c) {
         case 'x':
-            return RET_CODE::GAME_EXIT;
+            rc = RET_CODE::GAME_EXIT;
+            break;
+        case 'h':
+            if (!historyMenuEnabled) {
+                rc = RET_CODE::HISTORY_MENU_ENABLE;
+            } else {
+                rc = RET_CODE::HISTORY_MENU_DISABLE;
+            }
+            historyMenuEnabled ^= 1;
+            break;
+        case -10:  // ask to reload
+            reloadModel();
             break;
         case 'w':
             newPos.y_ += 1;
@@ -320,12 +333,12 @@ RET_CODE ViewCurses::show(int c) {
     cerr << "newPos: " << newPos.posW() << ' ' << newPos.posH() << endl;
     cerr << "truepos" << newPos.x_ << ' ' << newPos.y_ << ' ' << newPos.z_ << endl;
     updatePositions(newPos);
-    refreshView();
+    draw();
     //        if (inBoard(newPos)) {
     //            currentPos = newPos;
     //            updateCellsStatus();
     //        }
-    return RET_CODE::NOTHING;
+    return rc;
 }
 
 void ViewCurses::updateModel(std::shared_ptr<ViewModelCurses> newModel) {
@@ -346,8 +359,8 @@ void ViewCurses::reloadModel() {
     }
 }
 
-void ViewCurses::refreshView() {
-    clear();
+void ViewCurses::draw() {
+    //    clear();
     calculateTL();
     outBoard();
     refresh();

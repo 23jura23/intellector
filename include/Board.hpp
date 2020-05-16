@@ -11,6 +11,8 @@
 #include "Figure.hpp"
 #include "Position.hpp"
 
+#pragma pack(push, 1)
+
 class Board {
    public:
     Board();
@@ -32,6 +34,8 @@ class Board {
         return data_ == other.data_;
     }
 };
+
+#pragma pack(pop)
 
 [[nodiscard]] inline bool inBoard(Position pos) {
     return (pos.posH() >= 0 && pos.posW() >= 0 && pos.posH() < Board::rows_ - pos.posW() % 2 &&
