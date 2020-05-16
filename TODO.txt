@@ -60,6 +60,7 @@ Git Hooks for autoformatting
 Debug and Release versions (with and without error.txt)
 
 !!! OPTIONS
+!!! take prev step on history_point, not last
 
 Install QT
 

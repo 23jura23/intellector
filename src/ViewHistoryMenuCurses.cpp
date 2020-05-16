@@ -2,33 +2,39 @@
 
 #include <assert.h>
 
+#include <iostream>  // TODO delete
+#include <sstream>
+
 #include "ViewMenuMultiplexerCurses.hpp"
 #include "ViewMenuTypes.hpp"
 
 namespace viewCurses {
 HistoryMenuCurses::HistoryMenuCurses(std::shared_ptr<Controller> controller)
-        : controller_{controller} {
+        : controller_{controller}
+        , figureNotation{{FigureType::INTELLECTOR, "In"},
+                         {FigureType::DOMINATOR, "Dm"},
+                         {FigureType::AGGRESSOR, "A"},
+                         {FigureType::DEFENSSOR, "De"},
+                         {FigureType::LIBERATOR, "L"},
+                         {FigureType::PROGRESSOR, "P"}}
+
+{
+    auto er = freopen("error.txt", "a", stderr);
+    static_cast<void>(er);
+
+    reloadModel();
 }
 
 RET_CODE HistoryMenuCurses::show(int c) {
+    fetchModel();
     draw();
     RET_CODE rc = RET_CODE::NOTHING;
     switch (c) {
             //        case 104:  // h
             //            rc = RET_CODE::HISTORY_MENU_;
             //            break;
-        case 117:  // u
-            controller_->prevMove();
+        case -10:
             reloadModel();
-            rc = RET_CODE::DO_RELOAD_MODEL;
-            // cancel move?
-            // undo
-            break;
-        case 85:  // Shift-u
-            controller_->nextMove();
-            reloadModel();
-            rc = RET_CODE::DO_RELOAD_MODEL;
-            // redo
             break;
         case 106:  // j
             // move selected history cell bottom
@@ -44,6 +50,38 @@ RET_CODE HistoryMenuCurses::show(int c) {
     return rc;
 }
 
+Picture HistoryMenuCurses::toASCIILetters(const std::string& str) const {
+    // TODO
+    auto pic = Picture{std::vector<std::string>{str}};
+    return pic;
+}
+
+Picture HistoryMenuCurses::drawToNotation(const Move& move) const {
+    std::stringstream notationStream;
+
+    size_t fromPosW = move.from_.posW();
+    size_t fromPosH = move.from_.posH() + 1;  // 0-indexed -> 1-indexed
+    size_t toPosW = move.to_.posW();
+    size_t toPosH = move.to_.posH() + 1;  // 0-indexed -> 1-indexed
+
+    char fromWNotaion = 'a' + fromPosW;
+    char toWNotaion = 'a' + toPosW;
+
+    assert('a' <= fromWNotaion && fromWNotaion <= 'z');
+    assert('a' <= toWNotaion && toWNotaion <= 'z');
+
+    std::string fromFigureNotation = figureNotation.at(move.from_figure_old_.type_);
+
+    notationStream << fromFigureNotation << " ";
+    notationStream << fromWNotaion << fromPosH << "—";
+    notationStream << toWNotaion << toPosH;
+
+    std::cerr << "notationStream " << notationStream.str().length() << ' ' << notationStream.str()
+              << std::endl;
+
+    return toASCIILetters(notationStream.str());
+}
+
 void HistoryMenuCurses::draw() {
     assert(getmaxx(stdscr) >= 0);
     size_t maxx = getmaxx(stdscr);
@@ -57,7 +95,23 @@ void HistoryMenuCurses::draw() {
         move(y, xStartPos);
 
         if (i < board_->history_of_moves_.size()) {
-            
+            Picture notation = drawToNotation(board_->history_of_moves_[i]);
+            if (notation.maxWidth() >= cellWidth_)
+                throw MenuException("Notation is too big (width) to be drawn");
+
+            size_t yStartPos;
+            if (notation.maxHeight() + 1 < cellHeight_) {
+                yStartPos = y + cellHeight_ - 1 - notation.maxHeight();
+            } else {
+                throw MenuException("Notation is too big (height) to be drawn");
+            }
+
+            for (size_t j = 0; j < notation.maxHeight(); ++j) {
+                move(yStartPos + j, xStartPos);
+                for (size_t u = 0; u < notation(j).size(); ++u) {
+                    addch(notation(j, u));
+                }
+            }
         }
 
         move(y + cellHeight_ - 1, xStartPos);
@@ -65,9 +119,6 @@ void HistoryMenuCurses::draw() {
             addch('=');
         }
     }
-
-    move(5, 5);
-    addch('!');
 }
 
 MENU_TYPE HistoryMenuCurses::type() const {

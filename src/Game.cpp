@@ -64,6 +64,10 @@ const std::vector<Move>& Game::getHistoryOfMoves() const {
     return history_of_moves_;
 }
 
+size_t Game::getPointOfHistory() const {
+    return point_of_history_;
+}
+
 GameStatus Game::getGameStatus() const {  // может можно получше
     bool is_white_intellector = false;
     bool is_black_intellector = false;

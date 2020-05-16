@@ -54,6 +54,7 @@ class Game {
     }
 
     const std::vector<Move>& getHistoryOfMoves() const;
+    size_t getPointOfHistory() const;
 
     [[nodiscard]] GameStatus getGameStatus() const;
 

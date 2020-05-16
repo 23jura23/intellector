@@ -296,6 +296,19 @@ RET_CODE ViewCurses::show(int c) {
             board_->get(currentPos).status_ = CellStatus::INACTIVE;
             currentPosStatus = CurrentPosStatus::UNSELECTED;
             break;
+//        case 'u':
+//            controller_->prevMove();
+//            reloadModel();
+//            rc = RET_CODE::DO_RELOAD_MODEL;
+//            // cancel move?
+//            // undo
+//            break;
+//        case 85:  // Shift-u
+//            controller_->nextMove();
+//            reloadModel();
+//            rc = RET_CODE::DO_RELOAD_MODEL;
+//            // redo
+//            break;
         case 27:
             return RET_CODE::GAME_EXIT;
             break;
@@ -354,8 +367,8 @@ void ViewCurses::reloadModel() {
     controller_->updateViewModel<ViewCurses>();
     fetchModel();
     if (board_->history_of_moves_.size()) {
-        previousFromPos = board_->history_of_moves_.back().from_;
-        previousToPos = board_->history_of_moves_.back().to_;
+        previousFromPos = board_->history_of_moves_[board_->point_of_history_-1].from_;
+        previousToPos = board_->history_of_moves_[board_->point_of_history_-1].to_;
     }
 }
 

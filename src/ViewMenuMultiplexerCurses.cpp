@@ -186,19 +186,22 @@ RET_CODE MenuMultiplexerCurses::processGameMenu(MenuWithRC& menuRC) {
             auto newHistoryMenu =
                 dynamic_pointer_cast<MenuCurses>(make_shared<HistoryMenuCurses>(getController()));
             forceRedraw = 1;
-            //            newHistoryMenu->show(0);  // initial show
             aliveMenus.push_back({newHistoryMenu, RET_CODE::NOTHING});
             break;
         }
         case RET_CODE::HISTORY_MENU_DISABLE: {
             auto findHistoryMenuLambda = lambdaFindersFactory(MENU_TYPE::HISTORY_MENU);
-            cerr << "aliveMenus size before " << aliveMenus.size() << endl;
             aliveMenus.erase(find_if(aliveMenus.begin(), aliveMenus.end(), findHistoryMenuLambda));
             forceRedraw = 1;
-            //            menuRC.menu->show(0);
-            cerr << "aliveMenus size after " << aliveMenus.size() << endl;
             break;
         }
+//        case RET_CODE::DO_RELOAD_MODEL: {
+//            auto findHistoryMenuLambda = lambdaFindersFactory(MENU_TYPE::HISTORY_MENU);
+//            auto foundMenu = find_if(aliveMenus.begin(), aliveMenus.end(), findHistoryMenuLambda);
+//            if (foundMenu != aliveMenus.end())
+//                foundMenu->menu->show(-10);  // special code to ask reload
+//            break;
+//        }
         case RET_CODE::GAME_OVER_WHITE_WIN:  // TODO(23jura23) distinguish them some way?
         case RET_CODE::GAME_OVER_BLACK_WIN:
         case RET_CODE::GAME_OVER_UNEXPECTEDLY:
@@ -271,13 +274,6 @@ RET_CODE MenuMultiplexerCurses::processHistoryMenu(MenuWithRC& menuRC) {
     switch (menuRC.rc) {
         case RET_CODE::NOTHING:
             break;
-        case RET_CODE::DO_RELOAD_MODEL: {
-            cerr << "aliveMenus size " << aliveMenus.size() << endl;
-            auto findGameMenuLambda = lambdaFindersFactory(MENU_TYPE::GAME_MENU);
-            auto foundMenu = find_if(aliveMenus.begin(), aliveMenus.end(), findGameMenuLambda);
-            foundMenu->menu->show(-10);  // special code to ask reload
-            break;
-        }
         default:
             throw MenuException("processHistoryMenu: wrong return code");
             break;

@@ -39,6 +39,7 @@ struct ViewModelCurses : public ViewModelBase {
     std::vector<std::vector<ViewCellCurses>> viewBoard_;
     PlayerColour turn_;
     std::vector<Move> history_of_moves_;
+    size_t point_of_history_;
 };
 
 using CellStatus = ViewModelCurses::ViewCellCurses::ViewCellCursesStatus;

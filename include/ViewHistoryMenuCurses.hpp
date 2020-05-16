@@ -1,9 +1,12 @@
 #ifndef _VIEW_HISTORY_MENU_CURSES_HPP_
 #define _VIEW_HISTORY_MENU_CURSES_HPP_
 
+#include <map>
 #include <memory>
+#include <string>
 
 #include "Controller.hpp"
+#include "Figure.hpp"
 #include "ViewMenuCurses.hpp"
 #include "ViewModelCurses.hpp"
 
@@ -15,6 +18,8 @@ struct HistoryMenuCurses final : MenuCurses {
     MENU_TYPE type() const override;
 
    private:
+    Picture toASCIILetters(const std::string&) const;
+    Picture drawToNotation(const Move&) const;
     void draw();
 
     void updateModel(std::shared_ptr<ViewModelCurses>);
@@ -25,8 +30,10 @@ struct HistoryMenuCurses final : MenuCurses {
     std::shared_ptr<ViewModelCurses> board_;
 
     size_t upperMargin = 0;
-    size_t cellWidth_ = 20;
+    size_t cellWidth_ = 15;
     size_t cellHeight_ = 4;
+
+    std::map<FigureType, std::string> figureNotation;
 };  // struct HistoryMenuCurses
 
 }  // namespace viewCurses
