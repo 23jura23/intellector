@@ -12,6 +12,7 @@ using std::cerr, std::endl;
 #include "ViewInitCurses.hpp"
 #include "ViewMainMenuCurses.hpp"
 #include "ViewMenuTypes.hpp"
+#include "ViewRulesMenuCurses.hpp"
 #include "ViewOptionsMenuCurses.hpp"
 #include "ViewStartMenuCurses.hpp"
 
@@ -127,6 +128,9 @@ RET_CODE MenuMultiplexerCurses::show(int) {
                 case MENU_TYPE::GAME_MENU:
                     processRC = processGameMenu(menuRC);
                     break;
+                case MENU_TYPE::RULES_MENU:
+                    processRC = processRulesMenu(menuRC);
+                    break;
                 case MENU_TYPE::OPTIONS_MENU:
                     processRC = processOptionsMenu(menuRC);
                     break;
@@ -158,6 +162,8 @@ RET_CODE MenuMultiplexerCurses::show(int) {
 // make some changes in show (after copy-paste :)
 // add new type to ViewMenuTypes.hpp and return in in type()
 //
+// algo add return code to startMenu to be able to enter MENUNAME
+//
 // write in processMENUNAME some logic with multiplexing it: who creates it (in other processNAME-s), how to exit it (some BACK code, mm?), and so on
 // processMENUNAME may either: createNewMenu, deleting the old one (also somewhere starting the game); something else?
 
@@ -170,6 +176,14 @@ RET_CODE MenuMultiplexerCurses::processStartMenu(MenuWithRC& menuRC) {
             auto newGameMenu = launchNewGame();
             newGameMenu->show(0);  // initial show
             aliveMenus.push_back({newGameMenu, RET_CODE::NOTHING});
+            aliveMenus.erase(find(aliveMenus.begin(), aliveMenus.end(), menuRC));
+            break;
+        }
+        case RET_CODE::RULES_MENU: {
+            auto newOptionsMenu =
+                dynamic_pointer_cast<MenuCurses>(make_shared<RulesMenuCurses>());
+            newOptionsMenu->show(0);  // initial show
+            aliveMenus.push_back({newOptionsMenu, RET_CODE::NOTHING});
             aliveMenus.erase(find(aliveMenus.begin(), aliveMenus.end(), menuRC));
             break;
         }
@@ -213,18 +227,30 @@ RET_CODE MenuMultiplexerCurses::processGameMenu(MenuWithRC& menuRC) {
     return rc;
 }
 
+RET_CODE MenuMultiplexerCurses::processRulesMenu(MenuWithRC& menuRC) {
+    RET_CODE rc = RET_CODE::NOTHING;
+    switch (menuRC.rc) {
+        case RET_CODE::NOTHING:
+            break;
+        case RET_CODE::BACK: {
+            auto newMainMenu = dynamic_pointer_cast<MenuCurses>(make_shared<StartMenuCurses>());
+            newMainMenu->show(0);  // initial show
+            aliveMenus.push_back({newMainMenu, RET_CODE::NOTHING});
+            aliveMenus.erase(find(aliveMenus.begin(), aliveMenus.end(), menuRC));
+            break;
+        }
+        default:
+            throw MenuException("processOptionsMenu: wrong return code");
+            break;
+    }
+    return rc;
+}
+
 RET_CODE MenuMultiplexerCurses::processOptionsMenu(MenuWithRC& menuRC) {
     RET_CODE rc = RET_CODE::NOTHING;
     switch (menuRC.rc) {
         case RET_CODE::NOTHING:
             break;
-        case RET_CODE::START_NEW_GAME: {
-            auto newGameMenu = launchNewGame();
-            newGameMenu->show(0);  // initial show
-            aliveMenus.push_back({newGameMenu, RET_CODE::NOTHING});
-            aliveMenus.erase(find(aliveMenus.begin(), aliveMenus.end(), menuRC));
-            break;
-        }
         case RET_CODE::BACK: {
             auto newMainMenu = dynamic_pointer_cast<MenuCurses>(make_shared<StartMenuCurses>());
             newMainMenu->show(0);  // initial show

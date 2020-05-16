@@ -23,7 +23,7 @@ MainMenuCurses::MainMenuCurses(buttonsVectorT buttonsFilenames_)
 
     // TODO common ncurses initializer, that initialize ncurses only 1 time
     // for now here is an assumption that ncurses is already initialized
-//    auto buttonsFilenames_ = getButtonFilenames();
+    //    auto buttonsFilenames_ = getButtonFilenames();
     std::vector<std::pair<Picture, BUTTON_STYLE>> buttons_Buffer;
     for (auto [filename, style] : buttonsFilenames_) {
         auto is = std::ifstream(filename, std::ios::in);
@@ -34,8 +34,11 @@ MainMenuCurses::MainMenuCurses(buttonsVectorT buttonsFilenames_)
     }
 
     maxButtonWidth_ = 0;
-    for (const auto& [pic, style] : buttons_Buffer)
+    maxButtonHeight_ = 0;
+    for (const auto& [pic, style] : buttons_Buffer) {
         maxButtonWidth_ = std::max(maxButtonWidth_, pic.maxWidth());
+        maxButtonHeight_ = std::max(maxButtonHeight_, pic.maxHeight());
+    }
     std::cerr << "maxButtonWidth_: " << maxButtonWidth_ << std::endl;
 
     for (auto& [pic, style] : buttons_Buffer) {
@@ -56,8 +59,7 @@ MENU_TYPE MainMenuCurses::type() const {
 
 void MainMenuCurses::draw() {
     clear();
-    int maxx = getmaxx(stdscr);
-    std::pair<size_t, size_t> TL{maxx / 2 - maxButtonWidth_ / 2, topInitial_};
+    std::pair<size_t, size_t> TL{getTL()};
 
     buttonsStateUpdate();
 
@@ -65,6 +67,11 @@ void MainMenuCurses::draw() {
         buttonPtr->draw(TL);
         TL.second += buttonPtr->getPicture().maxHeight() + verticalInterval_;
     }
+}
+
+std::pair<size_t, size_t> MainMenuCurses::getTL() const {
+    int maxx = getmaxx(stdscr);
+    return {maxx / 2 - maxButtonWidth_ / 2, topInitial_};
 }
 
 void MainMenuCurses::buttonsStateUpdate() {

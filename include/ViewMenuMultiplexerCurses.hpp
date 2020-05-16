@@ -13,6 +13,7 @@ enum class RET_CODE {
     FAILURE,
 
     START_NEW_GAME,
+    RULES_MENU,
     OPTIONS_MENU,
     EXIT, // TODO rename to START_MENU_EXIT
     BACK,
@@ -49,6 +50,7 @@ class MenuMultiplexerCurses final : public MenuCurses {
     RET_CODE processWelcomeMenu(MenuWithRC&);
     RET_CODE processStartMenu(MenuWithRC&);
     RET_CODE processGameMenu(MenuWithRC&);
+    RET_CODE processRulesMenu(MenuWithRC&);
     RET_CODE processOptionsMenu(MenuWithRC&);
 
 };  // class MenuMultiplexerCurses

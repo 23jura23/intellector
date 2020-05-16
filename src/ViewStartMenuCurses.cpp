@@ -45,6 +45,7 @@ RET_CODE StartMenuCurses::show(int c) {
                     rc = RET_CODE::START_NEW_GAME;
                     break;
                 case 1:  // rules
+                    rc = RET_CODE::RULES_MENU;
                     break;
                 case 2:  // contacts
                     break;

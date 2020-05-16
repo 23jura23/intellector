@@ -37,6 +37,46 @@ void Button::setMode(BUTTON_MODE mode) {
     throw ButtonException("Incorrect button mode " + std::to_string(static_cast<int>(mode)));
 }
 
+ButtonNone::ButtonNone(const Picture& pic)
+        : Button{pic} {
+}
+
+void ButtonNone::draw(std::pair<size_t, size_t> TL) const {
+    assert(stdscr != 0);
+    assert(initColorsDone);
+    move(TL.second, TL.first);
+
+    char c;
+
+    if (buttonPicture.maxHeight()) {
+        TL.second++;
+        move(TL.second, TL.first);
+
+        for (size_t i = 0; i < buttonPicture.maxHeight(); ++i) {
+            if (buttonPicture(i).size()) {
+                for (size_t j = 0; j < buttonPicture(i).size(); ++j) {
+                    c = buttonPicture(i, j);
+                    if (buttonPicture.isIgnoredChar(c)) {
+                        int cx = -1, cy = -1;
+                        getyx(stdscr, cy, cx);
+                        move(cy, cx + 1);
+                    } else if (buttonPicture.isBackgroundChar(c)) {
+                        attron(COLOR_PAIR(colorScheme.empty));
+                        addch(' ');  // TODO is it always a space?
+                        attroff(COLOR_PAIR(colorScheme.empty));
+                    } else {
+                        attron(COLOR_PAIR(colorScheme.text));
+                        addch(c);
+                        attroff(COLOR_PAIR(colorScheme.text));
+                    }
+                }
+            }
+            TL.second++;
+            move(TL.second, TL.first);
+        }
+    }
+}
+
 ButtonRectangle::ButtonRectangle(const Picture& pic)
         : Button{pic} {
     char backgroundChar = pic.getBackgroundChars().at(0);
@@ -133,6 +173,9 @@ ButtonZigZag::ButtonZigZag(const Picture& pic)
 
 std::shared_ptr<Button> ButtonFactory(const Picture& pic, BUTTON_STYLE style) {
     switch (style) {
+        case BUTTON_STYLE::NONE:
+            return std::make_unique<ButtonNone>(pic);
+            break;
         case BUTTON_STYLE::RECTANGLE:
             return std::make_unique<ButtonRectangle>(pic);
             break;

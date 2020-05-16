@@ -23,6 +23,7 @@ class MainMenuCurses : public MenuCurses {
 
    protected:
     virtual void draw();
+    virtual std::pair<size_t, size_t> getTL() const;
     //    int run();  // TODO class runner with its own state
 
     void alignWidth(Picture&, size_t);  // TODO separe it, but where to...
@@ -33,7 +34,7 @@ class MainMenuCurses : public MenuCurses {
 
     int currentButtonIndex_;  // optional - allow to be unselected?
 
-    size_t maxButtonWidth_;
+    size_t maxButtonWidth_, maxButtonHeight_;
     std::vector<std::shared_ptr<Button>> buttons_;  // need object Button
     const size_t topInitial_ = 5;  // y coordinate of top left angle, x is computed in runtime
     const size_t verticalInterval_ = 3;

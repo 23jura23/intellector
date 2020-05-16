@@ -14,7 +14,7 @@ class ButtonException : public PictureException {
     using PictureException::what;
 };
 
-enum class BUTTON_STYLE { RECTANGLE, ZIGZAG };
+enum class BUTTON_STYLE { NONE, RECTANGLE, ZIGZAG };
 enum class BUTTON_MODE{ DEFAULT, SELECTED };
 
 struct buttonColorScheme /* : localColorScheme */ {
@@ -34,6 +34,11 @@ struct Button {
     buttonColorScheme colorScheme;
     
 };  // struct Button
+
+struct ButtonNone final : Button {
+    explicit ButtonNone(const Picture&);
+    void draw(std::pair<size_t, size_t> TL) const override;
+};
 
 struct ButtonRectangle final : Button {
     explicit ButtonRectangle(const Picture&);
