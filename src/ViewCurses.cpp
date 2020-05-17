@@ -296,19 +296,19 @@ RET_CODE ViewCurses::show(int c) {
             board_->get(currentPos).status_ = CellStatus::INACTIVE;
             currentPosStatus = CurrentPosStatus::UNSELECTED;
             break;
-//        case 'u':
-//            controller_->prevMove();
-//            reloadModel();
+        case 'u':
+            controller_->prevMove();
+            reloadModel();
 //            rc = RET_CODE::DO_RELOAD_MODEL;
-//            // cancel move?
-//            // undo
-//            break;
-//        case 85:  // Shift-u
-//            controller_->nextMove();
-//            reloadModel();
+            // cancel move?
+            // undo
+            break;
+        case 85:  // Shift-u
+            controller_->nextMove();
+            reloadModel();
 //            rc = RET_CODE::DO_RELOAD_MODEL;
-//            // redo
-//            break;
+            // redo
+            break;
         case 27:
             return RET_CODE::GAME_EXIT;
             break;
