@@ -370,6 +370,10 @@ void ViewCurses::reloadModel() {
         previousFromPos = board_->history_of_moves_[board_->point_of_history_ - 1].from_;
         previousToPos = board_->history_of_moves_[board_->point_of_history_ - 1].to_;
     }
+    else {
+        previousFromPos.reset();
+        previousToPos.reset();
+    }
 }
 
 void ViewCurses::draw() {
