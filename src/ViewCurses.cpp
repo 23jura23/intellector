@@ -299,14 +299,14 @@ RET_CODE ViewCurses::show(int c) {
         case 'u':
             controller_->prevMove();
             reloadModel();
-//            rc = RET_CODE::DO_RELOAD_MODEL;
+            //            rc = RET_CODE::DO_RELOAD_MODEL;
             // cancel move?
             // undo
             break;
         case 85:  // Shift-u
             controller_->nextMove();
             reloadModel();
-//            rc = RET_CODE::DO_RELOAD_MODEL;
+            //            rc = RET_CODE::DO_RELOAD_MODEL;
             // redo
             break;
         case 27:
@@ -366,9 +366,9 @@ void ViewCurses::fetchModel() {
 void ViewCurses::reloadModel() {
     controller_->updateViewModel<ViewCurses>();
     fetchModel();
-    if (board_->history_of_moves_.size()) {
-        previousFromPos = board_->history_of_moves_[board_->point_of_history_-1].from_;
-        previousToPos = board_->history_of_moves_[board_->point_of_history_-1].to_;
+    if (board_->history_of_moves_.size() && board_->point_of_history_ > 0) {
+        previousFromPos = board_->history_of_moves_[board_->point_of_history_ - 1].from_;
+        previousToPos = board_->history_of_moves_[board_->point_of_history_ - 1].to_;
     }
 }
 
