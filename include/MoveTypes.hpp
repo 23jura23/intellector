@@ -52,12 +52,12 @@ class Move {
          const Figure& from_figure,
          std::optional<Figure> to_figure_old,
          const Figure& to_figure_new,
-         const Figure& from_figure_new)
+         std::optional<Figure> from_figure_new)
             : from_(from_pos)
             , to_(to_pos)
             , from_figure_old_(from_figure)
             , to_figure_new_(to_figure_new)
-            , from_figure_new_(from_figure_new)
+            , from_figure_new_(std::move(from_figure_new))
             , to_figure_old_(std::move(to_figure_old)) {
     }
 

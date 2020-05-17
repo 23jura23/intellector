@@ -42,8 +42,8 @@ Board::Board() {
     for (int w = 0; w < cols_; ++w)
         for (int h = 0; h < rows_ - w % 2; ++h) data_[w].emplace_back(Position(w, h));
 
-    for (auto new_cell : arrangement_) {
-        (*this)[new_cell.second].figure_.emplace(new_cell.first);
+    for (auto [figure, pos] : arrangement_) {
+        (*this)[pos].figure_.emplace(figure);
     }
 }
 
@@ -60,6 +60,17 @@ Board::Board(const Board& other) {
                 data_[w].emplace_back(Position(w, h), other.data_[w][h].figure_.value());
             }
         }
+    }
+}
+
+
+Board::Board(const std::vector<std::pair<Figure, Position>>& mas) {
+    data_.resize(cols_);
+    for (int w = 0; w < cols_; ++w)
+        for (int h = 0; h < rows_ - w % 2; ++h) data_[w].emplace_back(Position(w, h));
+
+    for (auto [figure, pos] : mas) {
+        (*this)[pos].figure_.emplace(figure);
     }
 }
 

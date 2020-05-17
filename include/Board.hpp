@@ -23,6 +23,7 @@ class Board {
         return *this;
     }
     Board(const Board& other);
+    explicit Board(const std::vector<std::pair<Figure, Position>>& mas);
 
     [[nodiscard]] const Cell& operator[](Position pos) const;
     [[nodiscard]] Cell& operator[](Position pos);

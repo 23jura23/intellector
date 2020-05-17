@@ -13,9 +13,9 @@
 enum class GameStatus { game_running_, game_over_white_win_, game_over_black_win_ };
 
 class Game {
-    // TODO первые 4 байта случайное число + в конце проверить размер ???crc32???
+    // TODO первые 4 байта случайное число?
+    // TODO Добавить историю в файл
     // TODO MakeMove синхронный?
-    // TODO MakeCopyForBot
    public:
     Game();
     Game(const Game& other) = default;
@@ -25,6 +25,7 @@ class Game {
             white_bot_ = BotFactory(settings);
         if (settings.second_player())
             black_bot_ = BotFactory(settings);
+        difficulty = settings.difficulty();
     }
 
     [[nodiscard]] Game makeCopyForBot() const {
@@ -40,6 +41,10 @@ class Game {
     }
 
     void setGameSettings(const GameSettings& settings);
+
+    bool loadGame(const std::string& filename);
+
+    void saveGame(const std::string& filename);
 
     bool makeMove(const Move& move);
 
@@ -58,6 +63,8 @@ class Game {
 
     [[nodiscard]] GameStatus getGameStatus() const;
 
+    [[nodiscard]] GameSettings getGameSettings() const;
+
     bool cancelMove();
 
     bool nextMove();
@@ -67,9 +74,10 @@ class Game {
     Board board_;
     PlayerColour turn_ = PlayerColour::white_;
     std::shared_ptr<Bot> white_bot_ = nullptr, black_bot_ = nullptr;
+    int difficulty = 0;
 
     std::vector<Move> history_of_moves_ = {};
-    size_t point_of_history_ = 0;
+    unsigned int point_of_history_ = 0;
 };
 
 #endif  //_INTELLECTOR_CONTROLLER_HPP
