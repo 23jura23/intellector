@@ -24,6 +24,9 @@ bool Game::makeMove(const Move& move) {
     if (!move.makeMove(board_))
         return false;
 
+    if (history_of_moves_.size() != point_of_history_)
+        history_of_moves_.resize(point_of_history_);
+
     history_of_moves_.push_back(move);
     ++point_of_history_;
 
@@ -34,6 +37,9 @@ bool Game::makeMove(const Move& move) {
             bot_move.makeMove(board_);
             turn_ = PlayerColour::white_;
 
+            if (history_of_moves_.size() != point_of_history_)
+                history_of_moves_.resize(point_of_history_);
+
             history_of_moves_.push_back(bot_move);
             ++point_of_history_;
         }
@@ -43,6 +49,9 @@ bool Game::makeMove(const Move& move) {
             Move bot_move = white_bot_->makeMove(*this);
             bot_move.makeMove(board_);
             turn_ = PlayerColour::black_;
+
+            if (history_of_moves_.size() != point_of_history_)
+                history_of_moves_.resize(point_of_history_);
 
             history_of_moves_.push_back(bot_move);
             ++point_of_history_;

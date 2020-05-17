@@ -53,8 +53,8 @@ class Game {
         return turn_;
     }
 
-    const std::vector<Move>& getHistoryOfMoves() const;
-    size_t getPointOfHistory() const;
+    [[nodiscard]] const std::vector<Move>& getHistoryOfMoves() const;
+    [[nodiscard]] size_t getPointOfHistory() const;
 
     [[nodiscard]] GameStatus getGameStatus() const;
 
