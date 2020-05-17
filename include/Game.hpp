@@ -13,8 +13,7 @@
 enum class GameStatus { game_running_, game_over_white_win_, game_over_black_win_ };
 
 class Game {
-    // TODO первые 4 байта случайное число?
-    // TODO Добавить историю в файл
+    // TODO первые 4 байта случайное число + версия?
     // TODO MakeMove синхронный?
    public:
     Game();

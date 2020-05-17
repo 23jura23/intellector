@@ -58,10 +58,10 @@ GameSettings getGameSettings(uint16_t storage) {
     bool first_player;
     bool second_player;
 
-    first_player = cut(storage, 15, 1);
-    second_player = cut(storage, 14, 1);
+    first_player = cut(storage, 14, 1);
+    second_player = cut(storage, 13, 1);
 
-    difficulty = cut(storage, 0, 14);
+    difficulty = cut(storage, 0, 13);
     return {difficulty, first_player, second_player};
 }
 
@@ -131,8 +131,8 @@ uint16_t archiveFigureAndPosition(const std::pair<Figure, Position>& pair) {
 uint16_t archiveGameSettings(const GameSettings& settings) {
     uint16_t res = 0;
 
-    res += settings.first_player() << 15;
-    res += settings.second_player() << 14;
+    res += settings.first_player() << 14;
+    res += settings.second_player() << 13;
     res += settings.difficulty();
     return res;
 }

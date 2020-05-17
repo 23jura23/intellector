@@ -43,6 +43,7 @@ void Game::setGameSettings(const GameSettings& settings) {
  * * 3 бита на тип фигуры
  * * 6 бит позиция по x
  * * 6 бит позиция по y
+ * 1 бит очередь хода
  * 2 бита есть ли белый/черный бот
  * 6 бит сложность (сложность не больше 16383)
  * 4 байта кол-во ходов в истории
@@ -85,6 +86,7 @@ bool Game::loadGame(const std::string& filename) {
 
     // считывание правил игры
     file.read(reinterpret_cast<char*>(&storage16), 2);
+    turn_ = storage16 >> 15 == 1 ? PlayerColour::white_ : PlayerColour::black_;
     GameSettings settings = archiver::getGameSettings(storage16);
 
     // считывание истории
@@ -135,8 +137,9 @@ void Game::saveGame(const std::string& filename) {
         file.write(reinterpret_cast<const char*>(&storage16), 2);
     }
 
-    // запись истории
+    // запись настроек
     storage16 = archiver::archiveGameSettings(getGameSettings());
+    storage16 += turn_ == PlayerColour::white_ ? 1 << 15 : 0;
     file.write(reinterpret_cast<char*>(&storage16), 2);
 
     // запись истории
