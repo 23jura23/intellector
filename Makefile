@@ -15,13 +15,13 @@ FILES = $(shell ls src)
 SRCS = $(FILES:%.cpp=src/%.cpp)
 OBJS = $(FILES:%.cpp=obj/%.o)
 DEP = $(OBJS:%.o=%.d)
-	BIN = intellector
+BIN = intellector
 
 TEST_FILES = $(subst main.cpp,,$(shell ls src) $(shell ls test))
 TEST_SRCS = $(TEST_FILES:%.cpp=test/%.cpp)
 TEST_OBJS = $(TEST_FILES:%.cpp=obj/%.o)
 TEST_DEP = $(TEST_OBJS:%.o=%.d)
-	TEST_BIN = test_${BIN}
+TEST_BIN = test_${BIN}
 
 all: release
 build: bin/${BIN}
@@ -62,7 +62,7 @@ obj/%.o: src/%.cpp | obj
 	${CXX} ${CFLAGS} ${EXTRA_FLAGS} ${INC} ${LINK_FLAGS} -MMD -c $< -o $@
 
 obj/%.o: test/%.cpp | obj
-	${CXX} ${CFLAGS} ${EXTRA_FLAGS} ${INC} -MMD -c $< -o $@
+	${CXX} ${CFLAGS} ${EXTRA_FLAGS} ${INC} ${LINK_FLAGS} -MMD -c $< -o $@
 
 obj:
 	mkdir obj
