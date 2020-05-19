@@ -66,7 +66,7 @@ namespace std
     {
         size_t operator()(const std::pair<T1, T2> &pr) const 
         {
-            return std::hash<T1>()(pr.first) * 31 + std::hash<T2>()(pr.second);
+            return std::hash<T1>()(pr.first) ^ std::hash<T2>()(pr.second);
             // return 228;
         }
     };
@@ -79,6 +79,32 @@ namespace std
             return std::hash<int>()(pos.x_) * 31 * 31 + std::hash<int>()(pos.y_) * 31 + std::hash<int>()(pos.z_);
         } 
 
+    };
+
+    template <>
+    struct hash<Figure>
+    {
+        inline static const std::unordered_map<std::pair<PlayerColour, FigureType>, size_t> prime_values
+        {
+            {{PlayerColour::black_, FigureType::INTELLECTOR},  2},
+            {{PlayerColour::black_, FigureType::DOMINATOR},    3},
+            {{PlayerColour::black_, FigureType::AGGRESSOR},    5},
+            {{PlayerColour::black_, FigureType::DEFENSSOR},    7},
+            {{PlayerColour::black_, FigureType::LIBERATOR},    9},
+            {{PlayerColour::black_, FigureType::PROGRESSOR},  11},
+
+            {{PlayerColour::white_, FigureType::INTELLECTOR}, 13},
+            {{PlayerColour::white_, FigureType::DOMINATOR},   17},
+            {{PlayerColour::white_, FigureType::AGGRESSOR},   19},
+            {{PlayerColour::white_, FigureType::DEFENSSOR},   23},
+            {{PlayerColour::white_, FigureType::LIBERATOR},   29},
+            {{PlayerColour::white_, FigureType::PROGRESSOR},  31}
+        };
+
+        size_t operator()(const Figure &fig) const
+        {
+            return prime_values.at({fig.colour_, fig.type_});
+        }
     };
 };  // namespace std
 

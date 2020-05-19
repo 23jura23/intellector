@@ -6,6 +6,8 @@
 #include "Evaluate.hpp"
 
 #include <unordered_set>
+#include <unordered_map>
+
 
 class FigureKeeper
 {
@@ -23,8 +25,10 @@ private:
 	void insertFigure(std::unordered_set<Position> &set, Position &pos);
 	void eraseFigure(std::unordered_set<Position> &set, Position &pos);
 
+    long long hash = 0;
 	std::unordered_set<Position> white_figures_;
 	std::unordered_set<Position> black_figures_;
+
 };
 
 #endif // _FIGUREKEEPER_HPP

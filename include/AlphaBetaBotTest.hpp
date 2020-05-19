@@ -39,7 +39,7 @@ TEST_CASE("Two AlphaBeta")
 TEST_CASE("Time test")
 {
 
-    const int depth = 4;
+    const int depth = 5;
     auto bot = TestBotFactory(2, depth);
 
     Game game{};
@@ -51,7 +51,7 @@ TEST_CASE("Time test")
         auto move = bot->makeMove(game);
         auto finish = std::chrono::steady_clock::now();
 
-        CHECK(std::chrono::duration_cast<std::chrono::duration<double>>(finish - start).count() <= 4.2);
+        CHECK(std::chrono::duration_cast<std::chrono::duration<double>>(finish - start).count() <= 10);
         maximum_time = std::max(maximum_time, std::chrono::duration_cast<std::chrono::duration<double>>(finish - start).count());
         game.makeMove(move);
     }
