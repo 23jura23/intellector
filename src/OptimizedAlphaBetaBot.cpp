@@ -1,4 +1,4 @@
-#include "AlphaBetaBot.hpp"
+#include "OptimizedAlphaBetaBot.hpp"
 
 #include <cassert>
 #include <chrono>
@@ -12,17 +12,19 @@
 #include "FunctionSet.hpp"
 #include "Game.hpp"
 
-
 using std::cout;
 using std::endl;
 
-namespace AlphaBetaData
+namespace OptAlphaBetaData
 {
     int cnt;
     PlayerColour Colour;
 }
 
-std::pair<int, Move> AlphaBetaBot::make_virtual_move(Game &game,
+// std::unordered_map<std::pair<Board, std::pair<int, int>>, std::pair<int, Move>> answers;
+// std::vector<std::unordered_map<Board, std::pair<int, Move>>> answers(DEPTH + 1);
+
+std::pair<int, Move> OptimizedAlphaBetaBot::make_virtual_move(Game &game,
                                                      PlayerColour colour,
                                                      bool max,
                                                      int alpha,
@@ -36,7 +38,7 @@ std::pair<int, Move> AlphaBetaBot::make_virtual_move(Game &game,
         return {value, {}};
     }
 
-    AlphaBetaData::cnt++;
+    OptAlphaBetaData::cnt++;
 
     if (depth == 0) 
     {
@@ -53,7 +55,7 @@ std::pair<int, Move> AlphaBetaBot::make_virtual_move(Game &game,
         for (const auto &move : game.allFigureMoves(pos))
         {
             game.makeMove(move);
-            all_moves.emplace_back(functions_.delta(move, AlphaBetaData::Colour), move);
+            all_moves.emplace_back(functions_.delta(move, OptAlphaBetaData::Colour), move);
             game.cancelMove();       
         }
 
@@ -77,7 +79,7 @@ std::pair<int, Move> AlphaBetaBot::make_virtual_move(Game &game,
             
             figures_.makeMove(move);
 
-            auto mvm = make_virtual_move(game, other_colour(colour), !max, alpha, beta, depth - 1, value + functions_.delta(move, AlphaBetaData::Colour));
+            auto mvm = make_virtual_move(game, other_colour(colour), !max, alpha, beta, depth - 1, value + functions_.delta(move, OptAlphaBetaData::Colour));
 
             if (res.first < mvm.first) 
             {
@@ -102,7 +104,7 @@ std::pair<int, Move> AlphaBetaBot::make_virtual_move(Game &game,
             game.makeMove(move);
             figures_.makeMove(move);
 
-            auto mvm = make_virtual_move(game, other_colour(colour), !max, alpha, beta, depth - 1, value + functions_.delta(move, AlphaBetaData::Colour));
+            auto mvm = make_virtual_move(game, other_colour(colour), !max, alpha, beta, depth - 1, value + functions_.delta(move, OptAlphaBetaData::Colour));
 
             if (res.first > mvm.first) 
             {
@@ -119,23 +121,33 @@ std::pair<int, Move> AlphaBetaBot::make_virtual_move(Game &game,
     }
 }
 
-Move AlphaBetaBot::makeMove(const Game &game) 
+Move OptimizedAlphaBetaBot::makeMove(const Game &game) 
 {
     Game gamecopy(game.makeCopyForBot());
     figures_ = FigureKeeper(game.getBoard());
 
-    AlphaBetaData::cnt = 0;
-
+    OptAlphaBetaData::cnt = 0;
     auto colour = game.getColourCurrentPlayer();
-    AlphaBetaData::Colour = colour;
+    OptAlphaBetaData::Colour = colour;
 
     std::pair<int, Move> res;
 
-    int l = -2e5;
-    int r =  2e5;
+    int l = -200;
+    int r =  200;
+    int eval = functions_.evaluate(game, OptAlphaBetaData::Colour);
+    int g = eval;
+    for(; l < r; )
+    {
+        int beta = std::max(g, l + 1);
+        res = make_virtual_move(gamecopy, colour, true, beta - 1, beta, depth_, eval);
+        g = res.first;
+        if(g < beta)
+            r = g;
+        else
+            l = g;
+    }
 
-    int eval = functions_.evaluate(game, AlphaBetaData::Colour);
-    res = make_virtual_move(gamecopy, colour, true, l, r, depth_, eval);
-
+    // cout << OptAlphaBetaData::cnt << ' ' << res.first << endl;
+    // std::this_thread::sleep_for(std::chrono::seconds(3));
     return res.second;
 }

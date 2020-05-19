@@ -1,19 +1,17 @@
-
 #include <memory>
-
 #include "BotFactory.hpp"
 #include "RandomBot.hpp"
 #include "OptimizedAlphaBetaBot.hpp"
+#include "AlphaBetaBot.hpp"
 #include "GreedyBot.hpp"
 #include "Evaluate.hpp"
 
 
-std::shared_ptr<Bot> BotFactory(const GameSettings &settings) 
+std::shared_ptr<Bot> TestBotFactory(const int &type, const int &depth)
 {
     // void(settings.difficulty());
-    int difficulty = settings.difficulty();
     std::shared_ptr<Bot> bot;
-    switch(difficulty)
+    switch(type)
     {
         case 0:
             bot = std::reinterpret_pointer_cast<Bot>(std::make_shared<RandomBot>());
@@ -21,8 +19,14 @@ std::shared_ptr<Bot> BotFactory(const GameSettings &settings)
         case 1:
             bot = std::reinterpret_pointer_cast<Bot>(std::make_shared<GreedyBot>(evaluate::scoreSumFigurePoints));
             break;
+        case 2:
+            bot = std::reinterpret_pointer_cast<Bot>(std::make_shared<OptimizedAlphaBetaBot>(depth, 0));
+            break;
+        case 3:
+            bot = std::reinterpret_pointer_cast<Bot>(std::make_shared<AlphaBetaBot>(depth, 0));
+            break;
         default:
-            bot = std::reinterpret_pointer_cast<Bot>(std::make_shared<OptimizedAlphaBetaBot>(5, 0));
+            assert(false);
     }
     return bot;
 }
