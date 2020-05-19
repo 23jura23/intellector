@@ -1,4 +1,4 @@
-#include "ViewCurses.hpp"
+#include "ViewGameMenuCurses.hpp"
 
 #include <assert.h>
 #include <unistd.h>
@@ -21,7 +21,7 @@ using namespace std;
 
 using namespace viewCurses;
 
-void ViewCurses::calculateTL() {  // top left angle
+void ViewGameMenuCurses::calculateTL() {  // top left angle
     tlx = 0;
     tly = 0;
     maxy = getmaxy(stdscr);
@@ -47,7 +47,7 @@ void ViewCurses::calculateTL() {  // top left angle
     }
 }
 
-ViewCurses::ViewCurses(std::shared_ptr<Controller> controller)
+ViewGameMenuCurses::ViewGameMenuCurses(std::shared_ptr<Controller> controller)
         : controller_{controller}
         , tlx{0}
         , tly{0}
@@ -64,15 +64,15 @@ ViewCurses::ViewCurses(std::shared_ptr<Controller> controller)
     updateCellStatus(currentPos, 0);
 }
 
-ViewCurses::~ViewCurses() {
+ViewGameMenuCurses::~ViewGameMenuCurses() {
     terminateCurses();
 }
 
-MENU_TYPE ViewCurses::type() const {
+MENU_TYPE ViewGameMenuCurses::type() const {
     return MENU_TYPE::GAME_MENU;
 }
 
-void ViewCurses::updateCellStatus(const Position& pos, bool before) {
+void ViewGameMenuCurses::updateCellStatus(const Position& pos, bool before) {
     if (inBoard(pos)) {
         if (before) {
             // update status_ before pointer moves
@@ -101,7 +101,7 @@ void ViewCurses::updateCellStatus(const Position& pos, bool before) {
 //    setCellStatus(board_->get(pos), status_);
 //}
 
-void ViewCurses::updatePositions(const Position& newPos) {
+void ViewGameMenuCurses::updatePositions(const Position& newPos) {
     if (inBoard(newPos)) {
         cerr << "newPos is inBoard!" << endl;
         updateCellStatus(currentPos, 1);
@@ -115,7 +115,7 @@ void ViewCurses::updatePositions(const Position& newPos) {
 }
 
 // TODO(23jura23) rename markSelection? and 0/1 for select/unselect. or markSelected?
-void ViewCurses::selectPosition() {
+void ViewGameMenuCurses::selectPosition() {
     if (board_->get(currentPos).cell_.figure_.has_value() &&
         board_->get(currentPos).cell_.figure_->colour_ == controller_->getCurrentPlayer()) {
         cerr << "Cell " << currentPos.posW() << ' ' << currentPos.posH() << " was selected" << endl;
@@ -123,7 +123,7 @@ void ViewCurses::selectPosition() {
 
         currentPosStatus = CurrentPosStatus::SELECTED;
         selectedPos = currentPos;
-        controller_->selectCell<viewCurses::ViewCurses>(board_->get(selectedPos).cell_);
+        controller_->selectCell<viewCurses::ViewGameMenuCurses>(board_->get(selectedPos).cell_);
         fetchModel();
         board_->get(selectedPos).status_ = CellStatus::SELECTED;
     } else {
@@ -133,7 +133,7 @@ void ViewCurses::selectPosition() {
     }
 }
 
-void ViewCurses::unselectPosition() {
+void ViewGameMenuCurses::unselectPosition() {
     cerr << "Cell " << currentPos.posW() << ' ' << currentPos.posH() << " was unselected" << endl;
     // Cell was unselected
 
@@ -142,7 +142,7 @@ void ViewCurses::unselectPosition() {
     currentPosStatus = CurrentPosStatus::UNSELECTED;
 }
 
-void ViewCurses::makeUniStep() {
+void ViewGameMenuCurses::makeUniStep() {
     cerr << "UniStep " << currentPos.posW() << ' ' << currentPos.posH() << " was done" << endl;
     controller_->makeMove(board_->get(currentPos).inMoves_[0]);
     reloadModel();
@@ -150,7 +150,7 @@ void ViewCurses::makeUniStep() {
     currentPosStatus = CurrentPosStatus::UNSELECTED;
 }
 
-void ViewCurses::makeMultiStep_TransformMove(std::vector<Move>& inMoves_) {
+void ViewGameMenuCurses::makeMultiStep_TransformMove(std::vector<Move>& inMoves_) {
     cerr << "transform move" << endl;
     // TODO(23jura23) unneeded?
     //                                        updatePositions(newPos);
@@ -186,7 +186,7 @@ void ViewCurses::makeMultiStep_TransformMove(std::vector<Move>& inMoves_) {
     }
 }
 
-void ViewCurses::makeMultiStep() {
+void ViewGameMenuCurses::makeMultiStep() {
     cerr << "MultiStep " << currentPos.posW() << ' ' << currentPos.posH()
          << " was triedto be done (yet "
             "unsuccessfully)"
@@ -214,12 +214,12 @@ void ViewCurses::makeMultiStep() {
     // possible
 }
 
-RET_CODE ViewCurses::show(int c) {
+RET_CODE ViewGameMenuCurses::show(int c) {
     //    run();
     //    terminateCurses();
     //}
     //
-    //void ViewCurses::run() {
+    //void ViewGameMenuCurses::run() {
     //    bool running = 1;
     //    while (running) {
     RET_CODE rc = RET_CODE::NOTHING;
@@ -354,17 +354,17 @@ RET_CODE ViewCurses::show(int c) {
     return rc;
 }
 
-void ViewCurses::updateModel(std::shared_ptr<ViewModelCurses> newModel) {
+void ViewGameMenuCurses::updateModel(std::shared_ptr<ViewModelCurses> newModel) {
     board_ = newModel;
 }
 
-void ViewCurses::fetchModel() {
+void ViewGameMenuCurses::fetchModel() {
     updateModel(
-        std::dynamic_pointer_cast<ViewModelCurses>(controller_->getViewModel<ViewCurses>()));
+        std::dynamic_pointer_cast<ViewModelCurses>(controller_->getViewModel<ViewGameMenuCurses>()));
 }
 
-void ViewCurses::reloadModel() {
-    controller_->updateViewModel<ViewCurses>();
+void ViewGameMenuCurses::reloadModel() {
+    controller_->updateViewModel<ViewGameMenuCurses>();
     fetchModel();
     if (board_->history_of_moves_.size() && board_->point_of_history_ > 0) {
         previousFromPos = board_->history_of_moves_[board_->point_of_history_ - 1].from_;
@@ -376,21 +376,21 @@ void ViewCurses::reloadModel() {
     }
 }
 
-void ViewCurses::draw() {
+void ViewGameMenuCurses::draw() {
     //    clear();
     calculateTL();
     outBoard();
     refresh();
 }
 
-auto ViewCurses::getTL(pair corner) -> pair {
+auto ViewGameMenuCurses::getTL(pair corner) -> pair {
     return {tlx + corner.first / 2 * delta_right_up.first +
                 (corner.first % 2) * delta_right_down.first - (d - 1),
             tly + corner.second * delta_down.second + (corner.first % 2) * delta_right_down.second};
     // TODO rewrite more beautiful
 }
 
-void ViewCurses::outBoard() {
+void ViewGameMenuCurses::outBoard() {
     for (size_t x = 0; x < board_->viewBoard_.size(); ++x)
         for (size_t y = 0; y < board_->viewBoard_[x].size(); ++y) {
             size_t cor_x = x;
@@ -399,7 +399,7 @@ void ViewCurses::outBoard() {
         }
 }
 
-void ViewCurses::outCell(const ViewModelCurses::ViewCellCurses& cell, pair TL) {
+void ViewGameMenuCurses::outCell(const ViewModelCurses::ViewCellCurses& cell, pair TL) {
     int FIGURE_COLOR = -1;
     int CELL_COLOR = -1;
     int LETTER_COLOR = -1;

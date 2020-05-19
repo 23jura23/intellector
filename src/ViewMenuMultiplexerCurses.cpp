@@ -8,7 +8,7 @@ using std::cerr, std::endl;
 #include "Board.hpp"
 #include "Controller.hpp"
 #include "Game.hpp"
-#include "ViewCurses.hpp"
+#include "ViewGameMenuCurses.hpp"
 #include "ViewHistoryMenuCurses.hpp"
 #include "ViewInitCurses.hpp"
 #include "ViewMainMenuCurses.hpp"
@@ -302,11 +302,11 @@ shared_ptr<MenuCurses> MenuMultiplexerCurses::launchNewGame() {
     // as an argument
     // oh f*ck, controller is template and static...
     // so this crutch is needed:
-    controller->updateViewModel<viewCurses::ViewCurses>();
+    controller->updateViewModel<viewCurses::ViewGameMenuCurses>();
 
-    return dynamic_pointer_cast<MenuCurses>(make_shared<ViewCurses>(controller));
+    return dynamic_pointer_cast<MenuCurses>(make_shared<ViewGameMenuCurses>(controller));
     //)createMenu(MULTIPLEXABLE_MENU::GAME_MENU, controller);
-    //    ViewCurses view = ViewCurses(controller);
+    //    ViewGameMenuCurses view = ViewGameMenuCurses(controller);
     //    RET_CODE rc = view.show();
     //    return rc;
 }

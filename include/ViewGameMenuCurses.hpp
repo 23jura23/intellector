@@ -16,14 +16,14 @@ class Controller;
 
 namespace viewCurses {
 
-class ViewCurses : public viewBase, public MenuCurses {
+class ViewGameMenuCurses : public viewBase, public MenuCurses {
     using pair = std::pair<size_t, size_t>;
 
    public:
     RET_CODE show(int) override;
 
-    explicit ViewCurses(std::shared_ptr<Controller>);
-    ~ViewCurses();  // rule of 5?
+    explicit ViewGameMenuCurses(std::shared_ptr<Controller>);
+    ~ViewGameMenuCurses();  // rule of 5?
 
     MENU_TYPE type() const override;
 

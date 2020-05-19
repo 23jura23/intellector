@@ -7,7 +7,7 @@
 
 #include "Board.hpp"
 #include "Game.hpp"
-#include "ViewCurses.hpp"
+#include "ViewGameMenuCurses.hpp"
 #include "ViewModelBase.hpp"
 
 class Controller {
@@ -51,7 +51,7 @@ inline std::shared_ptr<ViewModelBase>& Controller::getViewModel() {
 }
 
 template <>
-inline std::shared_ptr<ViewModelBase>& Controller::getViewModel<viewCurses::ViewCurses>() {
+inline std::shared_ptr<ViewModelBase>& Controller::getViewModel<viewCurses::ViewGameMenuCurses>() {
     static std::shared_ptr<ViewModelBase> model = std::dynamic_pointer_cast<ViewModelBase>(
         std::make_shared<viewCurses::ViewModelCurses>(*game_));
     return model;
@@ -62,8 +62,8 @@ inline void Controller::updateViewModel() {
 }
 
 template <>
-inline void Controller::updateViewModel<viewCurses::ViewCurses>() {
-    getViewModel<viewCurses::ViewCurses>() =
+inline void Controller::updateViewModel<viewCurses::ViewGameMenuCurses>() {
+    getViewModel<viewCurses::ViewGameMenuCurses>() =
         std::make_shared<viewCurses::ViewModelCurses>(*game_);
 }
 
@@ -72,9 +72,9 @@ inline void Controller::selectCell(const Cell&) {
 }
 
 template <>
-inline void Controller::selectCell<viewCurses::ViewCurses>(const Cell& selected) {
+inline void Controller::selectCell<viewCurses::ViewGameMenuCurses>(const Cell& selected) {
     auto steps = game_->allFigureMoves(selected.pos_);
-    getViewModel<viewCurses::ViewCurses>() =
+    getViewModel<viewCurses::ViewGameMenuCurses>() =
         std::make_shared<viewCurses::ViewModelCurses>(*game_,
                                                       steps);
 }
@@ -86,9 +86,9 @@ inline void Controller::selectCell<viewCurses::ViewCurses>(const Cell& selected)
 //}
 //
 //template <>
-//inline void Controller::unSelectCell<viewCurses::ViewCurses>()
+//inline void Controller::unSelectCell<viewCurses::ViewGameMenuCurses>()
 //{
-//    updateViewModel<viewCurses::ViewCurses>();
+//    updateViewModel<viewCurses::ViewGameMenuCurses>();
 //}
 
 #endif  //_PROJECT_GAME_HPP

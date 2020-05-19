@@ -30,7 +30,7 @@ GameStatus Controller::getGameStatus() {
 
 void Controller::updateAll() {
     // TODO auto choice which to update (only instanced!)
-    updateViewModel<viewCurses::ViewCurses>();
+    updateViewModel<viewCurses::ViewGameMenuCurses>();
 }
 
 PlayerColour Controller::getCurrentPlayer() const {

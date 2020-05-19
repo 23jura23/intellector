@@ -15,7 +15,7 @@ int main() {
         //            throw MenuException("Not all menus were closed and ncurses is still running");
         //    Board* board = new Board;
         //        viewCurses::ViewModelCurses tmp = viewCurses::ViewModelCurses
-        //        { *board, PlayerColour::white_ }; viewCurses::ViewCurses
+        //        { *board, PlayerColour::white_ }; viewCurses::ViewGameMenuCurses
         //        view(std::make_shared<viewCurses::ViewModelCurses>(*board,
         //        PlayerColour::white_)); view.run();
     } catch (const ViewBaseException& e) {

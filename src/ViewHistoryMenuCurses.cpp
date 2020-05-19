@@ -131,11 +131,11 @@ void HistoryMenuCurses::updateModel(std::shared_ptr<ViewModelCurses> newModel) {
 
 void HistoryMenuCurses::fetchModel() {
     updateModel(
-        std::dynamic_pointer_cast<ViewModelCurses>(controller_->getViewModel<ViewCurses>()));
+        std::dynamic_pointer_cast<ViewModelCurses>(controller_->getViewModel<ViewGameMenuCurses>()));
 }
 
 void HistoryMenuCurses::reloadModel() {
-    controller_->updateViewModel<ViewCurses>();
+    controller_->updateViewModel<ViewGameMenuCurses>();
     fetchModel();
 }
 
