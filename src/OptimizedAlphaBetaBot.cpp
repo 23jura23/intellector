@@ -151,3 +151,34 @@ Move OptimizedAlphaBetaBot::makeMove(const Game &game)
     // std::this_thread::sleep_for(std::chrono::seconds(3));
     return res.second;
 }
+
+std::pair<int, Move> OptimizedAlphaBetaBot::test_makeMove(const Game &game) 
+{
+    Game gamecopy(game.makeCopyForBot());
+    figures_ = FigureKeeper(game.getBoard());
+
+    OptAlphaBetaData::cnt = 0;
+    auto colour = game.getColourCurrentPlayer();
+    OptAlphaBetaData::Colour = colour;
+
+    std::pair<int, Move> res;
+
+    int l = -200;
+    int r =  200;
+    int eval = functions_.evaluate(game, OptAlphaBetaData::Colour);
+    int g = eval;
+    for(; l < r; )
+    {
+        int beta = std::max(g, l + 1);
+        res = make_virtual_move(gamecopy, colour, true, beta - 1, beta, depth_, eval);
+        g = res.first;
+        if(g < beta)
+            r = g;
+        else
+            l = g;
+    }
+
+    // cout << OptAlphaBetaData::cnt << ' ' << res.first << endl;
+    // std::this_thread::sleep_for(std::chrono::seconds(3));
+    return res;
+}

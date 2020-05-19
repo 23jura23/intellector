@@ -16,6 +16,8 @@ public:
                  functions_(set_number) {};
 
     Move makeMove(const Game &g) override;
+    std::pair<int, Move> test_makeMove(const Game &g) override;
+
 
    private:
     std::pair<int, Move> make_virtual_move(Game &game,

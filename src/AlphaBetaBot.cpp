@@ -139,3 +139,25 @@ Move AlphaBetaBot::makeMove(const Game &game)
 
     return res.second;
 }
+
+
+std::pair<int, Move> AlphaBetaBot::test_makeMove(const Game &game) 
+{
+    Game gamecopy(game.makeCopyForBot());
+    figures_ = FigureKeeper(game.getBoard());
+
+    AlphaBetaData::cnt = 0;
+
+    auto colour = game.getColourCurrentPlayer();
+    AlphaBetaData::Colour = colour;
+
+    std::pair<int, Move> res;
+
+    int l = -2e5;
+    int r =  2e5;
+
+    int eval = functions_.evaluate(game, AlphaBetaData::Colour);
+    res = make_virtual_move(gamecopy, colour, true, l, r, depth_, eval);
+
+    return res;
+}
