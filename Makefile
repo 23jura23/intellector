@@ -10,6 +10,7 @@ DEBUG_FLAGS = -g
 RELEASE_FLAGS = -Ofast
 FS_FLAGS = ${DEBUG_FLAGS} -fsanitize=address
 LINK_FLAGS = -lncurses
+TEST_FLAGS =
 
 FILES = $(shell ls src)
 SRCS = $(FILES:%.cpp=src/%.cpp)
@@ -43,6 +44,7 @@ clang_everything: CXX = clang++
 clang_everything: EXTRA_FLAGS += -Weverything -Wno-c++98-compat -Wno-c++-compat -Wno-padded
 clang_everything: build
 
+test: EXTRA_FLAGS += -Ofast
 test: bin/${TEST_BIN}
 	./bin/${TEST_BIN}
 
@@ -62,7 +64,7 @@ obj/%.o: src/%.cpp | obj
 	${CXX} ${CFLAGS} ${EXTRA_FLAGS} ${INC} ${LINK_FLAGS} -MMD -c $< -o $@
 
 obj/%.o: test/%.cpp | obj
-	${CXX} ${CFLAGS} ${EXTRA_FLAGS} ${INC} ${LINK_FLAGS} -MMD -c $< -o $@
+	${CXX} ${CFLAGS} ${TEST_FLAGS} ${EXTRA_FLAGS} ${INC} ${LINK_FLAGS} -MMD -c $< -o $@
 
 obj:
 	mkdir obj
