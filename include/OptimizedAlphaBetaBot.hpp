@@ -19,7 +19,7 @@ public:
     std::pair<int, Move> test_makeMove(const Game &g) override;
 
 
-   private:
+private:
     std::pair<int, Move> make_virtual_move(Game &game,
                                            PlayerColour colour,
                                            bool max,
@@ -32,6 +32,7 @@ public:
     // evaluate_function_t evaluation_function_;
     FunctionSet functions_;
     FigureKeeper figures_;
+    // std::unordered_set<Move> history;
 };
 
 #endif  //_OPTIMIZEDALPHABETABOT_HPP

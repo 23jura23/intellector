@@ -2,3 +2,4 @@
 #include "doctest.h"
 
 #include "AlphaBetaBotTest.hpp"
+#include "FigureKeeperTest.hpp"

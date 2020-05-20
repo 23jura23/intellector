@@ -62,6 +62,7 @@ namespace delta
 bool operator==(const Move &a, const Move& b)
 {
     return a.to_ == b.to_ && 
+           a.from_ == b.from_ && 
            a.from_figure_new_ == b.from_figure_new_ && 
            a.to_figure_new_ == b.to_figure_new_ &&
            a.from_figure_old_ == b.from_figure_old_ &&

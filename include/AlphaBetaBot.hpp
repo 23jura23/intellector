@@ -18,6 +18,7 @@ public:
     Move makeMove(const Game &g) override;
     std::pair<int, Move> test_makeMove(const Game &g) override;
 
+    FigureKeeper &getFigures();
 
    private:
     std::pair<int, Move> make_virtual_move(Game &game,
