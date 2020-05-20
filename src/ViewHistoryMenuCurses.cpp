@@ -5,6 +5,7 @@
 #include <iostream>  // TODO delete
 #include <sstream>
 
+#include "ViewColorSchemeCurses.hpp"
 #include "ViewMenuMultiplexerCurses.hpp"
 #include "ViewMenuTypes.hpp"
 
@@ -52,7 +53,7 @@ RET_CODE HistoryMenuCurses::show(int c) {
 
 Picture HistoryMenuCurses::toASCIILetters(const std::string& str) const {
     // TODO
-    auto pic = Picture{std::vector<std::string>{str}};
+    auto pic = Picture{std::vector<std::string>{str}, "`"};
     return pic;
 }
 
@@ -72,11 +73,11 @@ Picture HistoryMenuCurses::drawToNotation(const Move& move) const {
 
     std::string fromFigureNotation = figureNotation.at(move.from_figure_old_.type_);
 
-    notationStream << fromFigureNotation << " ";
-    notationStream << fromWNotaion << fromPosH << "—";
+    notationStream << fromFigureNotation << "`";
+    notationStream << fromWNotaion << fromPosH << "-";
     notationStream << toWNotaion << toPosH;
 
-    std::cerr << "notationStream " << notationStream.str().length() << ' ' << notationStream.str()
+    std::cerr << "notationStream " << notationStream.str().length() << '`' << notationStream.str()
               << std::endl;
 
     return toASCIILetters(notationStream.str());
@@ -95,7 +96,8 @@ void HistoryMenuCurses::draw() {
         move(y, xStartPos);
 
         if (i < board_->history_of_moves_.size()) {
-            Picture notation = drawToNotation(board_->history_of_moves_[i]);
+            int out_i = board_->history_of_moves_.size() - 1 - i;
+            Picture notation = drawToNotation(board_->history_of_moves_[out_i]);
             if (notation.maxWidth() >= cellWidth_)
                 throw MenuException("Notation is too big (width) to be drawn");
 
@@ -107,16 +109,39 @@ void HistoryMenuCurses::draw() {
             }
 
             for (size_t j = 0; j < notation.maxHeight(); ++j) {
+                bool spaceReached = 0;
                 move(yStartPos + j, xStartPos);
                 for (size_t u = 0; u < notation(j).size(); ++u) {
-                    addch(notation(j, u));
+                    char c = notation(j, u);
+                    if (!notation.isIgnoredChar(c)) {
+                        if (!spaceReached) {
+                            if (out_i % 2 == 0) {
+                                attron(COLOR_PAIR(HISTORY_MENU_FIGURE_LETTER_WHITE));
+                                addch(c);
+                                attroff(COLOR_PAIR(HISTORY_MENU_FIGURE_LETTER_WHITE));
+                            } else {
+                                attron(COLOR_PAIR(HISTORY_MENU_FIGURE_LETTER_BLACK));
+                                addch(c);
+                                attroff(COLOR_PAIR(HISTORY_MENU_FIGURE_LETTER_BLACK));
+                            }
+                        } else {
+                            addch(c);
+                        }
+                    } else {
+                        move(yStartPos + j, xStartPos + u + 1);
+                    }
+                    if (c == '`') {
+                        spaceReached = 1;
+                    }
                 }
             }
         }
 
         move(y + cellHeight_ - 1, xStartPos);
         for (size_t j = 0; j < cellWidth_; ++j) {
+            attron(COLOR_PAIR(HISTORY_MENU_DELIMETER));
             addch('=');
+            attroff(COLOR_PAIR(HISTORY_MENU_DELIMETER));
         }
     }
 }
@@ -130,8 +155,8 @@ void HistoryMenuCurses::updateModel(std::shared_ptr<ViewModelCurses> newModel) {
 }
 
 void HistoryMenuCurses::fetchModel() {
-    updateModel(
-        std::dynamic_pointer_cast<ViewModelCurses>(controller_->getViewModel<ViewGameMenuCurses>()));
+    updateModel(std::dynamic_pointer_cast<ViewModelCurses>(
+        controller_->getViewModel<ViewGameMenuCurses>()));
 }
 
 void HistoryMenuCurses::reloadModel() {

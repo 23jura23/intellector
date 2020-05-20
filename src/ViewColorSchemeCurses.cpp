@@ -57,6 +57,15 @@ void initColors() {
                   COLOR_BUTTON_SELECTED_BORDER_FOREGROUND,
                   COLOR_BUTTON_SELECTED_BORDER_BACKGROUND);
 
+        init_pair(HISTORY_MENU_DELIMETER,
+                  COLOR_HISTORY_MENU_DELIMETER,
+                  COLOR_HISTORY_MENU_DELIMETER);
+
+        // -1 stay for default background = transparent 
+        init_pair(HISTORY_MENU_FIGURE_LETTER_WHITE, COLOR_HISTORY_MENU_FIGURE_LETTER_WHITE, -1);
+
+        init_pair(HISTORY_MENU_FIGURE_LETTER_BLACK, COLOR_HISTORY_MENU_FIGURE_LETTER_BLACK, -1);
+
         initColorsDone = 1;
     }
 }
