@@ -24,7 +24,7 @@ static unsigned int CRC32_count(std::fstream& file) {
 }
 
 Game::Game() {
-    black_bot_ = BotFactory(GameSettings(2, false, true));
+    black_bot_ = BotFactory(GameSettings(10, false, true));
 }
 
 void Game::setGameSettings(const GameSettings& settings) {

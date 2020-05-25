@@ -20,7 +20,7 @@ namespace OptAlphaBetaData
     int cnt;
     PlayerColour Colour;
     // std::mt19937 rand(std::chrono::high_resolution_clock::now().time_since_epoch().count());
-    std::mt19937 rand(133337);
+    std::mt19937 rand(1337);
 
 }
 
