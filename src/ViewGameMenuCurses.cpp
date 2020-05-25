@@ -234,25 +234,10 @@ RET_CODE ViewGameMenuCurses::show(int c) {
         // but you need to make universal interface of multistep, where unistep is just multistep with only one possible move. And blinking will be just the implementation for TransformMove
         // TODO(23jura23) think about appearing sliding menu in left or right part of screen
         if (winner == GameStatus::game_over_white_win_) {
-            clear();
-            move(0, 0);
-            printw("White win!");
-            refresh();
-            usleep(7000000);
             return RET_CODE::GAME_OVER_WHITE_WIN;
         } else if (winner == GameStatus::game_over_black_win_) {
-            clear();
-            move(0, 0);
-            printw("Black win!");
-            refresh();
-            usleep(7000000);
             return RET_CODE::GAME_OVER_BLACK_WIN;
         } else {
-            clear();
-            move(0, 0);
-            printw("Unexcepectedly, game finished!..");
-            refresh();
-            usleep(15000000);
             return RET_CODE::GAME_OVER_UNEXPECTEDLY;
         }
     }

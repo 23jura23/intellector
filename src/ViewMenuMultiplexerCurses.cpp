@@ -16,6 +16,7 @@ using std::cerr, std::endl;
 #include "ViewOptionsMenuCurses.hpp"
 #include "ViewRulesMenuCurses.hpp"
 #include "ViewStartMenuCurses.hpp"
+#include "ViewWinMenuCurses.hpp"
 
 using std::vector, std::shared_ptr, std::make_shared, std::dynamic_pointer_cast;
 
@@ -151,10 +152,10 @@ RET_CODE MenuMultiplexerCurses::processStartMenu(MenuWithRC& menuRC) {
             break;
         }
         case RET_CODE::RULES_MENU: {
-            auto newOptionsMenu = dynamic_pointer_cast<MenuCurses>(make_shared<RulesMenuCurses>());
+            auto newRulesMenu = dynamic_pointer_cast<MenuCurses>(make_shared<RulesMenuCurses>());
             forceRedraw = 1;
             //            newOptionsMenu->show(0);  // initial show
-            aliveMenus.push_back({newOptionsMenu, RET_CODE::NOTHING});
+            aliveMenus.push_back({newRulesMenu, RET_CODE::NOTHING});
             aliveMenus.erase(find(aliveMenus.begin(), aliveMenus.end(), menuRC));
             break;
         }
@@ -195,16 +196,30 @@ RET_CODE MenuMultiplexerCurses::processGameMenu(MenuWithRC& menuRC) {
             forceRedraw = 1;
             break;
         }
-//        case RET_CODE::DO_RELOAD_MODEL: {
-//            auto findHistoryMenuLambda = lambdaFindersFactory(MENU_TYPE::HISTORY_MENU);
-//            auto foundMenu = find_if(aliveMenus.begin(), aliveMenus.end(), findHistoryMenuLambda);
-//            if (foundMenu != aliveMenus.end())
-//                foundMenu->menu->show(-10);  // special code to ask reload
-//            break;
-//        }
-        case RET_CODE::GAME_OVER_WHITE_WIN:  // TODO(23jura23) distinguish them some way?
-        case RET_CODE::GAME_OVER_BLACK_WIN:
-        case RET_CODE::GAME_OVER_UNEXPECTEDLY:
+            //        case RET_CODE::DO_RELOAD_MODEL: {
+            //            auto findHistoryMenuLambda = lambdaFindersFactory(MENU_TYPE::HISTORY_MENU);
+            //            auto foundMenu = find_if(aliveMenus.begin(), aliveMenus.end(), findHistoryMenuLambda);
+            //            if (foundMenu != aliveMenus.end())
+            //                foundMenu->menu->show(-10);  // special code to ask reload
+            //            break;
+            //        }
+        case RET_CODE::GAME_OVER_WHITE_WIN: {
+            auto newWinMenu =
+                dynamic_pointer_cast<MenuCurses>(make_shared<WinMenuCurses>(PlayerColour::white_));
+            forceRedraw = 1;
+            aliveMenus.push_back({newWinMenu, RET_CODE::NOTHING});
+            aliveMenus.erase(find(aliveMenus.begin(), aliveMenus.end(), menuRC));
+            break;
+        }
+        case RET_CODE::GAME_OVER_BLACK_WIN: {
+            auto newWinMenu =
+                dynamic_pointer_cast<MenuCurses>(make_shared<WinMenuCurses>(PlayerColour::black_));
+            forceRedraw = 1;
+            aliveMenus.push_back({newWinMenu, RET_CODE::NOTHING});
+            aliveMenus.erase(find(aliveMenus.begin(), aliveMenus.end(), menuRC));
+            break;
+        }
+        case RET_CODE::GAME_OVER_UNEXPECTEDLY:  // TODO(23jura23) some logging or message about unexpected game finish?
         case RET_CODE::GAME_EXIT: {
             auto newMainMenu = dynamic_pointer_cast<MenuCurses>(make_shared<StartMenuCurses>());
             forceRedraw = 1;
@@ -233,7 +248,26 @@ RET_CODE MenuMultiplexerCurses::processRulesMenu(MenuWithRC& menuRC) {
             break;
         case RET_CODE::BACK: {
             auto newMainMenu = dynamic_pointer_cast<MenuCurses>(make_shared<StartMenuCurses>());
-            newMainMenu->show(0);  // initial show
+            forceRedraw = 1;
+            aliveMenus.push_back({newMainMenu, RET_CODE::NOTHING});
+            aliveMenus.erase(find(aliveMenus.begin(), aliveMenus.end(), menuRC));
+            break;
+        }
+        default:
+            throw MenuException("processRulesMenu: wrong return code");
+            break;
+    }
+    return rc;
+}
+
+RET_CODE MenuMultiplexerCurses::processWinMenu(MenuWithRC& menuRC) {
+    RET_CODE rc = RET_CODE::NOTHING;
+    switch (menuRC.rc) {
+        case RET_CODE::NOTHING:
+            break;
+        case RET_CODE::BACK: {
+            auto newMainMenu = dynamic_pointer_cast<MenuCurses>(make_shared<StartMenuCurses>());
+            forceRedraw = 1;
             aliveMenus.push_back({newMainMenu, RET_CODE::NOTHING});
             aliveMenus.erase(find(aliveMenus.begin(), aliveMenus.end(), menuRC));
             break;
@@ -252,7 +286,8 @@ RET_CODE MenuMultiplexerCurses::processOptionsMenu(MenuWithRC& menuRC) {
             break;
         case RET_CODE::BACK: {
             auto newMainMenu = dynamic_pointer_cast<MenuCurses>(make_shared<StartMenuCurses>());
-            newMainMenu->show(0);  // initial show
+            forceRedraw = 1;
+//            newMainMenu->show(0);  // initial show
             aliveMenus.push_back({newMainMenu, RET_CODE::NOTHING});
             aliveMenus.erase(find(aliveMenus.begin(), aliveMenus.end(), menuRC));
             break;

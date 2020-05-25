@@ -65,6 +65,7 @@ class MenuMultiplexerCurses final : public MenuCurses {
     RET_CODE processRulesMenu(MenuWithRC&);
     RET_CODE processOptionsMenu(MenuWithRC&);
     RET_CODE processHistoryMenu(MenuWithRC&);
+    RET_CODE processWinMenu(MenuWithRC&);
 
 };  // class MenuMultiplexerCurses
 
