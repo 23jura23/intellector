@@ -37,13 +37,12 @@ RET_CODE OptionsMenuCurses::show(int c) {
             break;
         case 32:
             // assuming correct buttons order:
-            // new game
-            // rules
-            // contacts
-            // options
-            // exit
+            // gameplay
+            // appearance
+            // back
             switch (currentButtonIndex_) {
                 case 0:  // gameplay
+                    rc = RET_CODE::OPTIONS_GAMEPLAY;
                     break;
                 case 1:  // appearance
                     break;

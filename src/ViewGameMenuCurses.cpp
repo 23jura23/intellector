@@ -224,6 +224,28 @@ RET_CODE ViewGameMenuCurses::show(int c) {
     //    while (running) {
     RET_CODE rc = RET_CODE::NOTHING;
 
+    /*
+    if current_turn == white and bot_white == true
+    controller->goBot(white) // or just goBot() ? no, perhaps, exatly goBot(white)
+    reloadModel
+    else if current_turn == black and bot_black == true
+    controller->goBot(black)
+    reloadModel
+    
+    + if in 32: to do nothing if board->turn_ == none
+    or check if figure selected has correct color (then go compare to none and no figure is yours)
+    
+    inside goBot(color)
+    game->goBot(color)
+    
+    inside game->goBot(color)
+    
+    detached thread of bot, that set flag when finished
+    or joinable thread of bot, and every goBot(color) you check if thread of bot of that color if joinable
+    if joinable - do makeMove with returned step and change turn_
+    if not - do nothing
+*/
+
     Position newPos = currentPos;
     draw();
     winner = controller_->getGameStatus();
@@ -344,8 +366,8 @@ void ViewGameMenuCurses::updateModel(std::shared_ptr<ViewModelCurses> newModel) 
 }
 
 void ViewGameMenuCurses::fetchModel() {
-    updateModel(
-        std::dynamic_pointer_cast<ViewModelCurses>(controller_->getViewModel<ViewGameMenuCurses>()));
+    updateModel(std::dynamic_pointer_cast<ViewModelCurses>(
+        controller_->getViewModel<ViewGameMenuCurses>()));
 }
 
 void ViewGameMenuCurses::reloadModel() {
@@ -354,8 +376,7 @@ void ViewGameMenuCurses::reloadModel() {
     if (board_->history_of_moves_.size() && board_->point_of_history_ > 0) {
         previousFromPos = board_->history_of_moves_[board_->point_of_history_ - 1].from_;
         previousToPos = board_->history_of_moves_[board_->point_of_history_ - 1].to_;
-    }
-    else {
+    } else {
         previousFromPos.reset();
         previousToPos.reset();
     }

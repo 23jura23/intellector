@@ -38,6 +38,7 @@ class MainMenuCurses : public MenuCurses {
     std::vector<std::shared_ptr<Button>> buttons_;  // need object Button
     const size_t topInitial_ = 5;  // y coordinate of top left angle, x is computed in runtime
     const size_t verticalInterval_ = 3;
+    const size_t horizontalInterval_ = 3;
 };  // class MainMenuCurses
 
 }  // namespace viewCurses

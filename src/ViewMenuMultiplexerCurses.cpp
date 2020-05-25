@@ -17,6 +17,7 @@ using std::cerr, std::endl;
 #include "ViewRulesMenuCurses.hpp"
 #include "ViewStartMenuCurses.hpp"
 #include "ViewWinMenuCurses.hpp"
+#include "ViewOptions_Gameplay_MenuCurses.hpp"
 
 using std::vector, std::shared_ptr, std::make_shared, std::dynamic_pointer_cast;
 
@@ -30,7 +31,8 @@ auto lambdaFindersFactory(MENU_TYPE type) {
     return [type](const MenuWithRC& menuRC_) { return menuRC_.menu->type() == type; };
 }
 
-MenuMultiplexerCurses::MenuMultiplexerCurses() {
+MenuMultiplexerCurses::MenuMultiplexerCurses()
+        : settings_{0, 4, 0, 1} {
     auto er = freopen("error.txt", "a", stderr);
     static_cast<void>(er);
     initCurses();
@@ -97,6 +99,9 @@ RET_CODE MenuMultiplexerCurses::show(int) {
                     break;
                 case MENU_TYPE::OPTIONS_MENU:
                     processRC = processOptionsMenu(menuRC);
+                    break;
+                case MENU_TYPE::OPTIONS_GAMEPLAY_MENU:
+                    processRC = processOptions_Gameplay_Menu(menuRC);
                     break;
                 case MENU_TYPE::WELCOME_MENU:
                     processRC = processWelcomeMenu(menuRC);
@@ -219,7 +224,8 @@ RET_CODE MenuMultiplexerCurses::processGameMenu(MenuWithRC& menuRC) {
             aliveMenus.erase(find(aliveMenus.begin(), aliveMenus.end(), menuRC));
             break;
         }
-        case RET_CODE::GAME_OVER_UNEXPECTEDLY:  // TODO(23jura23) some logging or message about unexpected game finish?
+        case RET_CODE::
+            GAME_OVER_UNEXPECTEDLY:  // TODO(23jura23) some logging or message about unexpected game finish?
         case RET_CODE::GAME_EXIT: {
             auto newMainMenu = dynamic_pointer_cast<MenuCurses>(make_shared<StartMenuCurses>());
             forceRedraw = 1;
@@ -284,16 +290,42 @@ RET_CODE MenuMultiplexerCurses::processOptionsMenu(MenuWithRC& menuRC) {
     switch (menuRC.rc) {
         case RET_CODE::NOTHING:
             break;
+        case RET_CODE::OPTIONS_GAMEPLAY: {
+            auto newMenu = dynamic_pointer_cast<MenuCurses>(make_shared<Options_Gameplay_MenuCurses>(settings_));
+            forceRedraw = 1;
+            aliveMenus.push_back({newMenu, RET_CODE::NOTHING});
+            aliveMenus.erase(find(aliveMenus.begin(), aliveMenus.end(), menuRC));
+            break;
+        }
         case RET_CODE::BACK: {
             auto newMainMenu = dynamic_pointer_cast<MenuCurses>(make_shared<StartMenuCurses>());
             forceRedraw = 1;
-//            newMainMenu->show(0);  // initial show
             aliveMenus.push_back({newMainMenu, RET_CODE::NOTHING});
             aliveMenus.erase(find(aliveMenus.begin(), aliveMenus.end(), menuRC));
             break;
         }
         default:
             throw MenuException("processOptionsMenu: wrong return code");
+            break;
+    }
+    return rc;
+}
+
+RET_CODE MenuMultiplexerCurses::processOptions_Gameplay_Menu(MenuWithRC& menuRC) {
+    RET_CODE rc = RET_CODE::NOTHING;
+    switch (menuRC.rc) {
+        case RET_CODE::NOTHING:
+            break;
+        case RET_CODE::BACK: {
+            settings_ = dynamic_pointer_cast<Options_Gameplay_MenuCurses>(menuRC.menu)->getRV();
+            auto newMenu = dynamic_pointer_cast<MenuCurses>(make_shared<OptionsMenuCurses>());
+            forceRedraw = 1;
+            aliveMenus.push_back({newMenu, RET_CODE::NOTHING});
+            aliveMenus.erase(find(aliveMenus.begin(), aliveMenus.end(), menuRC));
+            break;
+        }
+        default:
+            throw MenuException("processOptions_Gameplay_Menu: wrong return code");
             break;
     }
     return rc;
@@ -324,7 +356,7 @@ std::shared_ptr<Controller> MenuMultiplexerCurses::getController() {
 
 std::shared_ptr<Game> MenuMultiplexerCurses::getGame() {
     if (!game__.has_value())
-        game__ = std::make_shared<Game>();
+        game__ = std::make_shared<Game>(settings_);
     return *game__;
 }
 

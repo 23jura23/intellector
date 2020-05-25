@@ -6,6 +6,7 @@
 
 #include "Controller.hpp"
 #include "ViewMenuCurses.hpp"
+#include "GameSettings.hpp"
 
 namespace viewCurses {
 
@@ -26,7 +27,9 @@ enum class RET_CODE {
     GAME_OVER_WHITE_WIN,
     GAME_OVER_BLACK_WIN,
     GAME_OVER_UNEXPECTEDLY,
-    GAME_EXIT
+    GAME_EXIT,
+
+    OPTIONS_GAMEPLAY
 };
 
 //enum class MULTIPLEXABLE_MENU { WELCOME_MENU, MAIN_MENU, GAME_MENU };
@@ -52,6 +55,7 @@ class MenuMultiplexerCurses final : public MenuCurses {
     std::optional<std::shared_ptr<Game>> game__;
     
     std::shared_ptr<MenuCurses> launchNewGame();
+    GameSettings settings_;
 
     //    template <MULTIPLEXABLE_MENU, typename... Args>
     //    std::shared_ptr<MenuCurses> createMenu(const Args&...);
@@ -64,6 +68,7 @@ class MenuMultiplexerCurses final : public MenuCurses {
     RET_CODE processGameMenu(MenuWithRC&);
     RET_CODE processRulesMenu(MenuWithRC&);
     RET_CODE processOptionsMenu(MenuWithRC&);
+    RET_CODE processOptions_Gameplay_Menu(MenuWithRC&);
     RET_CODE processHistoryMenu(MenuWithRC&);
     RET_CODE processWinMenu(MenuWithRC&);
 

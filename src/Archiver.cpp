@@ -54,15 +54,17 @@ std::pair<Figure, Position> getFigureAndPosition(uint16_t storage) {
 }
 
 GameSettings getGameSettings(uint16_t storage) {
-    int difficulty;
+    int difficulty_white;
+    int difficulty_black;
     bool first_player;
     bool second_player;
 
     first_player = cut(storage, 14, 1);
     second_player = cut(storage, 13, 1);
 
-    difficulty = cut(storage, 0, 13);
-    return {difficulty, first_player, second_player};
+    difficulty_white = cut(storage, 6, 6);
+    difficulty_black = cut(storage, 0, 6);
+    return {difficulty_white, difficulty_black, first_player, second_player};
 }
 
 Move getMove(uint16_t storage_figures, uint32_t storage_positions) {
@@ -133,7 +135,8 @@ uint16_t archiveGameSettings(const GameSettings& settings) {
 
     res += settings.first_player() << 14;
     res += settings.second_player() << 13;
-    res += settings.difficulty();
+    res += settings.difficulty_white() << 6;
+    res += settings.difficulty_black() << 0;
     return res;
 }
 

@@ -4,7 +4,6 @@
 #include <ncurses.h>
 
 #include <fstream>
-#include <iostream>  // TODO delete
 
 #include "ViewColorSchemeCurses.hpp"
 #include "ViewInitCurses.hpp"

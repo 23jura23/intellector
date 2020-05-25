@@ -1,16 +1,18 @@
 #include "ViewStartMenuCurses.hpp"
 
-#include "ViewMenuMultiplexerCurses.hpp"
 #include <assert.h>
+
+#include "ViewMenuMultiplexerCurses.hpp"
 
 namespace viewCurses {
 
 StartMenuCurses::StartMenuCurses()
-        : MainMenuCurses{{{"resources/newgame.btn", BUTTON_STYLE::RECTANGLE},
-                          {"resources/rules.btn", BUTTON_STYLE::RECTANGLE},
-                          {"resources/contacts.btn", BUTTON_STYLE::RECTANGLE},
-                          {"resources/options.btn", BUTTON_STYLE::RECTANGLE},
-                          {"resources/exit.btn", BUTTON_STYLE::RECTANGLE}}} {
+        : MainMenuCurses{
+              {{"resources/newgame.btn", BUTTON_STYLE::RECTANGLE},
+               {"resources/rules.btn", BUTTON_STYLE::RECTANGLE},
+               //                          {"resources/contacts.btn", BUTTON_STYLE::RECTANGLE},
+               {"resources/options.btn", BUTTON_STYLE::RECTANGLE},
+               {"resources/exit.btn", BUTTON_STYLE::RECTANGLE}}} {
 }
 
 RET_CODE StartMenuCurses::show(int c) {
@@ -37,9 +39,10 @@ RET_CODE StartMenuCurses::show(int c) {
             // assuming correct buttons order:
             // new game
             // rules
-            // contacts
             // options
             // exit
+
+            // contacts temporarily deleted
             switch (currentButtonIndex_) {
                 case 0:  // new game
                     rc = RET_CODE::START_NEW_GAME;
@@ -47,12 +50,12 @@ RET_CODE StartMenuCurses::show(int c) {
                 case 1:  // rules
                     rc = RET_CODE::RULES_MENU;
                     break;
-                case 2:  // contacts
-                    break;
-                case 3:  // options
+                    //                case 2:  // contacts
+                    //                    break;
+                case 2:  // options
                     rc = RET_CODE::OPTIONS_MENU;
                     break;
-                case 4:  // exit
+                case 3:  // exit
                     rc = RET_CODE::EXIT;
                     break;
                 default:

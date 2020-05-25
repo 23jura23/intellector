@@ -16,16 +16,16 @@ class Game {
     // TODO первые 4 байта случайное число + версия?
     // TODO MakeMove синхронный?
    public:
-    Game();
+    explicit Game(const GameSettings& settings = GameSettings(4,0,0,1));
     Game(const Game& other) = default;
 
-    explicit Game(const GameSettings& settings) {
-        if (settings.first_player())
-            white_bot_ = BotFactory(settings);
-        if (settings.second_player())
-            black_bot_ = BotFactory(settings);
-        difficulty = settings.difficulty();
-    }
+//    explicit Game(const GameSettings& settings) {
+//        if (settings.first_player())
+//            white_bot_ = BotFactory(settings);
+//        if (settings.second_player())
+//            black_bot_ = BotFactory(settings);
+//        difficulty = settings.difficulty();
+//    }
 
     [[nodiscard]] Game makeCopyForBot() const {
         Game result;
@@ -71,9 +71,10 @@ class Game {
 
    private:
     Board board_;
-    PlayerColour turn_ = PlayerColour::white_;
+    PlayerColour turn_;// = PlayerColour::white_;
     std::shared_ptr<Bot> white_bot_ = nullptr, black_bot_ = nullptr;
-    int difficulty = 0;
+    GameSettings settings_;
+//    int difficulty = 0;
 
     std::vector<Move> history_of_moves_ = {};
     unsigned int point_of_history_ = 0;

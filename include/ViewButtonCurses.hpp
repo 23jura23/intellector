@@ -2,6 +2,7 @@
 #define _VIEW_BUTTONS_CURSES_HPP_
 
 #include <memory>
+#include <utility>
 #include <string>
 
 #include "ViewPictureCurses.hpp"
@@ -15,7 +16,7 @@ class ButtonException : public PictureException {
 };
 
 enum class BUTTON_STYLE { NONE, RECTANGLE, ZIGZAG };
-enum class BUTTON_MODE{ DEFAULT, SELECTED };
+enum class BUTTON_MODE{ DEFAULT, SELECTED, SET };
 
 struct buttonColorScheme /* : localColorScheme */ {
     int text{};
@@ -41,14 +42,19 @@ struct ButtonNone final : Button {
 };
 
 struct ButtonRectangle final : Button {
-    explicit ButtonRectangle(const Picture&);
+    explicit ButtonRectangle(const Picture&,
+            size_t upperMargin = 1,
+            size_t bottomMargin = 1,
+            size_t leftMargin = 5,
+            size_t rightMargin = 5
+            );
     void draw(std::pair<size_t,size_t> TL) const override;
 
    private:
-    const size_t upperMargin = 1;
-    const size_t bottomMargin = 1;
-    const size_t leftMargin = 5;   // TODO align here
-    const size_t rightMargin = 5;  // TODO align here
+    const size_t upperMargin;
+    const size_t bottomMargin;
+    const size_t leftMargin;   // TODO align here
+    const size_t rightMargin;  // TODO align here
 };                                 // struct ButtonRectangle
 
 struct ButtonZigZag final : Button {
@@ -56,7 +62,21 @@ struct ButtonZigZag final : Button {
     void draw(std::pair<size_t,size_t> TL) const override;
 };  // struct ButtonZigZag
 
-std::shared_ptr<Button> ButtonFactory(const Picture&, BUTTON_STYLE);
+template <typename ...T>
+std::shared_ptr<Button> ButtonFactory(const Picture& pic, BUTTON_STYLE style, T&&... args) {
+    switch (style) {
+        case BUTTON_STYLE::NONE:
+            return std::make_unique<ButtonNone>(pic);
+            break;
+        case BUTTON_STYLE::RECTANGLE:
+            return std::make_unique<ButtonRectangle>(pic, std::forward<T>(args)...);
+            break;
+        case BUTTON_STYLE::ZIGZAG:
+            return std::make_unique<ButtonZigZag>(pic);
+            break;
+    }
+    throw ButtonException("ButtonFactory: unknown button style");
+}
 
 }  // namespace viewCurses
 

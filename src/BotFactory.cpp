@@ -1,20 +1,17 @@
 
+#include "BotFactory.hpp"
+
 #include <memory>
 
-#include "BotFactory.hpp"
-#include "RandomBot.hpp"
-#include "OptimizedAlphaBetaBot.hpp"
 #include "AlphaBetaBot.hpp"
-#include "GreedyBot.hpp"
 #include "Evaluate.hpp"
+#include "GreedyBot.hpp"
+#include "OptimizedAlphaBetaBot.hpp"
+#include "RandomBot.hpp"
 
-
-std::shared_ptr<Bot> BotFactory(const GameSettings &settings) 
-{
-    int difficulty = settings.difficulty();
+std::shared_ptr<Bot> BotFactory(int difficulty) {
     std::shared_ptr<Bot> bot;
-    switch(difficulty)
-    {
+    switch (difficulty) {
         case 0:
             bot = std::reinterpret_pointer_cast<Bot>(std::make_shared<RandomBot>());
             break;

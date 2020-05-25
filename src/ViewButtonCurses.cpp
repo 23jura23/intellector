@@ -15,6 +15,7 @@ buttonColorScheme DEFAULT_SCHEME{BUTTON_DEFAULT_TEXT, BUTTON_DEFAULT_EMPTY, BUTT
 buttonColorScheme SELECTED_SCHEME{BUTTON_SELECTED_TEXT,
                                   BUTTON_SELECTED_EMPTY,
                                   BUTTON_SELECTED_BORDER};
+buttonColorScheme SET_SCHEME{BUTTON_SET_TEXT, BUTTON_SET_EMPTY, BUTTON_SET_BORDER};
 
 Button::Button(const Picture& pic)
         : buttonPicture{pic}
@@ -32,6 +33,9 @@ void Button::setMode(BUTTON_MODE mode) {
             return;
         case BUTTON_MODE::SELECTED:
             colorScheme = SELECTED_SCHEME;
+            return;
+        case BUTTON_MODE::SET:
+            colorScheme = SET_SCHEME;
             return;
     }
     throw ButtonException("Incorrect button mode " + std::to_string(static_cast<int>(mode)));
@@ -77,8 +81,16 @@ void ButtonNone::draw(std::pair<size_t, size_t> TL) const {
     }
 }
 
-ButtonRectangle::ButtonRectangle(const Picture& pic)
-        : Button{pic} {
+ButtonRectangle::ButtonRectangle(const Picture& pic,
+                                 size_t upperMargin_,
+                                 size_t bottomMargin_,
+                                 size_t leftMargin_,
+                                 size_t rightMargin_)
+        : Button{pic}
+        , upperMargin{upperMargin_}
+        , bottomMargin{bottomMargin_}
+        , leftMargin{leftMargin_}
+        , rightMargin{rightMargin_} {
     char backgroundChar = pic.getBackgroundChars().at(0);
     buttonPicture.clearPictureContent();
     size_t upperLength = 1 + leftMargin + pic.maxWidth() + rightMargin + 1;
@@ -169,21 +181,6 @@ void ButtonZigZag::draw(std::pair<size_t, size_t>) const {
 
 ButtonZigZag::ButtonZigZag(const Picture& pic)
         : Button{pic} {
-}
-
-std::shared_ptr<Button> ButtonFactory(const Picture& pic, BUTTON_STYLE style) {
-    switch (style) {
-        case BUTTON_STYLE::NONE:
-            return std::make_unique<ButtonNone>(pic);
-            break;
-        case BUTTON_STYLE::RECTANGLE:
-            return std::make_unique<ButtonRectangle>(pic);
-            break;
-        case BUTTON_STYLE::ZIGZAG:
-            return std::make_unique<ButtonZigZag>(pic);
-            break;
-    }
-    throw ButtonException("ButtonFactory: unknown button style");
 }
 
 }  // namespace viewCurses

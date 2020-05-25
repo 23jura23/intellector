@@ -3,6 +3,9 @@
 //
 #include "Game.hpp"
 
+#include <assert.h>
+#include <unistd.h>
+
 #include <fstream>
 
 #include "Archiver.hpp"
@@ -23,16 +26,26 @@ static unsigned int CRC32_count(std::fstream& file) {
     return crc ^ 0xFFFFFFFFUL;
 }
 
-Game::Game() {
-    black_bot_ = BotFactory(GameSettings(10, false, true));
+Game::Game(const GameSettings& settings) : settings_{settings} {
+    setGameSettings(settings);
 }
 
 void Game::setGameSettings(const GameSettings& settings) {
     if (settings.first_player())
-        white_bot_ = BotFactory(settings);
+        white_bot_ = BotFactory(settings.difficulty_white());
     if (settings.second_player())
-        black_bot_ = BotFactory(settings);
-    difficulty = settings.difficulty();
+        black_bot_ = BotFactory(settings.difficulty_black());
+
+    if (settings.first_player() && settings.second_player())
+        turn_ = PlayerColour::none_;
+    else if (settings.first_player() && !settings.second_player())
+        turn_ = PlayerColour::white_;
+    else if (!settings.first_player() && settings.second_player())
+        turn_ = PlayerColour::white_;
+    else
+        turn_ = PlayerColour::white_;
+
+    settings_ = settings;
 }
 /*
  * В файле первые 4 байта - CRC32
@@ -225,7 +238,8 @@ size_t Game::getPointOfHistory() const {
 GameStatus Game::getGameStatus() const {  // может можно получше
     bool is_white_intellector = false;
     bool is_black_intellector = false;
-    bool player_can_move = false;
+    bool white_player_can_move = false;
+    bool black_player_can_move = false;
 
     for (const auto& row : board_.data_)
         for (const auto& cell : row) {
@@ -238,29 +252,31 @@ GameStatus Game::getGameStatus() const {  // может можно получш�
                     is_black_intellector = true;
             }
 
-            if (cell.figure_->colour_ != turn_ || player_can_move)
+            if (white_player_can_move && black_player_can_move)
                 continue;
 
             std::shared_ptr<FigureMoveValidator> figure =
                 FigureMoveValidator::create(board_, board_[cell.pos_].figure_.value(), cell.pos_);
-
-            player_can_move = !figure->allMoves().empty();
+            if (cell.figure_->colour_ == PlayerColour::white_)
+                white_player_can_move |= !figure->allMoves().empty();
+            else if (cell.figure_->colour_ == PlayerColour::black_)
+                black_player_can_move |= !figure->allMoves().empty();
         }
 
-    if (is_black_intellector && is_white_intellector && player_can_move)
+    if (is_black_intellector && is_white_intellector && white_player_can_move &&
+        black_player_can_move)
         return GameStatus::game_running_;
 
-    if (!is_black_intellector)
+    if (!is_black_intellector || !black_player_can_move)
         return GameStatus::game_over_white_win_;
-    if (!is_white_intellector)
+    if (!is_white_intellector || !white_player_can_move)
         return GameStatus::game_over_black_win_;
 
-    return turn_ == PlayerColour::black_ ? GameStatus::game_over_white_win_
-                                         : GameStatus::game_over_black_win_;
+    assert(false);
 }
 
 GameSettings Game::getGameSettings() const {
-    return GameSettings(difficulty, white_bot_ != nullptr, black_bot_ != nullptr);
+    return settings_;
 }
 
 bool Game::cancelMove() {
