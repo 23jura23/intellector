@@ -5,7 +5,6 @@
 #include "Bot.hpp"
 #include "FunctionSet.hpp"
 #include "FigureKeeper.hpp"
-// #pragma once
 
 class AlphaBetaBot : Bot
 {
@@ -30,7 +29,6 @@ public:
                                            int prev_value);
 
     int depth_;
-    // evaluate_function_t evaluation_function_;
     FunctionSet functions_;
     FigureKeeper figures_;
 };

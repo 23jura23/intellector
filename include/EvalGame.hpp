@@ -26,8 +26,6 @@ public:
         return game_.makeMove(move);
     }
 
-    // bool undoMove()
-
 };
 
 #endif //_EVALGAME_HPP

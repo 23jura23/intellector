@@ -19,13 +19,14 @@ namespace OptAlphaBetaData
 {
     int cnt;
     PlayerColour Colour;
-    std::mt19937 rand(std::chrono::high_resolution_clock::now().time_since_epoch().count());
+    // std::mt19937 rand(std::chrono::high_resolution_clock::now().time_since_epoch().count());
+    std::mt19937 rand(133337);
+
 }
 
 
 
 std::unordered_map<std::pair<FigureKeeper, std::pair<int, std::pair<int, int>>>, std::pair<int, Move>> states;
-// std::unordered_set<Move> history;
 
 int cnt = 0;
 
@@ -38,7 +39,7 @@ std::pair<int, Move> OptimizedAlphaBetaBot::make_virtual_move(Game &game,
                                                      int prev_value) 
 {
     auto it = states.find({figures_, {depth, {alpha, beta}}});
-    if(it != states.end() /*&& history.find(it->second.second) == history.end()*/)
+    if(it != states.end())
     {
         return it->second;
     }
@@ -64,16 +65,12 @@ std::pair<int, Move> OptimizedAlphaBetaBot::make_virtual_move(Game &game,
     for(const auto &pos: figures_.get_figures(colour))
     {
         for (const auto &move : game.allFigureMoves(pos))
-            // if(history.find(move) == history.end())
             {
                 game.makeMove(move);
                 all_moves.emplace_back(functions_.delta(move, OptAlphaBetaData::Colour), move);
                 game.cancelMove();       
             }
     }
-
-    // if(history.size() > 0)
-    //     cout << history.size() << endl;
 
     std::shuffle(all_moves.begin(), all_moves.end(), OptAlphaBetaData::rand);
 
@@ -82,11 +79,6 @@ std::pair<int, Move> OptimizedAlphaBetaBot::make_virtual_move(Game &game,
         return k * a.first > k * b.first;
     });
 
-    // for(int i = 0; i < all_moves.size(); i++)
-    // {
-
-    // }
-
     if (max) 
     {
         std::pair<int, Move> res = {-1e9, {}};
@@ -94,9 +86,6 @@ std::pair<int, Move> OptimizedAlphaBetaBot::make_virtual_move(Game &game,
         {
             if (alpha > beta)
                 break;
-
-            // if(history.find(move) != history.end())
-            //     continue;
 
             game.makeMove(move);
             
@@ -124,9 +113,6 @@ std::pair<int, Move> OptimizedAlphaBetaBot::make_virtual_move(Game &game,
         {
             if (alpha > beta)
                 break;
-
-            // if(history.find(move) != history.end())
-            //     continue;
 
             game.makeMove(move);
             figures_.makeMove(move);
@@ -163,35 +149,12 @@ Move OptimizedAlphaBetaBot::makeMove(const Game &game)
     int l = -2e5;
     int r =  2e5;
     int eval = functions_.evaluate(game, OptAlphaBetaData::Colour);
-    // int g = eval;
-    // for(; l < r; )
-    // {
+
     states.clear();
-    //     int beta = std::max(g, l + 1);
-    //     res = make_virtual_move(gamecopy, colour, true, beta - 1, beta, depth_, eval);
-    //     g = res.first;
-    //     if(g < beta)
-    //         r = g;
-    //     else
-    //         l = g;
-    // }
+    states.reserve(5e5);
 
     res = make_virtual_move(gamecopy, colour, true, l - 1, r + 1, depth_, eval);
-    // cout << OptAlphaBetaData::cnt << ' ' << res.first << endl;
-    // std::this_thread::sleep_for(std::chrono::seconds(3));
-    // assert(!(res.second == Move()));
-    // if(history.find(res.second) != history.end())
-    // {
-    //     cout << "BAD " << res.second.from_.posW() << ' ' << res.second.from_.posH() << endl;
-    //     cout << "BAD " << res.second.to_.posW() << ' ' << res.second.to_.posH() << endl;
-    // }
-    // assert(history.find(res.second) == history.end());
 
-    // history.insert(res.second);
-    // cout << res.second.from_.posW() << ' ' << res.second.from_.posH() << endl;
-    // cout << res.second.to_.posW() << ' ' << res.second.to_.posH() << endl;
-
-    // cout << "HISTORY " << history.size() << endl;
     return res.second;
 }
 
@@ -209,24 +172,11 @@ std::pair<int, Move> OptimizedAlphaBetaBot::test_makeMove(const Game &game)
     int l = -2e5;
     int r =  2e5;
     int eval = functions_.evaluate(game, OptAlphaBetaData::Colour);
-    // int g = eval;
-    // for(; l < r; )
-    // {
+
     states.clear();
-    //     int beta = std::max(g, l + 1);
-    //     res = make_virtual_move(gamecopy, colour, true, beta - 1, beta - 1, depth_, eval);
-    //     g = res.first;
-    //     if(g < beta)
-    //         r = g;
-    //     else
-    //         l = g;
-    // }
+    states.reserve(5e5);
 
     res = make_virtual_move(gamecopy, colour, true, l, r, depth_, eval);
-
-    // cout << OptAlphaBetaData::cnt << ' ' << res.first << endl;
-    // std::this_thread::sleep_for(std::chrono::seconds(3));
-    // history.insert(res.second);
 
     return res;
 }

@@ -4,7 +4,6 @@
 #include <memory>
 #include "GameSettings.hpp"
 #include "Bot.hpp"
-// class Bot;
 
 std::shared_ptr<Bot> BotFactory(const GameSettings &settings);
 

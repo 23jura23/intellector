@@ -1261,34 +1261,34 @@ TEST_CASE("Game with depth 4")
 
 }
 
-// TEST_CASE("Game with depth 5")
-// {
-//     const int depth = 4;
-//     std::shared_ptr<AlphaBetaBot> bot = std::reinterpret_pointer_cast<AlphaBetaBot>(TestBotFactory(2, depth));
-//     Game game{};
+TEST_CASE("Game with depth 5")
+{
+    const int depth = 4;
+    std::shared_ptr<AlphaBetaBot> bot = std::reinterpret_pointer_cast<AlphaBetaBot>(TestBotFactory(2, depth));
+    Game game{};
 
-//     int cnt = 0;
-//     for(;game.getGameStatus() == GameStatus::game_running_;)
-//     {
-//         auto move = bot->makeMove(game);
+    int cnt = 0;
+    for(;game.getGameStatus() == GameStatus::game_running_;)
+    {
+        auto move = bot->makeMove(game);
 
-//         game.makeMove(move);
+        game.makeMove(move);
 
-//         FigureKeeper tmp(game.getBoard());
-//         cnt++;
+        FigureKeeper tmp(game.getBoard());
+        cnt++;
 
-//         bot->makeMove(game);
+        bot->makeMove(game);
 
-//         CHECK(tmp == bot->getFigures());
-//         if(!(tmp == bot->getFigures()))
-//         {
-//             cout << cnt << endl;
-//             cout << tmp.get_figures(PlayerColour::white_).size() << ' ' << tmp.get_figures(PlayerColour::black_).size() << endl;
-//         }
-//     }
-//     cout << "Game with depth 5 passed." << endl;
+        CHECK(tmp == bot->getFigures());
+        if(!(tmp == bot->getFigures()))
+        {
+            cout << cnt << endl;
+            cout << tmp.get_figures(PlayerColour::white_).size() << ' ' << tmp.get_figures(PlayerColour::black_).size() << endl;
+        }
+    }
+    cout << "Game with depth 5 passed." << endl;
 
-// }
+}
 
 
 

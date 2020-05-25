@@ -42,10 +42,6 @@ namespace evaluate
 
 namespace delta 
 {
-    // const std::unordered_map<evaluate_function_t, delta_function_t> deltas =
-    // {
-    //     {scoreSumFigurePoints, deltaSumFigurePoints}
-    // };
 
     int deltaSumFigurePoints(const Move &move, const PlayerColour colour) 
     {

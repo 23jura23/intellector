@@ -10,6 +10,9 @@ using std::endl;
 
 FigureKeeper::FigureKeeper(const Board &board)
 {
+    // white_figures_.reserve(25);
+    // black_figures_.reserve(25);
+
     hash = 0;
 	for (auto &row : board.data_)
         for (auto &cell : row) 
@@ -39,7 +42,7 @@ size_t FigureKeeper::get_hash() const
     return hash;
 }
 
-std::unordered_set<Position>& FigureKeeper::get_figures(const PlayerColour colour)
+std::vector<Position>& FigureKeeper::get_figures(const PlayerColour colour)
 {
 	if(colour == PlayerColour::black_)
 		return black_figures_;
@@ -49,24 +52,19 @@ std::unordered_set<Position>& FigureKeeper::get_figures(const PlayerColour colou
 
 void FigureKeeper::insertFigure(Position &pos, Figure &fig)
 {
-    std::unordered_set<Position> &set = get_figures(fig.colour_);
+    std::vector<Position> &set = get_figures(fig.colour_);
 	pos.makeSum();
-	assert(set.find(pos) == set.end());
-	set.insert(pos);
+    set.emplace_back(pos);
     hash ^= std::hash<Position>()(pos) * std::hash<Figure>()(fig);
-    // hash++;
 }
 
 void FigureKeeper::eraseFigure(Position &pos, Figure &fig)
 {
-    std::unordered_set<Position> &set = get_figures(fig.colour_);
+    std::vector<Position> &set = get_figures(fig.colour_);
 
 	pos.makeSum();
-	assert(set.find(pos) != set.end());
-	set.erase(pos);
-    // hash ^= std::hash<std::pair<Position, Figure>>()({pos, fig});  
+	set.erase(std::find(set.begin(), set.end(), pos));
     hash ^= std::hash<Position>()(pos) * std::hash<Figure>()(fig);
-    // hash--;
 }
 
 
@@ -105,11 +103,15 @@ void FigureKeeper::cancelMove(Move &move)
 
 bool operator==(const FigureKeeper &a, const FigureKeeper &b)
 {
-    // if(a.get_hash() != b.get_hash() && a.white_figures_ == b.white_figures_ && a.black_figures_ == b.black_figures_)
-    // {
-        // cout << a.white_figures_.size() << ' ' <<  b.white_figures_.size() << endl;
-        // assert(0);
-    // }
-    return a.get_hash() == b.get_hash() && a.white_figures_ == b.white_figures_ && a.black_figures_ == b.black_figures_;
+    bool is_white_match = true;
+    bool is_black_match = true;
+    for(const auto &pos : a.white_figures_)
+        is_white_match &= (std::find(b.white_figures_.begin(), b.white_figures_.end(), pos) != b.white_figures_.end());
+
+    for(const auto &pos : a.black_figures_)
+        is_black_match &= (std::find(b.black_figures_.begin(), b.black_figures_.end(), pos) != b.black_figures_.end());
+    
+
+    return a.get_hash() == b.get_hash() && is_white_match && is_black_match;
 }
 

@@ -9,7 +9,6 @@
 
 std::shared_ptr<Bot> TestBotFactory(const int &type, const int &depth)
 {
-    // void(settings.difficulty());
     std::shared_ptr<Bot> bot;
     switch(type)
     {

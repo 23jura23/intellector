@@ -21,7 +21,7 @@ public:
     FigureKeeper(const std::vector<std::pair<Position, Figure>> &v);
 
 
-	std::unordered_set<Position> &get_figures(const PlayerColour colour);
+	std::vector<Position> &get_figures(const PlayerColour colour);
 
 	void makeMove(Move &move);
 	void cancelMove(Move &move);
@@ -34,8 +34,8 @@ public:
 private:
 
     size_t hash = 0;
-	std::unordered_set<Position> white_figures_;
-	std::unordered_set<Position> black_figures_;
+	std::vector<Position> white_figures_;
+	std::vector<Position> black_figures_;
 
 };
 
