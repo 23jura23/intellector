@@ -2,9 +2,12 @@
 #ifndef _ALPHABETABOT_HPP
 #define _ALPHABETABOT_HPP
 
+#include <atomic>
+
 #include "Bot.hpp"
 #include "FunctionSet.hpp"
 #include "FigureKeeper.hpp"
+
 
 class AlphaBetaBot : Bot
 {
@@ -17,7 +20,12 @@ public:
     Move makeMove(const Game &g) override;
     std::pair<int, Move> test_makeMove(const Game &g) override;
 
+
     FigureKeeper &getFigures();
+
+    void resetFinishedMove() override;
+
+    bool isMoveFinished() override;
 
    private:
     std::pair<int, Move> make_virtual_move(Game &game,
@@ -27,6 +35,8 @@ public:
                                            int beta,
                                            int depth, 
                                            int prev_value);
+
+    std::atomic<bool> finished_move = true;
 
     int depth_;
     FunctionSet functions_;

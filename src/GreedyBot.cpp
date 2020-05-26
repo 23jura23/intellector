@@ -1,9 +1,25 @@
+#include <vector>
+#include <atomic>
+#include <cassert>
+
 #include "GreedyBot.hpp"
 #include "Game.hpp"
-#include <vector>
+
+void GreedyBot::resetFinishedMove()
+{
+    finished_move = false;
+}
+
+bool GreedyBot::isMoveFinished()
+{
+    return finished_move;
+}
 
 Move GreedyBot::makeMove(const Game &game) 
 {
+
+    assert(!finished_move);
+
     auto colour = game.getColourCurrentPlayer();
     Board board = Board(game.getBoard());
     std::vector<Move> all_moves;
@@ -28,6 +44,8 @@ Move GreedyBot::makeMove(const Game &game)
             max = eval;
         }
     }
+
+    finished_move = true;
     return res;
 }
 

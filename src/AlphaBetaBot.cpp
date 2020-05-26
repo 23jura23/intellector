@@ -1,5 +1,6 @@
 #include "AlphaBetaBot.hpp"
 
+#include <atomic>
 #include <cassert>
 #include <chrono>
 #include <iostream>
@@ -7,6 +8,7 @@
 #include <thread>
 #include <unordered_map>
 #include <vector>
+
 
 #include "EvalGame.hpp"
 #include "FunctionSet.hpp"
@@ -25,6 +27,16 @@ namespace AlphaBetaData
 FigureKeeper &AlphaBetaBot::getFigures()
 {
     return figures_;
+}
+
+void AlphaBetaBot::resetFinishedMove()
+{
+    finished_move = false;
+}
+
+bool AlphaBetaBot::isMoveFinished()
+{
+    return finished_move;
 }
 
 
@@ -127,6 +139,9 @@ std::pair<int, Move> AlphaBetaBot::make_virtual_move(Game &game,
 
 Move AlphaBetaBot::makeMove(const Game &game) 
 {
+
+    assert(!finished_move);
+
     Game gamecopy(game.makeCopyForBot());
     figures_ = FigureKeeper(game.getBoard());
 
@@ -142,6 +157,8 @@ Move AlphaBetaBot::makeMove(const Game &game)
 
     int eval = functions_.evaluate(game, AlphaBetaData::Colour);
     res = make_virtual_move(gamecopy, colour, true, l, r, depth_, eval);
+
+    finished_move = true;
 
     return res.second;
 }

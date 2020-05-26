@@ -1,5 +1,6 @@
 #include "OptimizedAlphaBetaBot.hpp"
 
+#include <atomic>
 #include <cassert>
 #include <chrono>
 #include <iostream>
@@ -24,7 +25,15 @@ namespace OptAlphaBetaData
 
 }
 
+void OptimizedAlphaBetaBot::resetFinishedMove()
+{
+    finished_move = false;
+}
 
+bool OptimizedAlphaBetaBot::isMoveFinished()
+{
+    return finished_move;
+}
 
 std::unordered_map<std::pair<FigureKeeper, std::pair<int, std::pair<int, int>>>, std::pair<int, Move>> states;
 
@@ -137,6 +146,9 @@ std::pair<int, Move> OptimizedAlphaBetaBot::make_virtual_move(Game &game,
 
 Move OptimizedAlphaBetaBot::makeMove(const Game &game) 
 {
+
+    assert(!finished_move);
+
     Game gamecopy(game.makeCopyForBot());
     figures_ = FigureKeeper(game.getBoard());
 
@@ -154,6 +166,8 @@ Move OptimizedAlphaBetaBot::makeMove(const Game &game)
     states.reserve(5e5);
 
     res = make_virtual_move(gamecopy, colour, true, l - 1, r + 1, depth_, eval);
+
+    finished_move = true;
 
     return res.second;
 }

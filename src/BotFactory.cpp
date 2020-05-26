@@ -2,6 +2,7 @@
 #include "BotFactory.hpp"
 
 #include <memory>
+#include <atomic>
 
 #include "AlphaBetaBot.hpp"
 #include "Evaluate.hpp"

@@ -15,6 +15,10 @@ public:
     Bot() = default;
     virtual Move makeMove(const Game &g) = 0;
     virtual std::pair<int, Move> test_makeMove(const Game &g) = 0;
+
+    virtual void resetFinishedMove() = 0;
+
+    virtual bool isMoveFinished() = 0;
 };
 
 #endif  // _BOT_HPP
