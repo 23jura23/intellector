@@ -42,9 +42,11 @@ class Game {
     void setGameSettings(const GameSettings& settings);
 
     bool loadGame(const std::string& filename);
-
     void saveGame(const std::string& filename);
 
+    bool makeWhiteBotMove();
+    bool makeBlackBotMove();
+    bool makeBotMove();
     bool makeMove(const Move& move);
 
     [[nodiscard]] std::vector<Move> allFigureMoves(Position pos) const;
@@ -71,7 +73,7 @@ class Game {
 
    private:
     Board board_;
-    PlayerColour turn_;// = PlayerColour::white_;
+    PlayerColour turn_ = PlayerColour::white_;
     std::shared_ptr<Bot> white_bot_ = nullptr, black_bot_ = nullptr;
     GameSettings settings_;
 //    int difficulty = 0;

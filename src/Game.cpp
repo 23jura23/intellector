@@ -26,7 +26,8 @@ static unsigned int CRC32_count(std::fstream& file) {
     return crc ^ 0xFFFFFFFFUL;
 }
 
-Game::Game(const GameSettings& settings) : settings_{settings} {
+Game::Game(const GameSettings& settings)
+        : settings_{settings} {
     setGameSettings(settings);
 }
 
@@ -35,16 +36,6 @@ void Game::setGameSettings(const GameSettings& settings) {
         white_bot_ = BotFactory(settings.difficulty_white());
     if (settings.second_player())
         black_bot_ = BotFactory(settings.difficulty_black());
-
-    if (settings.first_player() && settings.second_player())
-        turn_ = PlayerColour::none_;
-    else if (settings.first_player() && !settings.second_player())
-        turn_ = PlayerColour::white_;
-    else if (!settings.first_player() && settings.second_player())
-        turn_ = PlayerColour::white_;
-    else
-        turn_ = PlayerColour::white_;
-
     settings_ = settings;
 }
 /*
@@ -99,8 +90,9 @@ bool Game::loadGame(const std::string& filename) {
 
     // считывание правил игры
     file.read(reinterpret_cast<char*>(&storage16), 2);
-    turn_ = storage16 >> 15 == 1 ? PlayerColour::white_ : PlayerColour::black_;
     GameSettings settings = archiver::getGameSettings(storage16);
+    setGameSettings(settings);
+    turn_ = storage16 >> 15 == 1 ? PlayerColour::white_ : PlayerColour::black_;
 
     // считывание истории
     file.read(reinterpret_cast<char*>(&size_of_history), 4);
@@ -173,6 +165,48 @@ void Game::saveGame(const std::string& filename) {
     file.write(reinterpret_cast<const char*>(&CRC), 4);
 }
 
+bool Game::makeWhiteBotMove() {
+    if (turn_ != PlayerColour::white_)
+        return false;
+    if (white_bot_ == nullptr)
+        return false;
+
+    Move bot_move = white_bot_->makeMove(*this);
+    bot_move.makeMove(board_);
+    turn_ = PlayerColour::black_;
+
+    if (history_of_moves_.size() != point_of_history_)
+        history_of_moves_.resize(point_of_history_);
+
+    history_of_moves_.push_back(bot_move);
+    ++point_of_history_;
+    return true;
+}
+
+bool Game::makeBlackBotMove() {
+    if (turn_ != PlayerColour::black_)
+        return false;
+    if (black_bot_ == nullptr)
+        return false;
+
+    Move bot_move = black_bot_->makeMove(*this);
+    bot_move.makeMove(board_);
+    turn_ = PlayerColour::white_;
+
+    if (history_of_moves_.size() != point_of_history_)
+        history_of_moves_.resize(point_of_history_);
+
+    history_of_moves_.push_back(bot_move);
+    ++point_of_history_;
+    return true;
+}
+
+bool Game::makeBotMove() {
+    if (turn_ == PlayerColour::white_)
+        return makeWhiteBotMove();
+    return makeBlackBotMove();
+}
+
 bool Game::makeMove(const Move& move) {
     if (!board_[move.from_].figure_.has_value() || board_[move.from_].figure_->colour_ != turn_)
         return false;
@@ -188,33 +222,7 @@ bool Game::makeMove(const Move& move) {
     history_of_moves_.push_back(move);
     ++point_of_history_;
 
-    if (turn_ == PlayerColour::white_) {
-        turn_ = PlayerColour::black_;
-        if (black_bot_) {
-            Move bot_move = black_bot_->makeMove(*this);
-            bot_move.makeMove(board_);
-            turn_ = PlayerColour::white_;
-
-            if (history_of_moves_.size() != point_of_history_)
-                history_of_moves_.resize(point_of_history_);
-
-            history_of_moves_.push_back(bot_move);
-            ++point_of_history_;
-        }
-    } else {
-        turn_ = PlayerColour::white_;
-        if (white_bot_) {
-            Move bot_move = white_bot_->makeMove(*this);
-            bot_move.makeMove(board_);
-            turn_ = PlayerColour::black_;
-
-            if (history_of_moves_.size() != point_of_history_)
-                history_of_moves_.resize(point_of_history_);
-
-            history_of_moves_.push_back(bot_move);
-            ++point_of_history_;
-        }
-    }
+    turn_ = other_colour(turn_);
     return true;
 }
 
