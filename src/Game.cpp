@@ -265,6 +265,10 @@ size_t Game::getPointOfHistory() const {
     return point_of_history_;
 }
 
+bool Game::atEndOfHistory() const {
+    return point_of_history_ == history_of_moves_.size();
+}
+
 GameStatus Game::getGameStatus() const {  // может можно получше
     bool is_white_intellector = false;
     bool is_black_intellector = false;

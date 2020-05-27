@@ -19,7 +19,8 @@ class Game {
     // TODO первые 4 байта случайное число + версия?
     // TODO MakeMove синхронный?
    public:
-    explicit Game(const GameSettings& settings = GameSettings(4, 0, false, true));
+    explicit Game(const GameSettings& settings = GameSettings(0, 4, false, true));
+    ~Game() = default;
     //    Game(const Game& other) = delete;
     Game(const Game& other)
             : board_{other.board_}
@@ -68,6 +69,7 @@ class Game {
 
     [[nodiscard]] const std::vector<Move>& getHistoryOfMoves() const;
     [[nodiscard]] size_t getPointOfHistory() const;
+    [[nodiscard]] bool atEndOfHistory() const;
 
     [[nodiscard]] GameStatus getGameStatus() const;
 
