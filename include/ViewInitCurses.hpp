@@ -5,6 +5,7 @@ namespace viewCurses {
 extern int initCursesDone;
 void initCurses();
 void terminateCurses();
+void terminateAllCurses();
 }  // namespace viewCurses
 
 #endif  // _VIEW_INIT_CURSES_HPP_

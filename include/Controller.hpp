@@ -21,6 +21,7 @@ class Controller {
     //    inline void unSelectCell();
 
     void makeMove(const Move& move);  // really void?
+    bool makeBotMove(PlayerColour);
     void cancelMove();
     void nextMove();
     void prevMove();

@@ -17,6 +17,8 @@ RET_CODE RulesMenuCurses::show(int c) {
     draw();
     RET_CODE rc = RET_CODE::NOTHING;
     switch (c) {
+        case -1:
+            break;
         default:
             rc = RET_CODE::BACK;
             break;

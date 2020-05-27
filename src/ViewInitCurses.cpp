@@ -6,10 +6,12 @@
 
 namespace viewCurses {
 int initCursesDone = 0;
+WINDOW * screen;
 
 void initCurses() {
     if (!initCursesDone) {
-        initscr();
+        screen = initscr();
+        timeout(300);
         initColors();  // ViewColorSchemeCurses
         curs_set(0);
         noecho();
@@ -25,6 +27,7 @@ void initCurses() {
 
 void terminateCurses() {
     if (initCursesDone == 1) {
+        refresh();
         use_default_colors();
         endwin();
         initCursesDone = 0;
@@ -33,6 +36,11 @@ void terminateCurses() {
     } else {
         initCursesDone--;
     }
+}
+
+void terminateAllCurses() {
+    initCursesDone = 1;
+    terminateCurses();
 }
 
 }  // namespace viewCurses

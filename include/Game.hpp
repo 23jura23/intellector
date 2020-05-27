@@ -19,7 +19,7 @@ class Game {
     // TODO первые 4 байта случайное число + версия?
     // TODO MakeMove синхронный?
    public:
-    explicit Game(const GameSettings& settings = GameSettings(0, 4, false, true));
+    explicit Game(const GameSettings& settings);
     ~Game() = default;
     //    Game(const Game& other) = delete;
     Game(const Game& other)
@@ -35,7 +35,7 @@ class Game {
     }
 
     [[nodiscard]] Game makeCopyForBot() const {
-        Game result;
+        Game result{settings_};
         result.board_ = board_;
         result.turn_ = turn_;
         result.white_bot_ = nullptr;

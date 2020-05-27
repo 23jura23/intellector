@@ -61,7 +61,7 @@ class ViewGameMenuCurses : public viewBase, public MenuCurses {
     std::optional<Position> previousFromPos;
     std::optional<Position> previousToPos;
     
-    GameStatus winner;
+    GameStatus status;
 
     bool historyMenuEnabled = 0;
 

@@ -4,12 +4,24 @@
 
 #include "Controller.hpp"
 
+#include <assert.h>
+
 Controller::Controller(std::shared_ptr<Game> game)
         : game_{game} {
 }
 
 void Controller::makeMove(const Move& move) {
     game_->makeMove(move);
+}
+
+bool Controller::makeBotMove(PlayerColour color) {
+    if (color == PlayerColour::white_) {
+        return game_->makeWhiteBotMove();
+    } else if (color == PlayerColour::black_) {
+        return game_->makeBlackBotMove();
+    } else {
+        assert(false);
+    }
 }
 
 void Controller::cancelMove() {

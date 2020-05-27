@@ -14,10 +14,10 @@ using std::cerr, std::endl;
 #include "ViewMainMenuCurses.hpp"
 #include "ViewMenuTypes.hpp"
 #include "ViewOptionsMenuCurses.hpp"
+#include "ViewOptions_Gameplay_MenuCurses.hpp"
 #include "ViewRulesMenuCurses.hpp"
 #include "ViewStartMenuCurses.hpp"
 #include "ViewWinMenuCurses.hpp"
-#include "ViewOptions_Gameplay_MenuCurses.hpp"
 
 using std::vector, std::shared_ptr, std::make_shared, std::dynamic_pointer_cast;
 
@@ -44,7 +44,12 @@ MenuMultiplexerCurses::MenuMultiplexerCurses()
 }
 
 MenuMultiplexerCurses::~MenuMultiplexerCurses() {
-    terminateCurses();
+    if (aliveMenus.size()) {
+        for (int i = aliveMenus.size() - 1; i >= 0; --i) {
+            aliveMenus[i].menu.reset();
+        }
+    }
+    terminateAllCurses();
 }
 
 MENU_TYPE MenuMultiplexerCurses::type() const {
@@ -70,7 +75,9 @@ RET_CODE MenuMultiplexerCurses::show(int) {
             forceRedraw = 0;
         }
 
-        int c = getch();
+        int c{};
+        c = getch();
+        cerr << "c: " << c << endl;
 
         cerr << "GOT " << c << '\n';
 
@@ -291,7 +298,8 @@ RET_CODE MenuMultiplexerCurses::processOptionsMenu(MenuWithRC& menuRC) {
         case RET_CODE::NOTHING:
             break;
         case RET_CODE::OPTIONS_GAMEPLAY: {
-            auto newMenu = dynamic_pointer_cast<MenuCurses>(make_shared<Options_Gameplay_MenuCurses>(settings_));
+            auto newMenu = dynamic_pointer_cast<MenuCurses>(
+                make_shared<Options_Gameplay_MenuCurses>(settings_));
             forceRedraw = 1;
             aliveMenus.push_back({newMenu, RET_CODE::NOTHING});
             aliveMenus.erase(find(aliveMenus.begin(), aliveMenus.end(), menuRC));

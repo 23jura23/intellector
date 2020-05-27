@@ -166,7 +166,7 @@ void Game::saveGame(const std::string& filename) {
 }
 
 bool Game::makeWhiteBotMove() {
-    assert(turn_ != PlayerColour::white_);
+    assert(turn_ == PlayerColour::white_);
     assert(white_bot_);
 
     if (is_calculated_) {
@@ -182,19 +182,19 @@ bool Game::makeWhiteBotMove() {
             ++point_of_history_;
 
             is_calculated_ = false;
-            white_bot_->resetFinishedMove();
             return true;
         } else {
             return false;
         }
     }
     is_calculated_ = true;
-    bot_move_ = std::async(&Bot::makeMove, white_bot_, *this);
+    white_bot_->resetFinishedMove();
+    bot_move_ = std::async(std::launch::async, &Bot::makeMove, white_bot_, *this);
     return false;
 }
 
 bool Game::makeBlackBotMove() {
-    assert(turn_ != PlayerColour::black_);
+    assert(turn_ == PlayerColour::black_);
     assert(black_bot_);
 
     if (is_calculated_) {
@@ -210,14 +210,14 @@ bool Game::makeBlackBotMove() {
             ++point_of_history_;
 
             is_calculated_ = false;
-            black_bot_->resetFinishedMove();
             return true;
         } else {
             return false;
         }
     }
     is_calculated_ = true;
-    bot_move_ = std::async(&Bot::makeMove, black_bot_, *this);
+    black_bot_->resetFinishedMove();
+    bot_move_ = std::async(std::launch::async, &Bot::makeMove, black_bot_, *this);
     return false;
 }
 

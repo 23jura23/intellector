@@ -11,7 +11,10 @@ ViewModelCurses::ViewModelCurses(const Game& game)
         , rows_{game.getBoard().rows_}
         , turn_{game.getColourCurrentPlayer()}
         , history_of_moves_{game.getHistoryOfMoves()}
-        , point_of_history_{game.getPointOfHistory()} {
+        , point_of_history_{game.getPointOfHistory()}
+        , settings{game.getGameSettings()}
+        , playerTurn{(turn_ == PlayerColour::white_ && !settings.first_player()) || (turn_ == PlayerColour::black_ && !settings.second_player())}
+            {
     auto rv = freopen("error.txt", "a", stderr);
     static_cast<void>(rv);
     // avoiding warning. May be harmful, but later there must be a well-done logging.

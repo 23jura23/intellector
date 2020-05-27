@@ -20,7 +20,7 @@ std::shared_ptr<Bot> BotFactory(int difficulty) {
             bot = std::reinterpret_pointer_cast<Bot>(std::make_shared<GreedyBot>(evaluate::scoreSumFigurePoints));
             break;
         default:
-            bot = std::reinterpret_pointer_cast<Bot>(std::make_shared<OptimizedAlphaBetaBot>(difficulty+1, 0));
+            bot = std::reinterpret_pointer_cast<Bot>(std::make_shared<OptimizedAlphaBetaBot>(difficulty-1, 0));
 //            break;
 //        case 6:
 //            bot = std::reinterpret_pointer_cast<Bot>(std::make_shared<OptimizedAlphaBetaBot>(4, 0));

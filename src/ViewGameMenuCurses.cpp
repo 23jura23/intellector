@@ -224,46 +224,44 @@ RET_CODE ViewGameMenuCurses::show(int c) {
     //    while (running) {
     RET_CODE rc = RET_CODE::NOTHING;
 
-    /*
-    if current_turn == white and bot_white == true
-    controller->goBot(white) // or just goBot() ? no, perhaps, exatly goBot(white)
-    reloadModel
-    else if current_turn == black and bot_black == true
-    controller->goBot(black)
-    reloadModel
-    
-    + if in 32: to do nothing if board->turn_ == none
-    or check if figure selected has correct color (then go compare to none and no figure is yours)
-    
-    inside goBot(color)
-    game->goBot(color)
-    
-    inside game->goBot(color)
-    
-    detached thread of bot, that set flag when finished
-    or joinable thread of bot, and every goBot(color) you check if thread of bot of that color if joinable
-    if joinable - do makeMove with returned step and change turn_
-    if not - do nothing
-*/
+    cerr << "PlayerTurn: " << board_->playerTurn << endl;
+    cerr << "turn_: " << (board_->turn_ == PlayerColour::white_ ? "white" : "black") << endl;
+
+    if (status == GameStatus::game_running_) {
+        if (board_->point_of_history_ == board_->history_of_moves_.size()) {
+            if (board_->turn_ == PlayerColour::white_ && board_->settings.first_player()) {
+                bool finished = controller_->makeBotMove(PlayerColour::white_);
+                if (finished) {
+                    reloadModel();
+                }
+            } else if (board_->turn_ == PlayerColour::black_ && board_->settings.second_player()) {
+                bool finished = controller_->makeBotMove(PlayerColour::black_);
+                if (finished) {
+                    reloadModel();
+                }
+            }
+        }
+    }
 
     Position newPos = currentPos;
     draw();
-    winner = controller_->getGameStatus();
+    status = controller_->getGameStatus();
 
     // !!! TODO(23jura23) move this bottom!
 
-    if (winner != GameStatus::game_running_) {
-        // but you need to make universal interface of multistep, where unistep is just multistep with only one possible move. And blinking will be just the implementation for TransformMove
-        // TODO(23jura23) think about appearing sliding menu in left or right part of screen
-        if (winner == GameStatus::game_over_white_win_) {
-            return RET_CODE::GAME_OVER_WHITE_WIN;
-        } else if (winner == GameStatus::game_over_black_win_) {
-            return RET_CODE::GAME_OVER_BLACK_WIN;
-        } else {
-            return RET_CODE::GAME_OVER_UNEXPECTEDLY;
+    if (c != -1) {
+        if (status != GameStatus::game_running_) {
+            // but you need to make universal interface of multistep, where unistep is just multistep with only one possible move. And blinking will be just the implementation for TransformMove
+            // TODO(23jura23) think about appearing sliding menu in left or right part of screen
+            if (status == GameStatus::game_over_white_win_) {
+                return RET_CODE::GAME_OVER_WHITE_WIN;
+            } else if (status == GameStatus::game_over_black_win_) {
+                return RET_CODE::GAME_OVER_BLACK_WIN;
+            } else {
+                return RET_CODE::GAME_OVER_UNEXPECTEDLY;
+            }
         }
     }
-    //    chtype c = getch();
 
     switch (c) {
         case 'x':
@@ -306,6 +304,8 @@ RET_CODE ViewGameMenuCurses::show(int c) {
         case 'u':
             controller_->prevMove();
             reloadModel();
+            board_->get(currentPos).status_ = CellStatus::INACTIVE;
+            currentPosStatus = CurrentPosStatus::UNSELECTED;
             //            rc = RET_CODE::DO_RELOAD_MODEL;
             // cancel move?
             // undo
@@ -313,6 +313,8 @@ RET_CODE ViewGameMenuCurses::show(int c) {
         case 85:  // Shift-u
             controller_->nextMove();
             reloadModel();
+            board_->get(currentPos).status_ = CellStatus::INACTIVE;
+            currentPosStatus = CurrentPosStatus::UNSELECTED;
             //            rc = RET_CODE::DO_RELOAD_MODEL;
             // redo
             break;
@@ -320,33 +322,35 @@ RET_CODE ViewGameMenuCurses::show(int c) {
             return RET_CODE::GAME_EXIT;
             break;
         case 32:
-            switch (currentPosStatus) {
-                case CurrentPosStatus::UNSELECTED:
-                    selectPosition();
-                    break;
-                case CurrentPosStatus::SELECTED:
-                    cerr << "Trying to do smth with Cell " << currentPos.posW() << ' '
-                         << currentPos.posH() << endl;
-                    if (currentPos == selectedPos) {
-                        unselectPosition();
-                    } else {
-                        if (board_->get(currentPos).inMoves_.size()) {
-                            cerr << "Step " << currentPos.posW() << ' ' << currentPos.posH()
-                                 << " was tried to be done" << endl;
-                            if (board_->get(currentPos).inMoves_.size() == 1) {
-                                makeUniStep();
-                            } else {
-                                makeMultiStep();
-                            }
-                            //                                previousFromPos = selectedPos;
-                            //                                previousToPos = currentPos;
+            if (board_->playerTurn && status == GameStatus::game_running_) {
+                switch (currentPosStatus) {
+                    case CurrentPosStatus::UNSELECTED:
+                        selectPosition();
+                        break;
+                    case CurrentPosStatus::SELECTED:
+                        cerr << "Trying to do smth with Cell " << currentPos.posW() << ' '
+                             << currentPos.posH() << endl;
+                        if (currentPos == selectedPos) {
+                            unselectPosition();
                         } else {
-                            // Impossible move
+                            if (board_->get(currentPos).inMoves_.size()) {
+                                cerr << "Step " << currentPos.posW() << ' ' << currentPos.posH()
+                                     << " was tried to be done" << endl;
+                                if (board_->get(currentPos).inMoves_.size() == 1) {
+                                    makeUniStep();
+                                } else {
+                                    makeMultiStep();
+                                }
+                                //                                previousFromPos = selectedPos;
+                                //                                previousToPos = currentPos;
+                            } else {
+                                // Impossible move
+                            }
                         }
-                    }
-                    break;
+                        break;
+                }
+                break;
             }
-            break;
         default:
             break;
     }

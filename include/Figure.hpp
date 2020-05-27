@@ -9,7 +9,7 @@
 
 enum class FigureType { INTELLECTOR, DOMINATOR, AGGRESSOR, DEFENSSOR, LIBERATOR, PROGRESSOR };
 
-enum class PlayerColour { black_, white_, none_ };
+enum class PlayerColour { black_, white_ };
 
 class Figure {
    public:
