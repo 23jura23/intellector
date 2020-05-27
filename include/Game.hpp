@@ -5,6 +5,9 @@
 #ifndef _INTELLECTOR_CONTROLLER_HPP
 #define _INTELLECTOR_CONTROLLER_HPP
 
+#include <thread>
+#include <future>
+
 #include "Board.hpp"
 #include "BotFactory.hpp"
 #include "FigureMoveValidator.hpp"
@@ -16,16 +19,19 @@ class Game {
     // TODO первые 4 байта случайное число + версия?
     // TODO MakeMove синхронный?
    public:
-    explicit Game(const GameSettings& settings = GameSettings(4,0,0,1));
-    Game(const Game& other) = default;
-
-//    explicit Game(const GameSettings& settings) {
-//        if (settings.first_player())
-//            white_bot_ = BotFactory(settings);
-//        if (settings.second_player())
-//            black_bot_ = BotFactory(settings);
-//        difficulty = settings.difficulty();
-//    }
+    explicit Game(const GameSettings& settings = GameSettings(4, 0, false, true));
+    //    Game(const Game& other) = delete;
+    Game(const Game& other)
+            : board_{other.board_}
+            , turn_{other.turn_}
+            , white_bot_{nullptr}
+            , black_bot_{nullptr}
+            , bot_move_{}
+            , is_calculated_{false}
+            , settings_{other.settings_}
+            , history_of_moves_{other.history_of_moves_}
+            , point_of_history_{other.point_of_history_} {
+    }
 
     [[nodiscard]] Game makeCopyForBot() const {
         Game result;
@@ -33,6 +39,7 @@ class Game {
         result.turn_ = turn_;
         result.white_bot_ = nullptr;
         result.black_bot_ = nullptr;
+        result.bot_move_ = {};
 
         result.history_of_moves_ = {};
         result.point_of_history_ = 0;
@@ -75,8 +82,10 @@ class Game {
     Board board_;
     PlayerColour turn_ = PlayerColour::white_;
     std::shared_ptr<Bot> white_bot_ = nullptr, black_bot_ = nullptr;
+    std::future<Move> bot_move_ = {};
+    bool is_calculated_ = false;
     GameSettings settings_;
-//    int difficulty = 0;
+    //    int difficulty = 0;
 
     std::vector<Move> history_of_moves_ = {};
     unsigned int point_of_history_ = 0;

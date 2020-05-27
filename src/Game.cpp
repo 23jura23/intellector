@@ -166,45 +166,67 @@ void Game::saveGame(const std::string& filename) {
 }
 
 bool Game::makeWhiteBotMove() {
-    if (turn_ != PlayerColour::white_)
-        return false;
-    if (white_bot_ == nullptr)
-        return false;
+    assert(turn_ != PlayerColour::white_);
+    assert(white_bot_);
 
-    Move bot_move = white_bot_->makeMove(*this);
-    bot_move.makeMove(board_);
-    turn_ = PlayerColour::black_;
+    if (is_calculated_) {
+        if (white_bot_->isMoveFinished()) {
+            Move bot_move = bot_move_.get();
+            bot_move.makeMove(board_);
+            turn_ = PlayerColour::black_;
 
-    if (history_of_moves_.size() != point_of_history_)
-        history_of_moves_.resize(point_of_history_);
+            if (history_of_moves_.size() != point_of_history_)
+                history_of_moves_.resize(point_of_history_);
 
-    history_of_moves_.push_back(bot_move);
-    ++point_of_history_;
-    return true;
+            history_of_moves_.push_back(bot_move);
+            ++point_of_history_;
+
+            is_calculated_ = false;
+            white_bot_->resetFinishedMove();
+            return true;
+        } else {
+            return false;
+        }
+    }
+    is_calculated_ = true;
+    bot_move_ = std::async(&Bot::makeMove, white_bot_, *this);
+    return false;
 }
 
 bool Game::makeBlackBotMove() {
-    if (turn_ != PlayerColour::black_)
-        return false;
-    if (black_bot_ == nullptr)
-        return false;
+    assert(turn_ != PlayerColour::black_);
+    assert(black_bot_);
 
-    Move bot_move = black_bot_->makeMove(*this);
-    bot_move.makeMove(board_);
-    turn_ = PlayerColour::white_;
+    if (is_calculated_) {
+        if (black_bot_->isMoveFinished()) {
+            Move bot_move = bot_move_.get();
+            bot_move.makeMove(board_);
+            turn_ = PlayerColour::white_;
 
-    if (history_of_moves_.size() != point_of_history_)
-        history_of_moves_.resize(point_of_history_);
+            if (history_of_moves_.size() != point_of_history_)
+                history_of_moves_.resize(point_of_history_);
 
-    history_of_moves_.push_back(bot_move);
-    ++point_of_history_;
-    return true;
+            history_of_moves_.push_back(bot_move);
+            ++point_of_history_;
+
+            is_calculated_ = false;
+            black_bot_->resetFinishedMove();
+            return true;
+        } else {
+            return false;
+        }
+    }
+    is_calculated_ = true;
+    bot_move_ = std::async(&Bot::makeMove, black_bot_, *this);
+    return false;
 }
 
 bool Game::makeBotMove() {
     if (turn_ == PlayerColour::white_)
         return makeWhiteBotMove();
-    return makeBlackBotMove();
+    else if (turn_ == PlayerColour::black_)
+        return makeBlackBotMove();
+    assert(false);
 }
 
 bool Game::makeMove(const Move& move) {

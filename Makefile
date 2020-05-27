@@ -9,7 +9,7 @@ EXTRA_FLAGS =
 DEBUG_FLAGS = -g
 RELEASE_FLAGS = -Ofast
 FS_FLAGS = ${DEBUG_FLAGS} -fsanitize=address
-LINK_FLAGS = -lncurses
+LINK_FLAGS = -lncurses -lpthread
 TEST_FLAGS =
 
 FILES = $(shell ls src)
