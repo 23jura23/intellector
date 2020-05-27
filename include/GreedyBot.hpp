@@ -12,6 +12,9 @@ class GreedyBot : Bot
 {
 public:
     GreedyBot() = delete;
+
+    ~GreedyBot() override = default;
+
     GreedyBot(evaluate_function_t eval_function) : evaluation_finction_(eval_function) {};
     Move makeMove(const Game &game) override;
     std::pair<int, Move> test_makeMove(const Game &g) override;

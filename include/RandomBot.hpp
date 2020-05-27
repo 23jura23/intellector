@@ -9,6 +9,9 @@ class RandomBot : Bot
 {
 public:
     RandomBot() = default;
+    
+    ~RandomBot() override = default;
+
     Move makeMove(const Game &g) override;
     std::pair<int, Move> test_makeMove(const Game &g) override;
 

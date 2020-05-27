@@ -13,6 +13,9 @@ class OptimizedAlphaBetaBot : Bot
 {
 public:
     OptimizedAlphaBetaBot() = delete;
+    
+    ~OptimizedAlphaBetaBot() override = default;
+
     OptimizedAlphaBetaBot(int depth, int set_number) : 
                  depth_(depth),  
                  functions_(set_number) {};

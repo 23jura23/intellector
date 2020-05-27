@@ -13,6 +13,9 @@ class AlphaBetaBot : Bot
 {
 public:
     AlphaBetaBot() = delete;
+    
+    ~AlphaBetaBot() override = default;
+
     AlphaBetaBot(int depth, int set_number) : 
                  depth_(depth),  
                  functions_(set_number) {};
