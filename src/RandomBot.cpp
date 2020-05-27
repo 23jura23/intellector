@@ -23,8 +23,6 @@ bool RandomBot::isMoveFinished()
 Move RandomBot::makeMove(const Game &game) 
 {
 
-    assert(!finished_move);
-
     Board board = Board(game.getBoard());
 
     std::vector<Move> all_moves;

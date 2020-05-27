@@ -147,8 +147,6 @@ std::pair<int, Move> OptimizedAlphaBetaBot::make_virtual_move(Game &game,
 Move OptimizedAlphaBetaBot::makeMove(const Game &game) 
 {
 
-    assert(!finished_move);
-
     Game gamecopy(game.makeCopyForBot());
     figures_ = FigureKeeper(game.getBoard());
 

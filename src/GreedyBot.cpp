@@ -18,8 +18,6 @@ bool GreedyBot::isMoveFinished()
 Move GreedyBot::makeMove(const Game &game) 
 {
 
-    assert(!finished_move);
-
     auto colour = game.getColourCurrentPlayer();
     Board board = Board(game.getBoard());
     std::vector<Move> all_moves;
