@@ -86,10 +86,12 @@ std::pair<int, Move> AlphaBetaBot::make_virtual_move(Game &game,
     if (max) 
     {
         std::pair<int, Move> res = {-1e9, {}};
-        for (auto [_, move] : all_moves) 
+        for (auto &[_, move] : all_moves) 
         {
             if (alpha > beta)
                 break;
+
+            static_cast<void>(_);
 
             game.makeMove(move);
             
@@ -112,10 +114,12 @@ std::pair<int, Move> AlphaBetaBot::make_virtual_move(Game &game,
     else 
     {
         std::pair<int, Move> res = {1e9, {}};
-        for (auto [_, move] : all_moves) 
+        for (auto &[_, move] : all_moves) 
         {
             if (alpha > beta)
                 break;
+
+            static_cast<void>(_);
 
             game.makeMove(move);
             figures_.makeMove(move);
