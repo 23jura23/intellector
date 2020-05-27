@@ -1176,11 +1176,11 @@ TEST_CASE("1000 cases")
 TEST_CASE("Game with depth 2")
 {
     const int depth = 1;
-    std::shared_ptr<AlphaBetaBot> bot = std::reinterpret_pointer_cast<AlphaBetaBot>(TestBotFactory(2, depth));
+    std::shared_ptr<AlphaBetaBot> bot = std::reinterpret_pointer_cast<AlphaBetaBot>(TestBotFactory(3, depth));
     Game game{};
 
     int cnt = 0;
-    for(;game.getGameStatus() == GameStatus::game_running_;)
+    for(; cnt < 20 && game.getGameStatus() == GameStatus::game_running_; cnt++)
     {
         auto move = bot->makeMove(game);
 
@@ -1205,11 +1205,11 @@ TEST_CASE("Game with depth 2")
 TEST_CASE("Game with depth 3")
 {
     const int depth = 2;
-    std::shared_ptr<AlphaBetaBot> bot = std::reinterpret_pointer_cast<AlphaBetaBot>(TestBotFactory(2, depth));
+    std::shared_ptr<AlphaBetaBot> bot = std::reinterpret_pointer_cast<AlphaBetaBot>(TestBotFactory(3, depth));
     Game game{};
 
     int cnt = 0;
-    for(;game.getGameStatus() == GameStatus::game_running_;)
+    for(; cnt < 20 && game.getGameStatus() == GameStatus::game_running_; cnt++)
     {
         auto move = bot->makeMove(game);
 
@@ -1234,11 +1234,11 @@ TEST_CASE("Game with depth 3")
 TEST_CASE("Game with depth 4")
 {
     const int depth = 3;
-    std::shared_ptr<AlphaBetaBot> bot = std::reinterpret_pointer_cast<AlphaBetaBot>(TestBotFactory(2, depth));
+    std::shared_ptr<AlphaBetaBot> bot = std::reinterpret_pointer_cast<AlphaBetaBot>(TestBotFactory(3, depth));
     Game game{};
 
     int cnt = 0;
-    for(;game.getGameStatus() == GameStatus::game_running_;)
+    for(; cnt < 20 && game.getGameStatus() == GameStatus::game_running_; cnt++)
     {
         auto move = bot->makeMove(game);
 
@@ -1264,11 +1264,11 @@ TEST_CASE("Game with depth 4")
 TEST_CASE("Game with depth 5")
 {
     const int depth = 4;
-    std::shared_ptr<AlphaBetaBot> bot = std::reinterpret_pointer_cast<AlphaBetaBot>(TestBotFactory(2, depth));
+    std::shared_ptr<AlphaBetaBot> bot = std::reinterpret_pointer_cast<AlphaBetaBot>(TestBotFactory(3, depth));
     Game game{};
 
     int cnt = 0;
-    for(;game.getGameStatus() == GameStatus::game_running_;)
+    for(; cnt < 20 && game.getGameStatus() == GameStatus::game_running_; cnt++)
     {
         auto move = bot->makeMove(game);
 

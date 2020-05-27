@@ -86,18 +86,16 @@ std::pair<int, Move> AlphaBetaBot::make_virtual_move(Game &game,
     if (max) 
     {
         std::pair<int, Move> res = {-1e9, {}};
-        for (auto &[_, move] : all_moves) 
+        for (auto &[delta, move] : all_moves) 
         {
             if (alpha > beta)
                 break;
-
-            static_cast<void>(_);
 
             game.makeMove(move);
             
             figures_.makeMove(move);
 
-            auto mvm = make_virtual_move(game, other_colour(colour), !max, alpha, beta, depth - 1, value + functions_.delta(move, AlphaBetaData::Colour));
+            auto mvm = make_virtual_move(game, other_colour(colour), !max, alpha, beta, depth - 1, value + delta);
 
             if (res.first < mvm.first) 
             {
@@ -114,17 +112,15 @@ std::pair<int, Move> AlphaBetaBot::make_virtual_move(Game &game,
     else 
     {
         std::pair<int, Move> res = {1e9, {}};
-        for (auto &[_, move] : all_moves) 
+        for (auto &[delta, move] : all_moves) 
         {
             if (alpha > beta)
                 break;
 
-            static_cast<void>(_);
-
             game.makeMove(move);
             figures_.makeMove(move);
 
-            auto mvm = make_virtual_move(game, other_colour(colour), !max, alpha, beta, depth - 1, value + functions_.delta(move, AlphaBetaData::Colour));
+            auto mvm = make_virtual_move(game, other_colour(colour), !max, alpha, beta, depth - 1, value + delta);
 
             if (res.first > mvm.first) 
             {
