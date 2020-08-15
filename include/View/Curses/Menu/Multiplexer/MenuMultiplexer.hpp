@@ -6,7 +6,7 @@
 
 #include "Controller/Controller.hpp"
 #include "Model/ModelImpl/GameSettings.hpp"
-#include "View/Curses/Menu/ViewMenuCurses.hpp"
+#include "View/Curses/Menu/Menu.hpp"
 
 namespace viewCurses {
 

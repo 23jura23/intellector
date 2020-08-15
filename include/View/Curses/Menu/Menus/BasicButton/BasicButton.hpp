@@ -6,9 +6,9 @@
 #include <utility>
 #include <vector>
 
-#include "View/Curses/Menu/ViewMenuCurses.hpp"
-#include "View/Curses/Model/Button/ViewButtonCurses.hpp"
-#include "View/Curses/Model/ModelImpl/Picture/ViewPictureCurses.hpp"
+#include "View/Curses/Menu/Menu.hpp"
+#include "View/Curses/Model/Button/Button.hpp"
+#include "View/Curses/Model/ModelImpl/Picture/Picture.hpp"
 
 namespace viewCurses {
 using buttonsVectorT = std::vector<std::pair<std::string, BUTTON_STYLE>>;

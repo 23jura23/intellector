@@ -1,9 +1,9 @@
-#include "View/Curses/Model/Button/ViewButtonCurses.hpp"
+#include "View/Curses/Model/Button/Button.hpp"
 
 #include <assert.h>
 #include <ncurses.h>
 
-#include "View/Curses/Model/ModelImpl/ColorScheme/ViewColorSchemeCurses.hpp"
+#include "View/Curses/Model/ModelImpl/ColorScheme/ColorScheme.hpp"
 
 using std::string;
 namespace viewCurses {

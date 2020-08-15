@@ -1,4 +1,4 @@
-#include "View/Curses/Menu/Menus/Game/ViewGameMenuCurses.hpp"
+#include "View/Curses/Menu/Menus/Game/GameMenu.hpp"
 
 #include <assert.h>
 #include <unistd.h>
@@ -9,11 +9,11 @@
 #include "Controller/Controller.hpp"
 #include "Model/ModelImpl/Board.hpp"
 #include "Model/ModelImpl/Figure.hpp"
-#include "View/Curses/Menu/Menus/BasicButton/ViewMainMenuCurses.hpp"
-#include "View/Curses/Menu/Multiplexer/ViewMenuMultiplexerCurses.hpp"
-#include "View/Curses/Menu/ViewMenuTypes.hpp"
-#include "View/Curses/Model/ModelImpl/ColorScheme/ViewColorSchemeCurses.hpp"
-#include "View/Curses/Model/ModelImpl/Init/ViewInitCurses.hpp"
+#include "View/Curses/Menu/MenuTypes.hpp"
+#include "View/Curses/Menu/Menus/BasicButton/BasicButton.hpp"
+#include "View/Curses/Menu/Multiplexer/MenuMultiplexer.hpp"
+#include "View/Curses/Model/ModelImpl/ColorScheme/ColorScheme.hpp"
+#include "View/Curses/Model/ModelImpl/Init/Init.hpp"
 
 using namespace std;
 

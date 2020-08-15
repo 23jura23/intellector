@@ -8,10 +8,10 @@
 #include <utility>
 #include <vector>
 
-#include "View/Base/ViewBase.hpp"
-#include "View/Curses/Menu/ViewMenuCurses.hpp"
-#include "View/Curses/Model/ModelImpl/Picture/ViewPictureCurses.hpp"
-#include "View/Curses/Model/ViewModelCurses.hpp"
+#include "View/Base/Base.hpp"
+#include "View/Curses/Menu/Menu.hpp"
+#include "View/Curses/Model/Model.hpp"
+#include "View/Curses/Model/ModelImpl/Picture/Picture.hpp"
 
 class Controller;
 

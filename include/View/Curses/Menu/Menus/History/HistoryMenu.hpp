@@ -7,8 +7,8 @@
 
 #include "Controller/Controller.hpp"
 #include "Model/ModelImpl/Figure.hpp"
-#include "View/Curses/Menu/ViewMenuCurses.hpp"
-#include "View/Curses/Model/ViewModelCurses.hpp"
+#include "View/Curses/Menu/Menu.hpp"
+#include "View/Curses/Model/Model.hpp"
 
 namespace viewCurses {
 

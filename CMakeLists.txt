@@ -38,25 +38,25 @@ set(BASE_SOURCES
         include/Model/ModelImpl/Position.hpp
         include/Bot/RandomBot/RandomBot.hpp
         include/Bot/Test/TestBotFactory.hpp
-        include/View/Base/ViewBase.hpp
-        include/View/Curses/Model/Button/ViewButtonCurses.hpp
-        include/View/Curses/Model/ModelImpl/ColorScheme/ViewColorSchemeCurses.hpp
-        include/View/Curses/Menu/Menus/Game/ViewGameMenuCurses.hpp
-        include/View/Curses/Menu/Menus/History/ViewHistoryMenuCurses.hpp
-        include/View/Curses/Model/ModelImpl/Init/ViewInitCurses.hpp
-        include/View/Curses/Menu/Menus/BasicButton/ViewMainMenuCurses.hpp
-        include/View/Curses/Menu/ViewMenuCurses.hpp
-        include/View/Curses/Menu/Multiplexer/ViewMenuMultiplexerCurses.hpp
-        include/View/Curses/Menu/ViewMenuTypes.hpp
-        include/View/Base/Model/ViewModelBase.hpp
-        include/View/Curses/Model/ViewModelCurses.hpp
-        include/View/Curses/Menu/Menus/Options/Gameplay/ViewOptions_Gameplay_MenuCurses.hpp
-        include/View/Curses/Menu/Menus/Options/ViewOptionsMenuCurses.hpp
-        include/View/Curses/Model/ModelImpl/Picture/ViewPictureCurses.hpp
-        include/View/Curses/Menu/Menus/Preview/ViewPreviewMenuCurses.hpp
-        include/View/Curses/Menu/Menus/Rules/ViewRulesMenuCurses.hpp
-        include/View/Curses/Menu/Menus/Start/ViewStartMenuCurses.hpp
-        include/View/Curses/Menu/Menus/GameOver/ViewWinMenuCurses.hpp
+        include/View/Base/Base.hpp
+        include/View/Curses/Model/Button/Button.hpp
+        include/View/Curses/Model/ModelImpl/ColorScheme/ColorScheme.hpp
+        include/View/Curses/Menu/Menus/Game/GameMenu.hpp
+        include/View/Curses/Menu/Menus/History/HistoryMenu.hpp
+        include/View/Curses/Model/ModelImpl/Init/Init.hpp
+        include/View/Curses/Menu/Menus/BasicButton/BasicButton.hpp
+        include/View/Curses/Menu/Menu.hpp
+        include/View/Curses/Menu/Multiplexer/MenuMultiplexer.hpp
+        include/View/Curses/Menu/MenuTypes.hpp
+        include/View/Base/Model/Model.hpp
+        include/View/Curses/Model/Model.hpp
+        include/View/Curses/Menu/Menus/Options/Gameplay/Options_Gameplay_Menu.hpp
+        include/View/Curses/Menu/Menus/Options/OptionsMenu.hpp
+        include/View/Curses/Model/ModelImpl/Picture/Picture.hpp
+        include/View/Curses/Menu/Menus/Preview/PreviewMenu.hpp
+        include/View/Curses/Menu/Menus/Rules/RulesMenu.hpp
+        include/View/Curses/Menu/Menus/Start/StartMenu.hpp
+        include/View/Curses/Menu/Menus/GameOver/WinMenu.hpp
         src/Bot/AlphaBetaBot/AlphaBetaBot.cpp
         src/Model/Archiver/Archiver.cpp
         src/Model/ModelImpl/Board.cpp
@@ -72,22 +72,22 @@ set(BASE_SOURCES
         src/Model/ModelImpl/MoveTypes.cpp
         src/Bot/AlphaBetaBot/OptimizedAlphaBetaBot.cpp
         src/Bot/RandomBot/RandomBot.cpp
-        src/View/Base/ViewBase.cpp
-        src/View/Curses/Model/Button/ViewButtonCurses.cpp
-        src/View/Curses/Model/ModelImpl/ColorScheme/ViewColorSchemeCurses.cpp
-        src/View/Curses/Menu/Menus/Game/ViewGameMenuCurses.cpp
-        src/View/Curses/Menu/Menus/History/ViewHistoryMenuCurses.cpp
-        src/View/Curses/Model/ModelImpl/Init/ViewInitCurses.cpp
-        src/View/Curses/Menu/Menus/BasicButton/ViewMainMenuCurses.cpp
-        src/View/Curses/Menu/ViewMenuCurses.cpp
-        src/View/Curses/Menu/Multiplexer/ViewMenuMultiplexerCurses.cpp
-        src/View/Curses/Model/ViewModelCurses.cpp
-        src/View/Curses/Menu/Menus/Options/Gameplay/ViewOptions_Gameplay_MenuCurses.cpp
-        src/View/Curses/Menu/Menus/Options/ViewOptionsMenuCurses.cpp
-        src/View/Curses/Model/ModelImpl/Picture/ViewPictureCurses.cpp
-        src/View/Curses/Menu/Menus/Rules/ViewRulesMenuCurses.cpp
-        src/View/Curses/Menu/Menus/Start/ViewStartMenuCurses.cpp
-        src/View/Curses/Menu/Menus/GameOver/ViewWinMenuCurses.cpp)
+        src/View/Base/Base.cpp
+        src/View/Curses/Model/Button/Button.cpp
+        src/View/Curses/Model/ModelImpl/ColorScheme/ColorScheme.cpp
+        src/View/Curses/Menu/Menus/Game/GameMenu.cpp
+        src/View/Curses/Menu/Menus/History/HistoryMenu.cpp
+        src/View/Curses/Model/ModelImpl/Init/Init.cpp
+        src/View/Curses/Menu/Menus/BasicButton/BasicButton.cpp
+        src/View/Curses/Menu/Menu.cpp
+        src/View/Curses/Menu/Multiplexer/MenuMultiplexer.cpp
+        src/View/Curses/Model/Model.cpp
+        src/View/Curses/Menu/Menus/Options/Gameplay/Options_Gameplay_Menu.cpp
+        src/View/Curses/Menu/Menus/Options/OptionsMenu.cpp
+        src/View/Curses/Model/ModelImpl/Picture/Picture.cpp
+        src/View/Curses/Menu/Menus/Rules/RulesMenu.cpp
+        src/View/Curses/Menu/Menus/Start/StartMenu.cpp
+        src/View/Curses/Menu/Menus/GameOver/WinMenu.cpp)
 
 set(TEST_SOURCES
         test/TestMain.cpp

@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "View/Curses/Menu/Menus/BasicButton/ViewMainMenuCurses.hpp"
+#include "View/Curses/Menu/Menus/BasicButton/BasicButton.hpp"
 
 namespace viewCurses {
 

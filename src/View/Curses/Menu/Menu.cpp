@@ -1,6 +1,6 @@
-#include "View/Curses/Menu/ViewMenuCurses.hpp"
+#include "View/Curses/Menu/Menu.hpp"
 
-#include "View/Curses/Menu/ViewMenuTypes.hpp"
+#include "View/Curses/Menu/MenuTypes.hpp"
 
 namespace viewCurses {
 

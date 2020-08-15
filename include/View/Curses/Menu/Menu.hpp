@@ -7,7 +7,7 @@
 #include <stdexcept>
 #include <vector>
 
-#include "View/Curses/Model/ModelImpl/Picture/ViewPictureCurses.hpp"
+#include "View/Curses/Model/ModelImpl/Picture/Picture.hpp"
 
 namespace viewCurses {
 

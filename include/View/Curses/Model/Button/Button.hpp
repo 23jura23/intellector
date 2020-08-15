@@ -5,7 +5,7 @@
 #include <string>
 #include <utility>
 
-#include "View/Curses/Model/ModelImpl/Picture/ViewPictureCurses.hpp"
+#include "View/Curses/Model/ModelImpl/Picture/Picture.hpp"
 
 namespace viewCurses {
 
