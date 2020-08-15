@@ -2,7 +2,6 @@
 
 #include <assert.h>
 
-#include <iostream>  // TODO delete
 #include <sstream>
 
 #include "ViewColorSchemeCurses.hpp"
@@ -31,9 +30,6 @@ RET_CODE HistoryMenuCurses::show(int c) {
     draw();
     RET_CODE rc = RET_CODE::NOTHING;
     switch (c) {
-            //        case 104:  // h
-            //            rc = RET_CODE::HISTORY_MENU_;
-            //            break;
         case -10:
             reloadModel();
             break;
@@ -91,7 +87,6 @@ void HistoryMenuCurses::draw() {
     size_t xStartPos = maxx - cellWidth_;
 
     for (size_t i = 0; (i + 1) * cellHeight_ <= maxy; ++i) {
-        //    for (size_t y = upperMargin; y + cellHeight_ <= maxy; y += cellHeight_) {
         size_t y = i * cellHeight_;
         move(y, xStartPos);
 

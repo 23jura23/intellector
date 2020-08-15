@@ -10,7 +10,7 @@ StartMenuCurses::StartMenuCurses()
         : MainMenuCurses{
               {{"resources/newgame.btn", BUTTON_STYLE::RECTANGLE},
                {"resources/rules.btn", BUTTON_STYLE::RECTANGLE},
-               //                          {"resources/contacts.btn", BUTTON_STYLE::RECTANGLE},
+//             {"resources/contacts.btn", BUTTON_STYLE::RECTANGLE},
                {"resources/options.btn", BUTTON_STYLE::RECTANGLE},
                {"resources/exit.btn", BUTTON_STYLE::RECTANGLE}}} {
 }

@@ -9,28 +9,25 @@
 int main() {
     try {
         viewCurses::MenuMultiplexerCurses menuMultiplexer;
-        viewCurses::RET_CODE rc = menuMultiplexer.show();
-        static_cast<void>(rc);
-        //        if (initCursesDone != 0)
-        //            throw MenuException("Not all menus were closed and ncurses is still running");
-        //    Board* board = new Board;
-        //        viewCurses::ViewModelCurses tmp = viewCurses::ViewModelCurses
-        //        { *board, PlayerColour::white_ }; viewCurses::ViewGameMenuCurses
-        //        view(std::make_shared<viewCurses::ViewModelCurses>(*board,
-        //        PlayerColour::white_)); view.run();
+        menuMultiplexer.show();
     } catch (const ViewBaseException& e) {
         std::cout << "View error: " << e.what() << std::endl;
+        return -1;
     } catch (const viewCurses::MenuException& e) {
         std::cout << "Menu error: " << e.what() << std::endl;
+        return -1;
     }
     catch (const std::runtime_error& e) {
         std::cout << "Runtime error: " << e.what() << std::endl;
+        return -1;
     }
     catch (const std::exception& e) {
         std::cout << "Unknown exception: " << e.what() << std::endl;
+        return -1;
     }
     catch (...) {
         std::cout << "Unknown error" << std::endl;
+        return -1;
     }
     return 0;
 }

@@ -17,7 +17,7 @@ namespace viewCurses {
 #define DRACULA   1
 #define SNOW_BLUE 2
 
-#define COLOR_MODE CLASSIC
+#define COLOR_MODE DRACULA
 
 //#define CLASSIC
 //#define BLACK_AND_WHITE

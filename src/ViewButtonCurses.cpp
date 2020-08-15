@@ -5,9 +5,6 @@
 
 #include "ViewColorSchemeCurses.hpp"
 
-//#include <iostream>
-//using std::cerr, std::endl;
-
 using std::string;
 namespace viewCurses {
 

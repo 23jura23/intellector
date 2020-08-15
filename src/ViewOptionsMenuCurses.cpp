@@ -9,7 +9,7 @@ namespace viewCurses {
 
 OptionsMenuCurses::OptionsMenuCurses()
         : MainMenuCurses{{{"resources/gameplay.btn", BUTTON_STYLE::RECTANGLE},
-                          {"resources/appearance.btn", BUTTON_STYLE::RECTANGLE},
+//                        {"resources/appearance.btn", BUTTON_STYLE::RECTANGLE},
                           {"resources/back.btn", BUTTON_STYLE::RECTANGLE}}} {
     //TODO(23jura23) beatiful button for appearance
 }
@@ -44,9 +44,7 @@ RET_CODE OptionsMenuCurses::show(int c) {
                 case 0:  // gameplay
                     rc = RET_CODE::OPTIONS_GAMEPLAY;
                     break;
-                case 1:  // appearance
-                    break;
-                case 2:  // back
+                case 1:  // back
                     rc = RET_CODE::BACK;
                     break;
                 default:

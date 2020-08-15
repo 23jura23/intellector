@@ -1,7 +1,6 @@
 #include "ViewModelCurses.hpp"
 
 using namespace viewCurses;
-//using ViewCellCurses = ViewModelCurses::ViewCellCurses;
 
 #include <iostream>
 using namespace std;
@@ -50,9 +49,3 @@ const ViewCellCurses& ViewModelCurses::get(const Position& pos) const {
     return viewBoard_[pos.posW()][pos.posH()];
 }
 
-// ViewModelCurses::ViewCellCurses::ViewCellCurses(Cell cell_,
-// std::vector<std::shared_ptr<SimpleMove>> inMoves_)
-//    : cell_ { cell_ }
-//    , inMoves_ { inMoves_ }
-//{
-//}

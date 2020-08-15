@@ -49,7 +49,6 @@ Options_Gameplay_MenuCurses::Options_Gameplay_MenuCurses(const GameSettings& set
 
     // TODO common ncurses initializer, that initialize ncurses only 1 time
     // for now here is an assumption that ncurses is already initialized
-    //    auto buttonsFilenames_ = getButtonFilenames();
     std::vector<std::vector<std::pair<Picture, BUTTON_STYLE>>> buttons_Buffer;
     for (const auto& vec : buttonsFilenames_) {
         buttons_Buffer.push_back({});

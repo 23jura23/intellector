@@ -22,7 +22,6 @@ MainMenuCurses::MainMenuCurses(buttonsVectorT buttonsFilenames_)
 
     // TODO common ncurses initializer, that initialize ncurses only 1 time
     // for now here is an assumption that ncurses is already initialized
-    //    auto buttonsFilenames_ = getButtonFilenames();
     std::vector<std::pair<Picture, BUTTON_STYLE>> buttons_Buffer;
     for (auto [filename, style] : buttonsFilenames_) {
         auto is = std::ifstream(filename, std::ios::in);
@@ -78,38 +77,12 @@ void MainMenuCurses::buttonsStateUpdate() {
     buttons_[currentButtonIndex_]->setMode(BUTTON_MODE::SELECTED);
 }
 
-//void MainMenuCurses::drawButton(std::pair<size_t, size_t> TL, const Picture& pic) {
-//    cerr << "initColorsDone: " << initColorsDone << endl;
-//    cerr << "ignoredChars: " << pic.getIgnoredChars() << endl;
-//    cerr << "backgroundChars: " << pic.getBackgroundChars() << endl;
-//    move(TL.second, TL.first);
-//    for (const auto& line : pic) {
-//        cerr << "line: " << line << endl;
-//        for (chtype c : line) {
-//            if (pic.isIgnoredChar(c)) {
-//            } else if (pic.isBackgroundChar(c)) {
-//                attron(COLOR_PAIR(BUTTON_EMPTY));
-//                addch(' ');
-//                attroff(COLOR_PAIR(BUTTON_EMPTY));
-//            } else {
-//                attron(COLOR_PAIR(BUTTON_TEXT));
-//                addch(c);
-//                attroff(COLOR_PAIR(BUTTON_TEXT));
-//            }
-//        }
-//        TL.second++;
-//        move(TL.second, TL.first);
-//    }
-//}
-
 // TODO put into Button class
 void MainMenuCurses::alignWidth(Picture& pic, size_t width) {
-    //    pic.updateState();
     char anyBackgroundChar = pic.getBackgroundChars().at(0);
     size_t prevMaxWidth = pic.maxWidth();
     for (auto& line : pic) {
         assert(line.size() <= pic.maxWidth());
-        //            throw PictureException("Internal error: Picture.maxWidth() calculated incorrectly");
         line += string(pic.maxWidth() - line.size(), anyBackgroundChar);
     }
     for (auto& line : pic) {

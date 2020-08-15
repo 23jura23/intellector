@@ -11,10 +11,21 @@
 #include "ViewBase.hpp"
 #include "ViewMenuCurses.hpp"
 #include "ViewModelCurses.hpp"
+#include "ViewPictureCurses.hpp"
 
 class Controller;
 
 namespace viewCurses {
+
+enum DrawCellType {
+    EMPTY,
+    INTELLECTOR,
+    DOMINATOR,
+    AGGRESSOR,
+    DEFENSSOR,
+    LIBERATOR,
+    PROGRESSOR
+};
 
 class ViewGameMenuCurses : public viewBase, public MenuCurses {
     using pair = std::pair<size_t, size_t>;
@@ -44,6 +55,9 @@ class ViewGameMenuCurses : public viewBase, public MenuCurses {
     void outBoard();
     void outCell(const ViewModelCurses::ViewCellCurses&, pair);
 
+    std::vector<std::pair<DrawCellType, std::string>> cellPicturesFilenames_;
+    std::unordered_map<DrawCellType, Picture> cellPictures_;
+    
     static constexpr size_t d = 7;
     static constexpr pair delta_down = {0, 2 * (d - 3)};
     static constexpr pair delta_right_down = {(d + 3) + (d - 3), d - 3};

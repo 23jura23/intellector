@@ -29,7 +29,6 @@ struct Picture {
     const char& operator()(size_t y, size_t x) const;
     std::string& operator()(size_t y);
     const std::string& operator()(size_t y) const;
-    //    char operator()(size_t y, size_t x) const;
     void insertLine(size_t, const std::string&);
     void pushBackLine(const std::string&);
     void addIgnoredChar(char);

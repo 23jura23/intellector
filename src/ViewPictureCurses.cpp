@@ -8,7 +8,6 @@ namespace viewCurses {
 Picture::Picture(std::string ignoredChars, std::string backgroundChars) {
     for (auto c : ignoredChars) addIgnoredChar(c);
     for (auto c : backgroundChars) addBackgroundChar(c);
-    //    updateState();
 }
 
 Picture::Picture(const std::vector<std::string>& picture,
@@ -17,7 +16,6 @@ Picture::Picture(const std::vector<std::string>& picture,
         : picture_{picture} {
     for (auto c : ignoredChars) addIgnoredChar(c);
     for (auto c : backgroundChars) addBackgroundChar(c);
-    //    updateState();
 }
 
 Picture::Picture(std::istream& is) {
@@ -55,14 +53,6 @@ Picture::Picture(std::istream& is) {
     }
 }
 
-//Picture::Picture(const Picture& pic/*, bool attrOnly*/) {
-////    if (!attrOnly) {
-//        picture_ = pic.picture_;
-////    }
-//    ignoredChars_ = pic.ignoredChars_;
-//    updateState();
-//}
-
 size_t Picture::maxHeight() const {
     return picture_.size();
 }
@@ -72,12 +62,6 @@ size_t Picture::maxWidth() const {
     for (size_t i = 0; i < maxHeight(); ++i) maxWidth_ = std::max(maxWidth_, picture_[i].size());
     return maxWidth_;
 }
-
-// char& Picture::operator()(size_t y, size_t x) {
-//     return const_cast<Picture const&>(*this).operator()(y, x);
-// }
-// failed to do const and non-const version
-//
 
 char& Picture::operator()(size_t y, size_t x) {
     if (picture_.size() <= y || picture_[y].size() <= x) {
@@ -177,12 +161,6 @@ void Picture::pushBackLine(const std::string& newLine) {
 void Picture::clearPictureContent() {
     picture_.clear();
 }
-
-//void Picture::updateState() {
-//    maxHeight_ = picture_.size();
-//    maxWidth_ = 0;
-//    for (size_t i = 0; i < maxHeight_; ++i) maxWidth_ = std::max(maxWidth_, picture_[i].size());
-//}
 
 std::vector<std::string>::iterator Picture::begin() {
     return picture_.begin();

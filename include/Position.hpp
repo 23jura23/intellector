@@ -17,11 +17,11 @@ class Position {
     Position& operator=(const Position&) = default;
     ~Position() = default;
 
-    Position(int w, int h) {  // констуртор из прямоугольных координат
-        y_ = 2 * h + w % 2;
-        z_ = (w - y_) / 2;
-        x_ = z_ - w;
-    };
+    Position(int w, int h) // конструктор из прямоугольных координат
+        : x_{-w/2 - w % 2 -h}
+        , y_{2 * h + w % 2}
+        , z_{w / 2 - h} {
+    }
 
     Position(int x, int y, int z)  // конструктор с 3 переменными
             : x_{x}

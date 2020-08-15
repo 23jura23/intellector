@@ -3,6 +3,7 @@
 #include <assert.h>
 #include <unistd.h>
 
+#include <fstream>
 #include <iostream>
 
 #include "Board.hpp"
@@ -49,6 +50,13 @@ void ViewGameMenuCurses::calculateTL() {  // top left angle
 
 ViewGameMenuCurses::ViewGameMenuCurses(std::shared_ptr<Controller> controller)
         : controller_{controller}
+        , cellPicturesFilenames_{{DrawCellType::EMPTY, "resources/cellEmpty.btn"},
+                                 {DrawCellType::INTELLECTOR, "resources/cellIntellector.btn"},
+                                 {DrawCellType::DOMINATOR, "resources/cellDominator.btn"},
+                                 {DrawCellType::AGGRESSOR, "resources/cellAggressor.btn"},
+                                 {DrawCellType::DEFENSSOR, "resources/cellDeffenssor.btn"},
+                                 {DrawCellType::LIBERATOR, "resources/cellLiberator.btn"},
+                                 {DrawCellType::PROGRESSOR, "resources/cellProgressor.btn"}}
         , tlx{0}
         , tly{0}
         , currentPos{-2, 3, 2}
@@ -56,6 +64,13 @@ ViewGameMenuCurses::ViewGameMenuCurses(std::shared_ptr<Controller> controller)
     auto rv = freopen("error.txt", "a", stderr);
     static_cast<void>(rv);
     // avoiding warning. May be harmful, but later there must be a well-done logging.
+
+    for (const auto& [type, filename] : cellPicturesFilenames_) {
+        auto is = std::ifstream(filename, std::ios::in);
+        is.exceptions(std::ifstream::badbit);
+        cellPictures_[type] = Picture{is};
+        is.close();
+    }
 
     initCurses();
 
@@ -93,13 +108,6 @@ void ViewGameMenuCurses::updateCellStatus(const Position& pos, bool before) {
         }
     }
 }
-
-//void viewCurses::setCellStatus(ViewCellCurses& cell, const CellStatus& status_) {
-//}
-//
-//void viewCurses::setCellStatus(const Position& pos, const CellStatus& status_) {
-//    setCellStatus(board_->get(pos), status_);
-//}
 
 void ViewGameMenuCurses::updatePositions(const Position& newPos) {
     if (inBoard(newPos)) {
@@ -153,7 +161,6 @@ void ViewGameMenuCurses::makeUniStep() {
 void ViewGameMenuCurses::makeMultiStep_TransformMove(std::vector<Move>& inMoves_) {
     cerr << "transform move" << endl;
     // TODO(23jura23) unneeded?
-    //                                        updatePositions(newPos);
     vector<shared_ptr<Figure>> potentialFigures(inMoves_.size());
     for (size_t i = 0; i < inMoves_.size(); ++i)
         potentialFigures[i] = make_shared<Figure>(inMoves_[i].to_figure_new_);
@@ -215,13 +222,6 @@ void ViewGameMenuCurses::makeMultiStep() {
 }
 
 RET_CODE ViewGameMenuCurses::show(int c) {
-    //    run();
-    //    terminateCurses();
-    //}
-    //
-    //void ViewGameMenuCurses::run() {
-    //    bool running = 1;
-    //    while (running) {
     RET_CODE rc = RET_CODE::NOTHING;
 
     cerr << "PlayerTurn: " << board_->playerTurn << endl;
@@ -306,8 +306,6 @@ RET_CODE ViewGameMenuCurses::show(int c) {
             reloadModel();
             board_->get(currentPos).status_ = CellStatus::INACTIVE;
             currentPosStatus = CurrentPosStatus::UNSELECTED;
-            //            rc = RET_CODE::DO_RELOAD_MODEL;
-            // cancel move?
             // undo
             break;
         case 85:  // Shift-u
@@ -315,7 +313,6 @@ RET_CODE ViewGameMenuCurses::show(int c) {
             reloadModel();
             board_->get(currentPos).status_ = CellStatus::INACTIVE;
             currentPosStatus = CurrentPosStatus::UNSELECTED;
-            //            rc = RET_CODE::DO_RELOAD_MODEL;
             // redo
             break;
         case 27:
@@ -341,8 +338,6 @@ RET_CODE ViewGameMenuCurses::show(int c) {
                                 } else {
                                     makeMultiStep();
                                 }
-                                //                                previousFromPos = selectedPos;
-                                //                                previousToPos = currentPos;
                             } else {
                                 // Impossible move
                             }
@@ -358,10 +353,6 @@ RET_CODE ViewGameMenuCurses::show(int c) {
     cerr << "truepos" << newPos.x_ << ' ' << newPos.y_ << ' ' << newPos.z_ << endl;
     updatePositions(newPos);
     draw();
-    //        if (inBoard(newPos)) {
-    //            currentPos = newPos;
-    //            updateCellsStatus();
-    //        }
     return rc;
 }
 
@@ -451,91 +442,29 @@ void ViewGameMenuCurses::outCell(const ViewModelCurses::ViewCellCurses& cell, pa
                 CELL_COLOR = CELL_BLACK_PREVIOUS_TO;
             break;
     }
-    std::vector<const char*> draw;  // TODO(23jura23) move to files
+    Picture draw;  // TODO(23jura23) move to files
     if (!cell.cell_.figure_.has_value()) {
-        draw = {
-            "````###########````",
-            "```#           #```",
-            "``#             #``",
-            "`#               #`",
-            "#                 #",
-            "`#               #`",
-            "``#             #``",
-            "```#           #```",
-            "````###########````",
-        };
+        draw = cellPictures_.at(DrawCellType::EMPTY);
     } else {
         FigureType figureT = cell.cell_.figure_.value().type_;
         switch (figureT) {
             case FigureType::INTELLECTOR:
-                draw = {
-                    "````###########````",
-                    "```#    !!!    #```",
-                    "``#    !! !!    #``",
-                    "`#      !!!      #`",
-                    "#    !!!!I!!!!    #",
-                    "`#      !!!      #`",
-                    "``#     !!!     #``",
-                    "```#    !!!    #```",
-                    "````###########````",
-                };
+                draw = cellPictures_.at(DrawCellType::INTELLECTOR);
                 break;
             case FigureType::DOMINATOR:
-                draw = {"````###########````",
-                        "```# +   +   + #```",
-                        "``#   + +++ +   #``",
-                        "`#     +   +     #`",
-                        "#     ++ D ++     #",
-                        "`#     +   +     #`",
-                        "``#   + +++ +   #``",
-                        "```# +   +   + #```",
-                        "````###########````"};
+                draw = cellPictures_.at(DrawCellType::DOMINATOR);
                 break;
             case FigureType::AGGRESSOR:
-                draw = {"````###########````",
-                        "```#           #```",
-                        "``# !!!!!!!!!!! #``",
-                        "`#   !!     !!   #`",
-                        "#     !! A !!     #",
-                        "`#     !! !!     #`",
-                        "``#     !!!     #``",
-                        "```#     !     #```",
-                        "````###########````"};
+                draw = cellPictures_.at(DrawCellType::AGGRESSOR);
                 break;
             case FigureType::DEFENSSOR:
-                draw = {"````###########````",
-                        "```#  !!!!!!!  #```",
-                        "``#     !!!     #``",
-                        "`#  !! !! !! !!  #`",
-                        "#   !!!! d !!!!   #",
-                        "`#  !! !! !! !!  #`",
-                        "``#     !!!     #``",
-                        "```#  !!!!!!!  #```",
-                        "````###########````"};
-
+                draw = cellPictures_.at(DrawCellType::DEFENSSOR);
                 break;
             case FigureType::LIBERATOR:
-                draw = {"````###########````",
-                        "```#           #```",
-                        "``#  !!!!!!!!!  #``",
-                        "`#   !!!   !!!   #`",
-                        "#    !!! L !!!    #",
-                        "`#   !!!   !!!   #`",
-                        "``#  !!!!!!!!!  #``",
-                        "```#           #```",
-                        "````###########````"};
-
+                draw = cellPictures_.at(DrawCellType::LIBERATOR);
                 break;
             case FigureType::PROGRESSOR:
-                draw = {"````###########````",
-                        "```#     !     #```",
-                        "``#     !!!     #``",
-                        "`#    !!! !!!    #`",
-                        "#    !!!   !!!    #",
-                        "`#   !!! P !!!   #`",
-                        "``#  !!!   !!!  #``",
-                        "```# !!!!!!!!! #```",
-                        "````###########````"};
+                draw = cellPictures_.at(DrawCellType::PROGRESSOR);
                 break;
         }
         if (cell.cell_.figure_->colour_ == PlayerColour::white_) {
@@ -555,50 +484,49 @@ void ViewGameMenuCurses::outCell(const ViewModelCurses::ViewCellCurses& cell, pa
         }
     }
     move(TL.second, TL.first);
-    for (size_t i = 0; i < draw.size(); ++i) {
+    for (size_t i = 0; i < draw.maxHeight(); ++i) {
         size_t draw_i = i;
         //  if (cell.cell.figure_.has_value()
         //      && cell.cell.figure_->colour_ == PlayerColour::black_
         //      && cell.cell.figure_->type_ != FigureType::INTELLECTOR)
         //      draw_i = draw.size() - 1 - i;
         //  inverts black figures
-        //  add as feature
+        //  TODO(23jura23) add as feature
         if (TL.second + i <= static_cast<size_t>(maxy) && TL.first <= static_cast<size_t>(maxx)) {
             move(TL.second + i, TL.first);
             for (size_t j = 0; j < d - 1 + d + d - 1; ++j) {
-                switch (draw[draw_i][j]) {
-                    case '`':
-                        move(TL.second + i, TL.first + j + 1);
-                        break;
-                    case ' ':
-                        attron(COLOR_PAIR(CELL_COLOR));
-                        addch(draw[draw_i][j]);
-                        attroff(COLOR_PAIR(CELL_COLOR));
-                        break;
-                    case '#':
-                        attron(COLOR_PAIR(CELL_BORDER));
-                        addch(draw[draw_i][j]);
-                        attroff(COLOR_PAIR(CELL_BORDER));
-                        break;
-                    case 'D':
-                    case 'L':
-                    case 'A':
-                    case 'd':
-                    case 'I':
-                    case 'P':
-                        attron(COLOR_PAIR(LETTER_COLOR));
-                        addch(draw[draw_i][j]);
-                        attroff(COLOR_PAIR(LETTER_COLOR));
-                        break;
-                    default:
-                        attron(COLOR_PAIR(FIGURE_COLOR));
-                        addch(draw[draw_i][j]);
-                        attroff(COLOR_PAIR(FIGURE_COLOR));
-                        break;
+                if (draw.isIgnoredChar(draw(draw_i, j))) {
+                    move(TL.second + i, TL.first + j + 1);
+                } else {
+                    switch (draw(draw_i, j)) {
+                        case ' ':
+                            attron(COLOR_PAIR(CELL_COLOR));
+                            addch(draw(draw_i, j));
+                            attroff(COLOR_PAIR(CELL_COLOR));
+                            break;
+                        case '#':
+                            attron(COLOR_PAIR(CELL_BORDER));
+                            addch(draw(draw_i, j));
+                            attroff(COLOR_PAIR(CELL_BORDER));
+                            break;
+                        case 'D':
+                        case 'L':
+                        case 'A':
+                        case 'd':
+                        case 'I':
+                        case 'P':
+                            attron(COLOR_PAIR(LETTER_COLOR));
+                            addch(draw(draw_i, j));
+                            attroff(COLOR_PAIR(LETTER_COLOR));
+                            break;
+                        default:
+                            attron(COLOR_PAIR(FIGURE_COLOR));
+                            addch(draw(draw_i, j));
+                            attroff(COLOR_PAIR(FIGURE_COLOR));
+                            break;
+                    }
                 }
             }
-            //                usleep(10000);
-            //                refresh();
         }
     }
 }

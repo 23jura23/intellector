@@ -39,7 +39,6 @@ MenuMultiplexerCurses::MenuMultiplexerCurses()
 
     shared_ptr<MenuCurses> mainMenu =
         dynamic_pointer_cast<MenuCurses>(make_shared<StartMenuCurses>());
-    //        createMenu(MULTIPLEXABLE_MENU::MAIN_MENU);
     aliveMenus.push_back({mainMenu, RET_CODE::NOTHING});
 }
 
@@ -158,7 +157,6 @@ RET_CODE MenuMultiplexerCurses::processStartMenu(MenuWithRC& menuRC) {
         case RET_CODE::START_NEW_GAME: {
             auto newGameMenu = launchNewGame();
             forceRedraw = 1;
-            //            newGameMenu->show(0);  // initial show
             aliveMenus.push_back({newGameMenu, RET_CODE::NOTHING});
             aliveMenus.erase(find(aliveMenus.begin(), aliveMenus.end(), menuRC));
             break;
@@ -166,7 +164,6 @@ RET_CODE MenuMultiplexerCurses::processStartMenu(MenuWithRC& menuRC) {
         case RET_CODE::RULES_MENU: {
             auto newRulesMenu = dynamic_pointer_cast<MenuCurses>(make_shared<RulesMenuCurses>());
             forceRedraw = 1;
-            //            newOptionsMenu->show(0);  // initial show
             aliveMenus.push_back({newRulesMenu, RET_CODE::NOTHING});
             aliveMenus.erase(find(aliveMenus.begin(), aliveMenus.end(), menuRC));
             break;
@@ -175,7 +172,6 @@ RET_CODE MenuMultiplexerCurses::processStartMenu(MenuWithRC& menuRC) {
             auto newOptionsMenu =
                 dynamic_pointer_cast<MenuCurses>(make_shared<OptionsMenuCurses>());
             forceRedraw = 1;
-            //            newOptionsMenu->show(0);  // initial show
             aliveMenus.push_back({newOptionsMenu, RET_CODE::NOTHING});
             aliveMenus.erase(find(aliveMenus.begin(), aliveMenus.end(), menuRC));
             break;
@@ -208,13 +204,6 @@ RET_CODE MenuMultiplexerCurses::processGameMenu(MenuWithRC& menuRC) {
             forceRedraw = 1;
             break;
         }
-            //        case RET_CODE::DO_RELOAD_MODEL: {
-            //            auto findHistoryMenuLambda = lambdaFindersFactory(MENU_TYPE::HISTORY_MENU);
-            //            auto foundMenu = find_if(aliveMenus.begin(), aliveMenus.end(), findHistoryMenuLambda);
-            //            if (foundMenu != aliveMenus.end())
-            //                foundMenu->menu->show(-10);  // special code to ask reload
-            //            break;
-            //        }
         case RET_CODE::GAME_OVER_WHITE_WIN: {
             auto newWinMenu =
                 dynamic_pointer_cast<MenuCurses>(make_shared<WinMenuCurses>(PlayerColour::white_));
@@ -231,12 +220,10 @@ RET_CODE MenuMultiplexerCurses::processGameMenu(MenuWithRC& menuRC) {
             aliveMenus.erase(find(aliveMenus.begin(), aliveMenus.end(), menuRC));
             break;
         }
-        case RET_CODE::
-            GAME_OVER_UNEXPECTEDLY:  // TODO(23jura23) some logging or message about unexpected game finish?
+        case RET_CODE::GAME_OVER_UNEXPECTEDLY:  // TODO(23jura23) some logging or message about unexpected game finish?
         case RET_CODE::GAME_EXIT: {
             auto newMainMenu = dynamic_pointer_cast<MenuCurses>(make_shared<StartMenuCurses>());
             forceRedraw = 1;
-            //            newMainMenu->show(0);  // initial show
             aliveMenus.push_back({newMainMenu, RET_CODE::NOTHING});
             aliveMenus.erase(find(aliveMenus.begin(), aliveMenus.end(), menuRC));
             auto findHistoryMenuLambda = lambdaFindersFactory(MENU_TYPE::HISTORY_MENU);
@@ -375,15 +362,11 @@ shared_ptr<MenuCurses> MenuMultiplexerCurses::launchNewGame() {
     // if one wants to add a network game, then the controller must be probably
     // not recreated each time, but created once with a game and passed here
     // as an argument
-    // oh f*ck, controller is template and static...
+    // oh, controller is template and static...
     // so this crutch is needed:
     controller->updateViewModel<viewCurses::ViewGameMenuCurses>();
 
     return dynamic_pointer_cast<MenuCurses>(make_shared<ViewGameMenuCurses>(controller));
-    //)createMenu(MULTIPLEXABLE_MENU::GAME_MENU, controller);
-    //    ViewGameMenuCurses view = ViewGameMenuCurses(controller);
-    //    RET_CODE rc = view.show();
-    //    return rc;
 }
 
 }  // namespace viewCurses
