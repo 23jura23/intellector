@@ -1,11 +1,11 @@
 #include <memory>
-#include "BotFactory.hpp"
-#include "RandomBot.hpp"
-#include "OptimizedAlphaBetaBot.hpp"
-#include "AlphaBetaBot.hpp"
-#include "GreedyBot.hpp"
-#include "Evaluate.hpp"
 
+#include "Bot/AlphaBetaBot/AlphaBetaBot.hpp"
+#include "Bot/AlphaBetaBot/Evaluate/Evaluate.hpp"
+#include "Bot/AlphaBetaBot/OptimizedAlphaBetaBot.hpp"
+#include "Bot/BotFactory/BotFactory.hpp"
+#include "Bot/GreedyBot/GreedyBot.hpp"
+#include "Bot/RandomBot/RandomBot.hpp"
 
 std::shared_ptr<Bot> TestBotFactory(const int &type, const int &depth)
 {
