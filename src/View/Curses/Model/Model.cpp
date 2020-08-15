@@ -1,4 +1,4 @@
-#include "View/Curses/Model/ViewModelCurses.hpp"
+#include "View/Curses/Model/Model.hpp"
 
 using namespace viewCurses;
 

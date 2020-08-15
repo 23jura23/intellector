@@ -1,12 +1,12 @@
-#include "View/Curses/Menu/Menus/Options/Gameplay/ViewOptions_Gameplay_MenuCurses.hpp"
+#include "View/Curses/Menu/Menus/Options/Gameplay/Options_Gameplay_Menu.hpp"
 
 #include <assert.h>
 
 #include <fstream>
 
-#include "View/Curses/Menu/Multiplexer/ViewMenuMultiplexerCurses.hpp"
-#include "View/Curses/Menu/ViewMenuTypes.hpp"
-#include "View/Curses/Model/ModelImpl/Init/ViewInitCurses.hpp"
+#include "View/Curses/Menu/MenuTypes.hpp"
+#include "View/Curses/Menu/Multiplexer/MenuMultiplexer.hpp"
+#include "View/Curses/Model/ModelImpl/Init/Init.hpp"
 
 namespace viewCurses {
 

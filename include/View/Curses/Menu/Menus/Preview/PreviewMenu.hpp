@@ -1,7 +1,7 @@
 #ifndef _VIEW_PREVIEW_MENU_CURSES_HPP_
 #define _VIEW_PREVIEW_MENU_CURSES_HPP_
 
-#include "View/Curses/Menu/ViewMenuCurses.hpp"
+#include "View/Curses/Menu/Menu.hpp"
 
 namespace viewCurses {
 

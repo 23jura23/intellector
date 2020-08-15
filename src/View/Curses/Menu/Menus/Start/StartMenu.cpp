@@ -1,8 +1,8 @@
-#include "View/Curses/Menu/Menus/Start/ViewStartMenuCurses.hpp"
+#include "View/Curses/Menu/Menus/Start/StartMenu.hpp"
 
 #include <assert.h>
 
-#include "View/Curses/Menu/Multiplexer/ViewMenuMultiplexerCurses.hpp"
+#include "View/Curses/Menu/Multiplexer/MenuMultiplexer.hpp"
 
 namespace viewCurses {
 

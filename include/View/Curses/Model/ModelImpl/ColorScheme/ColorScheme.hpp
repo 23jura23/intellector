@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-#include "View/Base/ViewBase.hpp"
+#include "View/Base/Base.hpp"
 using std::cerr, std::endl;
 
 namespace viewCurses {

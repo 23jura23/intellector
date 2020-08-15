@@ -7,8 +7,8 @@
 
 #include <utility>
 
-#include "Model/ModelImpl/Board.hpp"
-#include "Model/ModelImpl/Figure.hpp"
+#include "Board.hpp"
+#include "Figure.hpp"
 #include "Position.hpp"
 
 class Move {

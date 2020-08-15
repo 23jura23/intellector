@@ -1,8 +1,8 @@
-#include "View/Curses/Model/ModelImpl/Init/ViewInitCurses.hpp"
+#include "View/Curses/Model/ModelImpl/Init/Init.hpp"
 
 #include <ncurses.h>
 
-#include "View/Curses/Model/ModelImpl/ColorScheme/ViewColorSchemeCurses.hpp"
+#include "View/Curses/Model/ModelImpl/ColorScheme/ColorScheme.hpp"
 
 namespace viewCurses {
 int initCursesDone = 0;

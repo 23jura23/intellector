@@ -9,8 +9,9 @@
 #include <thread>
 
 #include "Bot/BotFactory/BotFactory.hpp"
-#include "Model/ModelImpl/Board.hpp"
-#include "Model/ModelImpl/FigureMoveValidator.hpp"
+#include "GameSettings.hpp"
+#include "Board.hpp"
+#include "FigureMoveValidator.hpp"
 #include "MoveTypes.hpp"
 
 enum class GameStatus { game_running_, game_over_white_win_, game_over_black_win_ };

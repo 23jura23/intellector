@@ -5,7 +5,7 @@
 
 #include "Model/ModelImpl/Board.hpp"
 #include "Model/ModelImpl/Game.hpp"
-#include "View/Base/Model/ViewModelBase.hpp"
+#include "View/Base/Model/Model.hpp"
 
 namespace viewCurses {
 

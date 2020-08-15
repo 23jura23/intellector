@@ -2,9 +2,9 @@
 
 #include <iostream>
 
-#include "View/Curses/Menu/Multiplexer/ViewMenuMultiplexerCurses.hpp"
-#include "View/Curses/Menu/ViewMenuCurses.hpp"
-#include "View/Curses/Model/ModelImpl/Init/ViewInitCurses.hpp"
+#include "View/Curses/Menu/Menu.hpp"
+#include "View/Curses/Menu/Multiplexer/MenuMultiplexer.hpp"
+#include "View/Curses/Model/ModelImpl/Init/Init.hpp"
 
 int main() {
     try {

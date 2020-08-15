@@ -1,12 +1,12 @@
-#include "View/Curses/Menu/Menus/History/ViewHistoryMenuCurses.hpp"
+#include "View/Curses/Menu/Menus/History/HistoryMenu.hpp"
 
 #include <assert.h>
 
 #include <sstream>
 
-#include "View/Curses/Menu/Multiplexer/ViewMenuMultiplexerCurses.hpp"
-#include "View/Curses/Menu/ViewMenuTypes.hpp"
-#include "View/Curses/Model/ModelImpl/ColorScheme/ViewColorSchemeCurses.hpp"
+#include "View/Curses/Menu/MenuTypes.hpp"
+#include "View/Curses/Menu/Multiplexer/MenuMultiplexer.hpp"
+#include "View/Curses/Model/ModelImpl/ColorScheme/ColorScheme.hpp"
 
 namespace viewCurses {
 HistoryMenuCurses::HistoryMenuCurses(std::shared_ptr<Controller> controller)

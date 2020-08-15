@@ -1,9 +1,9 @@
-#include "View/Curses/Menu/Menus/Options/ViewOptionsMenuCurses.hpp"
+#include "View/Curses/Menu/Menus/Options/OptionsMenu.hpp"
 
 #include <assert.h>
 
-#include "View/Curses/Menu/Multiplexer/ViewMenuMultiplexerCurses.hpp"
-#include "View/Curses/Menu/ViewMenuTypes.hpp"
+#include "View/Curses/Menu/MenuTypes.hpp"
+#include "View/Curses/Menu/Multiplexer/MenuMultiplexer.hpp"
 
 namespace viewCurses {
 

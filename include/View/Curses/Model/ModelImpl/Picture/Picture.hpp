@@ -5,7 +5,7 @@
 #include <unordered_set>
 #include <vector>
 
-#include "View/Base/ViewBase.hpp"
+#include "View/Base/Base.hpp"
 
 namespace viewCurses {
 

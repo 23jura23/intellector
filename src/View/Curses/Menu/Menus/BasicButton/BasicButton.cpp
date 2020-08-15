@@ -1,14 +1,14 @@
-#include "View/Curses/Menu/Menus/BasicButton/ViewMainMenuCurses.hpp"
+#include "View/Curses/Menu/Menus/BasicButton/BasicButton.hpp"
 
 #include <assert.h>
 #include <ncurses.h>
 
 #include <fstream>
 
-#include "View/Curses/Menu/Multiplexer/ViewMenuMultiplexerCurses.hpp"
-#include "View/Curses/Menu/ViewMenuTypes.hpp"
-#include "View/Curses/Model/ModelImpl/ColorScheme/ViewColorSchemeCurses.hpp"
-#include "View/Curses/Model/ModelImpl/Init/ViewInitCurses.hpp"
+#include "View/Curses/Menu/MenuTypes.hpp"
+#include "View/Curses/Menu/Multiplexer/MenuMultiplexer.hpp"
+#include "View/Curses/Model/ModelImpl/ColorScheme/ColorScheme.hpp"
+#include "View/Curses/Model/ModelImpl/Init/Init.hpp"
 
 namespace viewCurses {
 using std::string;

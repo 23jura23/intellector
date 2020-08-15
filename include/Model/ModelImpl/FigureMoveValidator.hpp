@@ -5,7 +5,7 @@
 #ifndef _INTELLECTOR_FIGUREMOVEVALIDATOR_HPP
 #define _INTELLECTOR_FIGUREMOVEVALIDATOR_HPP
 
-#include "Model/ModelImpl/Board.hpp"
+#include "Board.hpp"
 #include "MoveTypes.hpp"
 #include "Position.hpp"
 

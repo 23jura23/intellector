@@ -1,4 +1,4 @@
-#include "View/Curses/Menu/Multiplexer/ViewMenuMultiplexerCurses.hpp"
+#include "View/Curses/Menu/Multiplexer/MenuMultiplexer.hpp"
 
 #include <assert.h>
 
@@ -8,16 +8,16 @@ using std::cerr, std::endl;
 #include "Controller/Controller.hpp"
 #include "Model/ModelImpl/Board.hpp"
 #include "Model/ModelImpl/Game.hpp"
-#include "View/Curses/Menu/Menus/BasicButton/ViewMainMenuCurses.hpp"
-#include "View/Curses/Menu/Menus/Game/ViewGameMenuCurses.hpp"
-#include "View/Curses/Menu/Menus/GameOver/ViewWinMenuCurses.hpp"
-#include "View/Curses/Menu/Menus/History/ViewHistoryMenuCurses.hpp"
-#include "View/Curses/Menu/Menus/Options/Gameplay/ViewOptions_Gameplay_MenuCurses.hpp"
-#include "View/Curses/Menu/Menus/Options/ViewOptionsMenuCurses.hpp"
-#include "View/Curses/Menu/Menus/Rules/ViewRulesMenuCurses.hpp"
-#include "View/Curses/Menu/Menus/Start/ViewStartMenuCurses.hpp"
-#include "View/Curses/Menu/ViewMenuTypes.hpp"
-#include "View/Curses/Model/ModelImpl/Init/ViewInitCurses.hpp"
+#include "View/Curses/Menu/MenuTypes.hpp"
+#include "View/Curses/Menu/Menus/BasicButton/BasicButton.hpp"
+#include "View/Curses/Menu/Menus/Game/GameMenu.hpp"
+#include "View/Curses/Menu/Menus/GameOver/WinMenu.hpp"
+#include "View/Curses/Menu/Menus/History/HistoryMenu.hpp"
+#include "View/Curses/Menu/Menus/Options/Gameplay/Options_Gameplay_Menu.hpp"
+#include "View/Curses/Menu/Menus/Options/OptionsMenu.hpp"
+#include "View/Curses/Menu/Menus/Rules/RulesMenu.hpp"
+#include "View/Curses/Menu/Menus/Start/StartMenu.hpp"
+#include "View/Curses/Model/ModelImpl/Init/Init.hpp"
 
 using std::vector, std::shared_ptr, std::make_shared, std::dynamic_pointer_cast;
 

@@ -7,8 +7,8 @@
 
 #include "Model/ModelImpl/Board.hpp"
 #include "Model/ModelImpl/Game.hpp"
-#include "View/Base/Model/ViewModelBase.hpp"
-#include "View/Curses/Menu/Menus/Game/ViewGameMenuCurses.hpp"
+#include "View/Base/Model/Model.hpp"
+#include "View/Curses/Menu/Menus/Game/GameMenu.hpp"
 
 class Controller {
    public:  // TODO reference to Bot in Controller? What for?

@@ -1,4 +1,4 @@
-#include "View/Curses/Model/ModelImpl/ColorScheme/ViewColorSchemeCurses.hpp"
+#include "View/Curses/Model/ModelImpl/ColorScheme/ColorScheme.hpp"
 
 namespace viewCurses {
 
