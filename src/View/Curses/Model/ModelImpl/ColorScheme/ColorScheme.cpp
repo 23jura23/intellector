@@ -102,8 +102,8 @@ namespace {
         scheme.COLOR_BLACK_ACTIVE = 88;
         scheme.COLOR_WHITE_CURRENT = 123;
         scheme.COLOR_BLACK_CURRENT = 111;
-        scheme.COLOR_WHITE_SELECTED = 56;
-        scheme.COLOR_BLACK_SELECTED = 55;
+        scheme.COLOR_WHITE_SELECTED = 160;
+        scheme.COLOR_BLACK_SELECTED = 160;
         scheme.COLOR_WHITE_PREVIOUS_FROM = 78;
         scheme.COLOR_BLACK_PREVIOUS_FROM = 76;
         scheme.COLOR_WHITE_PREVIOUS_TO = 79;
@@ -288,7 +288,7 @@ void initColors() {
         start_color();
         cerr << "COLORS:" << COLORS << endl;
 
-        globalColorScheme::setScheme(globalColorSchemeType::SNOW_BLUE);
+        globalColorScheme::setScheme(globalColorSchemeType::DRACULA);
 
         initColorsDone = 1;
     }
