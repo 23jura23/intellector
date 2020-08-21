@@ -99,9 +99,9 @@ void ViewGameMenuCurses::updateCellStatus(const Position& pos, bool before) {
                 board_->get(pos).status_ = CellStatus::INACTIVE;
         } else {
             // update status_ after pointer moves
-            if (pos == previousFromPos)
+            if (pos == previousFromPos && board_->get(pos).status_ != CellStatus::ACTIVE)
                 board_->get(pos).status_ = CellStatus::PREVIOUS_FROM;
-            else if (pos == previousToPos)
+            else if (pos == previousToPos && board_->get(pos).status_ != CellStatus::ACTIVE)
                 board_->get(pos).status_ = CellStatus::PREVIOUS_TO;
             else if (!(currentPosStatus == CurrentPosStatus::SELECTED && currentPos == selectedPos))
                 board_->get(pos).status_ = CellStatus::CURRENT;
@@ -442,7 +442,7 @@ void ViewGameMenuCurses::outCell(const ViewModelCurses::ViewCellCurses& cell, pa
                 CELL_COLOR = globalColorScheme::scheme().CELL_BLACK_PREVIOUS_TO;
             break;
     }
-    Picture draw;  // TODO(23jura23) move to files
+    Picture draw;
     if (!cell.cell_.figure_.has_value()) {
         draw = cellPictures_.at(DrawCellType::EMPTY);
     } else {
