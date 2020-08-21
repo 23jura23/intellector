@@ -407,39 +407,39 @@ void ViewGameMenuCurses::outCell(const ViewModelCurses::ViewCellCurses& cell, pa
     switch (cell.status_) {
         case CellStatus::INACTIVE:
             if (cell.cell_.colour_ == CellColour::WHITE)
-                CELL_COLOR = CELL_WHITE;
+                CELL_COLOR = globalColorScheme::scheme().CELL_WHITE;
             else
-                CELL_COLOR = CELL_BLACK;
+                CELL_COLOR = globalColorScheme::scheme().CELL_BLACK;
             break;
         case CellStatus::ACTIVE:
             if (cell.cell_.colour_ == CellColour::WHITE)
-                CELL_COLOR = CELL_WHITE_ACTIVE;
+                CELL_COLOR = globalColorScheme::scheme().CELL_WHITE_ACTIVE;
             else
-                CELL_COLOR = CELL_BLACK_ACTIVE;
+                CELL_COLOR = globalColorScheme::scheme().CELL_BLACK_ACTIVE;
             break;
         case CellStatus::CURRENT:
             if (cell.cell_.colour_ == CellColour::WHITE)
-                CELL_COLOR = CELL_WHITE_CURRENT;
+                CELL_COLOR = globalColorScheme::scheme().CELL_WHITE_CURRENT;
             else
-                CELL_COLOR = CELL_BLACK_CURRENT;
+                CELL_COLOR = globalColorScheme::scheme().CELL_BLACK_CURRENT;
             break;
         case CellStatus::SELECTED:
             if (cell.cell_.colour_ == CellColour::WHITE)
-                CELL_COLOR = CELL_WHITE_SELECTED;
+                CELL_COLOR = globalColorScheme::scheme().CELL_WHITE_SELECTED;
             else
-                CELL_COLOR = CELL_BLACK_SELECTED;
+                CELL_COLOR = globalColorScheme::scheme().CELL_BLACK_SELECTED;
             break;
         case CellStatus::PREVIOUS_FROM:
             if (cell.cell_.colour_ == CellColour::WHITE)
-                CELL_COLOR = CELL_WHITE_PREVIOUS_FROM;
+                CELL_COLOR = globalColorScheme::scheme().CELL_WHITE_PREVIOUS_FROM;
             else
-                CELL_COLOR = CELL_BLACK_PREVIOUS_FROM;
+                CELL_COLOR = globalColorScheme::scheme().CELL_BLACK_PREVIOUS_FROM;
             break;
         case CellStatus::PREVIOUS_TO:
             if (cell.cell_.colour_ == CellColour::WHITE)
-                CELL_COLOR = CELL_WHITE_PREVIOUS_TO;
+                CELL_COLOR = globalColorScheme::scheme().CELL_WHITE_PREVIOUS_TO;
             else
-                CELL_COLOR = CELL_BLACK_PREVIOUS_TO;
+                CELL_COLOR = globalColorScheme::scheme().CELL_BLACK_PREVIOUS_TO;
             break;
     }
     Picture draw;  // TODO(23jura23) move to files
@@ -469,18 +469,18 @@ void ViewGameMenuCurses::outCell(const ViewModelCurses::ViewCellCurses& cell, pa
         }
         if (cell.cell_.figure_->colour_ == PlayerColour::white_) {
             if (cell.cell_.colour_ == CellColour::WHITE) {
-                FIGURE_COLOR = WOW;
+                FIGURE_COLOR = globalColorScheme::scheme().WOW;
             } else {
-                FIGURE_COLOR = WOB;
+                FIGURE_COLOR = globalColorScheme::scheme().WOB;
             }
-            LETTER_COLOR = LETTER_WHITE;
+            LETTER_COLOR = globalColorScheme::scheme().LETTER_WHITE;
         } else {
             if (cell.cell_.colour_ == CellColour::WHITE) {
-                FIGURE_COLOR = BOW;
+                FIGURE_COLOR = globalColorScheme::scheme().BOW;
             } else {
-                FIGURE_COLOR = BOB;
+                FIGURE_COLOR = globalColorScheme::scheme().BOB;
             }
-            LETTER_COLOR = LETTER_BLACK;
+            LETTER_COLOR = globalColorScheme::scheme().LETTER_BLACK;
         }
     }
     move(TL.second, TL.first);
@@ -505,9 +505,9 @@ void ViewGameMenuCurses::outCell(const ViewModelCurses::ViewCellCurses& cell, pa
                             attroff(COLOR_PAIR(CELL_COLOR));
                             break;
                         case '#':
-                            attron(COLOR_PAIR(CELL_BORDER));
+                            attron(COLOR_PAIR(globalColorScheme::scheme().CELL_BORDER));
                             addch(draw(draw_i, j));
-                            attroff(COLOR_PAIR(CELL_BORDER));
+                            attroff(COLOR_PAIR(globalColorScheme::scheme().CELL_BORDER));
                             break;
                         case 'D':
                         case 'L':

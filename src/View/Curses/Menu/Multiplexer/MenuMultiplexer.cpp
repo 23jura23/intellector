@@ -14,6 +14,7 @@ using std::cerr, std::endl;
 #include "View/Curses/Menu/Menus/GameOver/WinMenu.hpp"
 #include "View/Curses/Menu/Menus/History/HistoryMenu.hpp"
 #include "View/Curses/Menu/Menus/Options/Gameplay/Options_Gameplay_Menu.hpp"
+#include "View/Curses/Menu/Menus/Options/Appearance/Options_Appearance_Menu.hpp"
 #include "View/Curses/Menu/Menus/Options/OptionsMenu.hpp"
 #include "View/Curses/Menu/Menus/Rules/RulesMenu.hpp"
 #include "View/Curses/Menu/Menus/Start/StartMenu.hpp"
@@ -108,6 +109,9 @@ RET_CODE MenuMultiplexerCurses::show(int) {
                     break;
                 case MENU_TYPE::OPTIONS_GAMEPLAY_MENU:
                     processRC = processOptions_Gameplay_Menu(menuRC);
+                    break;
+                case MENU_TYPE::OPTIONS_APPEARANCE_MENU:
+                    processRC = processOptions_Appearance_Menu(menuRC);
                     break;
                 case MENU_TYPE::WELCOME_MENU:
                     processRC = processWelcomeMenu(menuRC);
@@ -292,6 +296,14 @@ RET_CODE MenuMultiplexerCurses::processOptionsMenu(MenuWithRC& menuRC) {
             aliveMenus.erase(find(aliveMenus.begin(), aliveMenus.end(), menuRC));
             break;
         }
+        case RET_CODE::OPTIONS_APPEARANCE: {
+            auto newMenu = dynamic_pointer_cast<MenuCurses>(
+                make_shared<Options_Appearance_MenuCurses>());
+            forceRedraw = 1;
+            aliveMenus.push_back({newMenu, RET_CODE::NOTHING});
+            aliveMenus.erase(find(aliveMenus.begin(), aliveMenus.end(), menuRC));
+            break;
+        }
         case RET_CODE::BACK: {
             auto newMainMenu = dynamic_pointer_cast<MenuCurses>(make_shared<StartMenuCurses>());
             forceRedraw = 1;
@@ -325,6 +337,26 @@ RET_CODE MenuMultiplexerCurses::processOptions_Gameplay_Menu(MenuWithRC& menuRC)
     }
     return rc;
 }
+
+RET_CODE MenuMultiplexerCurses::processOptions_Appearance_Menu(MenuWithRC& menuRC) {
+    RET_CODE rc = RET_CODE::NOTHING;
+    switch (menuRC.rc) {
+        case RET_CODE::NOTHING:
+            break;
+        case RET_CODE::BACK: {
+            auto newMenu = dynamic_pointer_cast<MenuCurses>(make_shared<OptionsMenuCurses>());
+            forceRedraw = 1;
+            aliveMenus.push_back({newMenu, RET_CODE::NOTHING});
+            aliveMenus.erase(find(aliveMenus.begin(), aliveMenus.end(), menuRC));
+            break;
+        }
+        default:
+            throw MenuException("processOptions_Apparance_Menu: wrong return code");
+            break;
+    }
+    return rc;
+}
+
 
 RET_CODE MenuMultiplexerCurses::processWelcomeMenu(MenuWithRC& menuRC) {
     static_cast<void>(menuRC);

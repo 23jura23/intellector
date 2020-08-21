@@ -11,18 +11,116 @@ using std::cerr, std::endl;
 
 namespace viewCurses {
 
+enum globalColorSchemeType {
+    CLASSIC = 0,
+    DRACULA = 1,
+    SNOW_BLUE = 2
+};
+
+struct schemeImpl {
+    short COLOR_WHITE_CELL;
+    short COLOR_BLACK_CELL;
+    short COLOR_WHITE_FIGURE;
+    short COLOR_BLACK_FIGURE;
+    short COLOR_WHITE_ACTIVE;
+    short COLOR_BLACK_ACTIVE;
+    short COLOR_WHITE_CURRENT;
+    short COLOR_BLACK_CURRENT;
+    short COLOR_WHITE_SELECTED;
+    short COLOR_BLACK_SELECTED;
+    short COLOR_WHITE_PREVIOUS_FROM;
+    short COLOR_BLACK_PREVIOUS_FROM;
+    short COLOR_WHITE_PREVIOUS_TO;
+    short COLOR_BLACK_PREVIOUS_TO;
+    short COLOR_WHITE_LETTER;
+    short COLOR_BLACK_LETTER;
+    short COLOR_FORE_BORDER;
+    short COLOR_BACK_BORDER;
+
+    short COLOR_BUTTON_DEFAULT_TEXT_FOREGROUND;
+    short COLOR_BUTTON_DEFAULT_TEXT_BACKGROUND;
+    short COLOR_BUTTON_DEFAULT_EMPTY_FOREGROUND;
+    short COLOR_BUTTON_DEFAULT_EMPTY_BACKGROUND;
+    short COLOR_BUTTON_DEFAULT_BORDER_FOREGROUND;
+    short COLOR_BUTTON_DEFAULT_BORDER_BACKGROUND;
+
+    short COLOR_BUTTON_SELECTED_TEXT_FOREGROUND;
+    short COLOR_BUTTON_SELECTED_TEXT_BACKGROUND;
+    short COLOR_BUTTON_SELECTED_EMPTY_FOREGROUND;
+    short COLOR_BUTTON_SELECTED_EMPTY_BACKGROUND;
+    short COLOR_BUTTON_SELECTED_BORDER_FOREGROUND;
+    short COLOR_BUTTON_SELECTED_BORDER_BACKGROUND;
+
+    short COLOR_BUTTON_SET_TEXT_FOREGROUND;
+    short COLOR_BUTTON_SET_TEXT_BACKGROUND;
+    short COLOR_BUTTON_SET_EMPTY_FOREGROUND;
+    short COLOR_BUTTON_SET_EMPTY_BACKGROUND;
+    short COLOR_BUTTON_SET_BORDER_FOREGROUND;
+    short COLOR_BUTTON_SET_BORDER_BACKGROUND;
+
+    short COLOR_HISTORY_MENU_DELIMETER;
+    short COLOR_HISTORY_MENU_FIGURE_LETTER_WHITE;
+    short COLOR_HISTORY_MENU_FIGURE_LETTER_BLACK;
+
+    short WOW;            // White On White
+    short WOB;            // White On Black
+    short BOW;            // Black On White
+    short BOB;            // Black On Black
+    short CELL_WHITE;             // INACTIVE
+    short CELL_BLACK;             // INACTIVE
+    short CELL_WHITE_ACTIVE;      // ACTIVE
+    short CELL_BLACK_ACTIVE;      // ACTIVE
+    short CELL_WHITE_CURRENT;     // CURRENT
+    short CELL_BLACK_CURRENT;     // CURRENT
+    short CELL_WHITE_SELECTED;    // SELECTED
+    short CELL_BLACK_SELECTED;    // SELECTED
+    short CELL_WHITE_PREVIOUS_FROM;  // PREVIOUS_FROM
+    short CELL_BLACK_PREVIOUS_FROM;  // PREVIOUS_FROM
+    short CELL_WHITE_PREVIOUS_TO; // PREVIOUS_TO
+    short CELL_BLACK_PREVIOUS_TO; // PREVIOUS_TO
+    short CELL_BORDER;
+    short LETTER_BLACK;
+    short LETTER_WHITE;
+
+    short BUTTON_DEFAULT_TEXT;
+    short BUTTON_DEFAULT_EMPTY;
+    short BUTTON_DEFAULT_BORDER;
+
+    short BUTTON_SELECTED_TEXT;
+    short BUTTON_SELECTED_EMPTY;
+    short BUTTON_SELECTED_BORDER;
+
+    short BUTTON_SET_TEXT;
+    short BUTTON_SET_EMPTY;
+    short BUTTON_SET_BORDER;
+
+    short HISTORY_MENU_DELIMETER;
+    short HISTORY_MENU_FIGURE_LETTER_WHITE;
+    short HISTORY_MENU_FIGURE_LETTER_BLACK;
+
+    globalColorSchemeType type;
+};
+
+class globalColorScheme {
+   public:
+    static schemeImpl scheme();
+    static void setScheme(globalColorSchemeType type);
+   private:
+    static schemeImpl scheme_;
+};
+
 // a little bit strange: defines inside namepsace :)
 
-#define CLASSIC   0
-#define DRACULA   1
-#define SNOW_BLUE 2
+//#define CLASSIC   0
+//#define DRACULA   1
+//#define SNOW_BLUE 2
 
-#define COLOR_MODE DRACULA
+//#define COLOR_MODE DRACULA
 
 //#define CLASSIC
 //#define BLACK_AND_WHITE
 //#define SNOW_BLUE
-
+/*
 #if COLOR_MODE == CLASSIC
     #define COLOR_WHITE_CELL          187
     #define COLOR_BLACK_CELL          137
@@ -194,6 +292,7 @@ namespace viewCurses {
 #define HISTORY_MENU_DELIMETER 161
 #define HISTORY_MENU_FIGURE_LETTER_WHITE 162
 #define HISTORY_MENU_FIGURE_LETTER_BLACK 163
+ */
 
 extern bool initColorsDone;
 void initColors();

@@ -57,6 +57,7 @@ set(BASE_SOURCES
         include/View/Curses/Menu/Menus/Rules/RulesMenu.hpp
         include/View/Curses/Menu/Menus/Start/StartMenu.hpp
         include/View/Curses/Menu/Menus/GameOver/WinMenu.hpp
+        include/View/Curses/Menu/Menus/Options/Appearance/Options_Appearance_Menu.hpp
         src/Bot/AlphaBetaBot/AlphaBetaBot.cpp
         src/Model/Archiver/Archiver.cpp
         src/Model/ModelImpl/Board.cpp
@@ -87,7 +88,8 @@ set(BASE_SOURCES
         src/View/Curses/Model/ModelImpl/Picture/Picture.cpp
         src/View/Curses/Menu/Menus/Rules/RulesMenu.cpp
         src/View/Curses/Menu/Menus/Start/StartMenu.cpp
-        src/View/Curses/Menu/Menus/GameOver/WinMenu.cpp)
+        src/View/Curses/Menu/Menus/GameOver/WinMenu.cpp
+        src/View/Curses/Menu/Menus/Options/Appearance/Options_Appearance_Menu.cpp)
 
 set(TEST_SOURCES
         test/TestMain.cpp

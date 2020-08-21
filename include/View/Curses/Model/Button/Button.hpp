@@ -18,7 +18,7 @@ class ButtonException : public PictureException {
 enum class BUTTON_STYLE { NONE, RECTANGLE, ZIGZAG };
 enum class BUTTON_MODE{ DEFAULT, SELECTED, SET };
 
-struct buttonColorScheme /* : localColorScheme */ {
+struct buttonColorScheme {
     int text{};
     int empty{};
     int border{};

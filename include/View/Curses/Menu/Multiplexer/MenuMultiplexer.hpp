@@ -29,7 +29,8 @@ enum class RET_CODE {
     GAME_OVER_UNEXPECTEDLY,
     GAME_EXIT,
 
-    OPTIONS_GAMEPLAY
+    OPTIONS_GAMEPLAY,
+    OPTIONS_APPEARANCE
 };
 
 //enum class MULTIPLEXABLE_MENU { WELCOME_MENU, MAIN_MENU, GAME_MENU };
@@ -69,6 +70,7 @@ class MenuMultiplexerCurses final : public MenuCurses {
     RET_CODE processRulesMenu(MenuWithRC&);
     RET_CODE processOptionsMenu(MenuWithRC&);
     RET_CODE processOptions_Gameplay_Menu(MenuWithRC&);
+    RET_CODE processOptions_Appearance_Menu(MenuWithRC&);
     RET_CODE processHistoryMenu(MenuWithRC&);
     RET_CODE processWinMenu(MenuWithRC&);
 

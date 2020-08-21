@@ -111,13 +111,13 @@ void HistoryMenuCurses::draw() {
                     if (!notation.isIgnoredChar(c)) {
                         if (!spaceReached) {
                             if (out_i % 2 == 0) {
-                                attron(COLOR_PAIR(HISTORY_MENU_FIGURE_LETTER_WHITE));
+                                attron(COLOR_PAIR(globalColorScheme::scheme().HISTORY_MENU_FIGURE_LETTER_WHITE));
                                 addch(c);
-                                attroff(COLOR_PAIR(HISTORY_MENU_FIGURE_LETTER_WHITE));
+                                attroff(COLOR_PAIR(globalColorScheme::scheme().HISTORY_MENU_FIGURE_LETTER_WHITE));
                             } else {
-                                attron(COLOR_PAIR(HISTORY_MENU_FIGURE_LETTER_BLACK));
+                                attron(COLOR_PAIR(globalColorScheme::scheme().HISTORY_MENU_FIGURE_LETTER_BLACK));
                                 addch(c);
-                                attroff(COLOR_PAIR(HISTORY_MENU_FIGURE_LETTER_BLACK));
+                                attroff(COLOR_PAIR(globalColorScheme::scheme().HISTORY_MENU_FIGURE_LETTER_BLACK));
                             }
                         } else {
                             addch(c);
@@ -134,9 +134,9 @@ void HistoryMenuCurses::draw() {
 
         move(y + cellHeight_ - 1, xStartPos);
         for (size_t j = 0; j < cellWidth_; ++j) {
-            attron(COLOR_PAIR(HISTORY_MENU_DELIMETER));
+            attron(COLOR_PAIR(globalColorScheme::scheme().HISTORY_MENU_DELIMETER));
             addch('=');
-            attroff(COLOR_PAIR(HISTORY_MENU_DELIMETER));
+            attroff(COLOR_PAIR(globalColorScheme::scheme().HISTORY_MENU_DELIMETER));
         }
     }
 }

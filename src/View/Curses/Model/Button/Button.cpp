@@ -8,15 +8,10 @@
 using std::string;
 namespace viewCurses {
 
-buttonColorScheme DEFAULT_SCHEME{BUTTON_DEFAULT_TEXT, BUTTON_DEFAULT_EMPTY, BUTTON_DEFAULT_BORDER};
-buttonColorScheme SELECTED_SCHEME{BUTTON_SELECTED_TEXT,
-                                  BUTTON_SELECTED_EMPTY,
-                                  BUTTON_SELECTED_BORDER};
-buttonColorScheme SET_SCHEME{BUTTON_SET_TEXT, BUTTON_SET_EMPTY, BUTTON_SET_BORDER};
-
 Button::Button(const Picture& pic)
         : buttonPicture{pic}
-        , colorScheme{DEFAULT_SCHEME} {
+{
+    setMode(BUTTON_MODE::DEFAULT);
 }
 
 const Picture& Button::getPicture() const {
@@ -26,13 +21,19 @@ const Picture& Button::getPicture() const {
 void Button::setMode(BUTTON_MODE mode) {
     switch (mode) {
         case BUTTON_MODE::DEFAULT:
-            colorScheme = DEFAULT_SCHEME;
+            colorScheme.text = globalColorScheme::scheme().BUTTON_DEFAULT_TEXT;
+            colorScheme.empty = globalColorScheme::scheme().BUTTON_DEFAULT_EMPTY;
+            colorScheme.border = globalColorScheme::scheme().BUTTON_DEFAULT_BORDER;
             return;
         case BUTTON_MODE::SELECTED:
-            colorScheme = SELECTED_SCHEME;
+            colorScheme.text = globalColorScheme::scheme().BUTTON_SELECTED_TEXT;
+            colorScheme.empty = globalColorScheme::scheme().BUTTON_SELECTED_EMPTY;
+            colorScheme.border = globalColorScheme::scheme().BUTTON_SELECTED_BORDER;
             return;
         case BUTTON_MODE::SET:
-            colorScheme = SET_SCHEME;
+            colorScheme.text = globalColorScheme::scheme().BUTTON_SET_TEXT;
+            colorScheme.empty = globalColorScheme::scheme().BUTTON_SET_EMPTY;
+            colorScheme.border = globalColorScheme::scheme().BUTTON_SET_BORDER;
             return;
     }
     throw ButtonException("Incorrect button mode " + std::to_string(static_cast<int>(mode)));
