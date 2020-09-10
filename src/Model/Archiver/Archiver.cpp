@@ -67,13 +67,16 @@ GameSettings getGameSettings(uint16_t storage) {
     return {difficulty_white, difficulty_black, first_player, second_player};
 }
 
-Move getMove(uint16_t storage_figures, uint32_t storage_positions) {
+Move getMove(uint16_t storage_figures, uint64_t storage_positions) {
     Figure from_old = getFigure(cut(storage_figures, 12, 4));
     Figure to_new = getFigure(cut(storage_figures, 8, 4));
     std::optional<Figure> from_new = {};
     std::optional<Figure> to_old = {};
     Position from, to;
+    std::size_t point_of_history;
     bool optional_from, optional_to;
+
+    point_of_history = cut(storage_positions, 32, 32);
     optional_from = cut(storage_positions, 31, 1);
     optional_to = cut(storage_positions, 30, 1);
     if (optional_from)
@@ -89,7 +92,7 @@ Move getMove(uint16_t storage_figures, uint32_t storage_positions) {
     x = cut(storage_positions, 8, 8);
     y = cut(storage_positions, 0, 8);
     to = Position(x, y);
-    return {from, to, from_old, to_old, to_new, from_new};
+    return {from, to, point_of_history, from_old, to_old, to_new, from_new};
 }
 
 uint8_t archiveFigure(Figure figure) {
@@ -140,9 +143,9 @@ uint16_t archiveGameSettings(const GameSettings& settings) {
     return res;
 }
 
-std::pair<uint16_t, uint32_t> archiveMove(const Move& move) {
+std::pair<uint16_t, uint64_t> archiveMove(const Move& move) {
     uint16_t storage_figures = 0;
-    uint32_t storage_positions = 0;
+    uint64_t storage_positions = 0;
 
     storage_figures += archiveFigure(move.from_figure_old_) << 12;
     storage_figures += archiveFigure(move.to_figure_new_) << 8;
@@ -154,6 +157,7 @@ std::pair<uint16_t, uint32_t> archiveMove(const Move& move) {
         storage_figures += archiveFigure(*move.to_figure_old_);
         storage_positions += 1 << 30;
     }
+    storage_positions += move.point_of_history_ << 32;
     storage_positions += (move.from_.posW() & ((1 << 7) - 1)) << 23;
     storage_positions += (move.from_.posH() & ((1 << 7) - 1)) << 16;
     storage_positions += move.to_.posW() << 8;

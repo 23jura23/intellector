@@ -12,7 +12,7 @@ bool Move::makeMove(Board& board) const {
         return false;
 
     std::shared_ptr<FigureMoveValidator> figure =
-        FigureMoveValidator::create(board, from_figure_old_, from_);
+        FigureMoveValidator::create(board, from_figure_old_, from_, point_of_history_);
 
     if (!figure->checkMove(to_))
         return false;
@@ -33,7 +33,7 @@ bool Move::cancelMove(Board& board) const {
     std::swap(board[to_].figure_, tmp);
 
     std::shared_ptr<FigureMoveValidator> figure =
-        FigureMoveValidator::create(board, from_figure_old_, from_);
+        FigureMoveValidator::create(board, from_figure_old_, from_, point_of_history_);
 
     if (figure->checkMove(to_))
         return true;

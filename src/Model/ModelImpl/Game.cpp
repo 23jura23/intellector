@@ -55,13 +55,14 @@ void Game::setGameSettings(const GameSettings& settings) {
  * * исторя
  * * 2 байта на 4 фигуры
  * * 4 байта на 2 позиции (2 бита для optional)
+ * * 4 байта на номер хода, пока это было сделано
  */
 bool Game::loadGame(const std::string& filename) {
     unsigned int CRC_in, CRC_out;
     unsigned int size_of_history;
     unsigned int pos_of_history;
     uint16_t storage16;
-    uint32_t storage32;
+    uint64_t storage64;
     char number_of_figures;
     std::vector<std::pair<Figure, Position>> mas_for_board;
     std::vector<Move> mas_for_history;
@@ -103,8 +104,8 @@ bool Game::loadGame(const std::string& filename) {
 
     for (unsigned int i = 0; i < size_of_history; i++) {
         file.read(reinterpret_cast<char*>(&storage16), 2);
-        file.read(reinterpret_cast<char*>(&storage32), 4);
-        mas_for_history[i] = archiver::getMove(storage16, storage32);
+        file.read(reinterpret_cast<char*>(&storage64), 8);
+        mas_for_history[i] = archiver::getMove(storage16, storage64);
     }
 
     if (file.bad())
@@ -153,10 +154,10 @@ void Game::saveGame(const std::string& filename) {
     file.write(reinterpret_cast<char*>(&point_of_history_), 4);
 
     for (const auto& i : history_of_moves_) {
-        std::pair<uint16_t, uint32_t> archive_of_move = archiver::archiveMove(i);
+        std::pair<uint16_t, uint64_t> archive_of_move = archiver::archiveMove(i);
 
         file.read(reinterpret_cast<char*>(&archive_of_move.first), 2);
-        file.read(reinterpret_cast<char*>(&archive_of_move.second), 4);
+        file.read(reinterpret_cast<char*>(&archive_of_move.second), 8);
     }
 
     file.seekp(4, std::ios::beg);
@@ -253,7 +254,7 @@ std::vector<Move> Game::allFigureMoves(Position pos) const {
         return {};
 
     std::shared_ptr<FigureMoveValidator> figure =
-        FigureMoveValidator::create(board_, board_[pos].figure_.value(), pos);
+        FigureMoveValidator::create(board_, board_[pos].figure_.value(), pos, point_of_history_);
     return figure->allMoves();
 }
 
@@ -290,7 +291,10 @@ GameStatus Game::getGameStatus() const {  // может можно получш�
                 continue;
 
             std::shared_ptr<FigureMoveValidator> figure =
-                FigureMoveValidator::create(board_, board_[cell.pos_].figure_.value(), cell.pos_);
+                FigureMoveValidator::create(board_,
+                                            board_[cell.pos_].figure_.value(),
+                                            cell.pos_,
+                                            point_of_history_);
             if (cell.figure_->colour_ == PlayerColour::white_)
                 white_player_can_move |= !figure->allMoves().empty();
             else if (cell.figure_->colour_ == PlayerColour::black_)

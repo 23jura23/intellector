@@ -43,4 +43,19 @@ class Board {
             pos.posW() < Board::cols_);
 }
 
+[[nodiscard]] inline bool whitePart(Position pos) {
+    return (pos.posH() >= 0 && pos.posW() >= 0 && pos.posH() < Board::rows_ / 2 &&
+            pos.posW() < Board::cols_);
+}
+
+[[nodiscard]] inline bool blackPart(Position pos) {
+    return (pos.posH() > Board::rows_ / 2 - pos.posW() % 2 && pos.posW() >= 0 &&
+            pos.posH() < Board::rows_ - pos.posW() % 2 && pos.posW() < Board::cols_);
+}
+
+[[nodiscard]] inline bool atHomePart(PlayerColour colour, Position pos) {
+    return ((colour == PlayerColour::white_ && whitePart(pos)) ||
+            (colour == PlayerColour::black_ && blackPart(pos)));
+}
+
 #endif  //_PROJECT_BOARD_HPP

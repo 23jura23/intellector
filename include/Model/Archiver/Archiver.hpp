@@ -16,7 +16,7 @@ std::pair<Figure, Position> getFigureAndPosition(uint16_t storage);
 
 GameSettings getGameSettings(uint16_t storage);
 
-Move getMove(uint16_t storage_figures, uint32_t storage_positions);
+Move getMove(uint16_t storage_figures, uint64_t storage_positions);
 
 uint8_t archiveFigure(Figure figure);
 
@@ -24,7 +24,7 @@ uint16_t archiveFigureAndPosition(const std::pair<Figure, Position>& pair);
 
 uint16_t archiveGameSettings(const GameSettings& settings);
 
-std::pair<uint16_t, uint32_t> archiveMove(const Move& move);
+std::pair<uint16_t, uint64_t> archiveMove(const Move& move);
 
 } // end archiver
 
