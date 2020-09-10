@@ -32,7 +32,8 @@ class Game {
             , is_calculated_{false}
             , settings_{other.settings_}
             , history_of_moves_{other.history_of_moves_}
-            , point_of_history_{other.point_of_history_} {
+            , point_of_history_{other.point_of_history_}
+            , move_number_{other.move_number_} {
     }
 
     [[nodiscard]] Game makeCopyForBot() const {
@@ -45,6 +46,7 @@ class Game {
 
         result.history_of_moves_ = {};
         result.point_of_history_ = 0;
+        result.move_number_ = move_number_;
         return result;
     }
 
@@ -92,6 +94,7 @@ class Game {
 
     std::vector<Move> history_of_moves_ = {};
     unsigned int point_of_history_ = 0;
+    unsigned int move_number_ = 0;
 };
 
 #endif  //_INTELLECTOR_CONTROLLER_HPP

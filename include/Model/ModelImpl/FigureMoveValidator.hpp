@@ -15,7 +15,7 @@ class FigureMoveValidator {
                         PlayerColour colour,
                         Position pos,
                         FigureType type,
-                        std::size_t point_of_history);
+                        std::size_t move_number);
     virtual ~FigureMoveValidator() = default;
 
     [[nodiscard]] Figure getFigure() const {
@@ -29,13 +29,13 @@ class FigureMoveValidator {
     static std::shared_ptr<FigureMoveValidator> create(const Board& board,
                                                        Figure figure,
                                                        Position pos,
-                                                       std::size_t point_of_history);
+                                                       std::size_t move_number);
 
    protected:
     const Board& board_;
     const Figure figure_;
     const Position pos_;
-    const std::size_t point_of_history_;
+    const std::size_t move_number_;
 };
 
 class IntellectorMoveValidator : public FigureMoveValidator {
@@ -43,7 +43,7 @@ class IntellectorMoveValidator : public FigureMoveValidator {
     IntellectorMoveValidator(const Board& board,
                              PlayerColour colour,
                              Position pos,
-                             std::size_t point_of_history);
+                             std::size_t move_number);
     ~IntellectorMoveValidator() override = default;
 
     bool checkMove(Position to_pos) override;
@@ -56,7 +56,7 @@ class DominatorMoveValidator : public FigureMoveValidator {
     DominatorMoveValidator(const Board& board,
                            PlayerColour colour,
                            Position pos,
-                           std::size_t point_of_history);
+                           std::size_t move_number);
     ~DominatorMoveValidator() override = default;
 
     bool checkMove(Position to_pos) override;
@@ -69,7 +69,7 @@ class AggressorMoveValidator : public FigureMoveValidator {
     AggressorMoveValidator(const Board& board,
                            PlayerColour colour,
                            Position pos,
-                           std::size_t point_of_history);
+                           std::size_t move_number);
     ~AggressorMoveValidator() override = default;
 
     bool checkMove(Position to_pos) override;
@@ -82,7 +82,7 @@ class DefenssorMoveValidator : public FigureMoveValidator {
     DefenssorMoveValidator(const Board& board,
                            PlayerColour colour,
                            Position pos,
-                           std::size_t point_of_history);
+                           std::size_t move_number);
     ~DefenssorMoveValidator() override = default;
 
     bool checkMove(Position to_pos) override;
@@ -95,7 +95,7 @@ class LiberatorMoveValidator : public FigureMoveValidator {
     LiberatorMoveValidator(const Board& board,
                            PlayerColour colour,
                            Position pos,
-                           std::size_t point_of_history);
+                           std::size_t move_number);
     ~LiberatorMoveValidator() override = default;
 
     bool checkMove(Position to_pos) override;
@@ -108,7 +108,7 @@ class ProgressorMoveValidator : public FigureMoveValidator {
     ProgressorMoveValidator(const Board& board,
                             PlayerColour colour,
                             Position pos,
-                            std::size_t point_of_history);
+                            std::size_t move_number);
     ~ProgressorMoveValidator() override = default;
 
     bool checkMove(Position to_pos) override;

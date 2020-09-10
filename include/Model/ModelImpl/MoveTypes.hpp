@@ -16,7 +16,7 @@ class Move {
     Move()
             : from_(0, 0)
             , to_(0, 0)
-            , point_of_history_(0)
+            , move_number_(0)
             , from_figure_old_(PlayerColour::white_, FigureType::PROGRESSOR)
             , to_figure_new_(PlayerColour::white_, FigureType::PROGRESSOR)
             , from_figure_new_(std::nullopt)
@@ -25,12 +25,12 @@ class Move {
 
     Move(const Position& from_pos,
          const Position& to_pos,
-         std::size_t point_of_history,
+         std::size_t move_number,
          const Figure& from_figure,
          std::optional<Figure> to_figure_old)
             : from_(from_pos)
             , to_(to_pos)
-            , point_of_history_(point_of_history)
+            , move_number_(move_number)
             , from_figure_old_(from_figure)
             , to_figure_new_(from_figure)
             , from_figure_new_(std::nullopt)
@@ -39,13 +39,13 @@ class Move {
 
     Move(const Position& from_pos,
          const Position& to_pos,
-         std::size_t point_of_history,
+         std::size_t move_number,
          const Figure& from_figure,
          std::optional<Figure> to_figure_old,
          const Figure& to_figure_new)
             : from_(from_pos)
             , to_(to_pos)
-            , point_of_history_(point_of_history)
+            , move_number_(move_number)
             , from_figure_old_(from_figure)
             , to_figure_new_(to_figure_new)
             , from_figure_new_(std::nullopt)
@@ -54,14 +54,14 @@ class Move {
 
     Move(const Position& from_pos,
          const Position& to_pos,
-         std::size_t point_of_history,
+         std::size_t move_number,
          const Figure& from_figure,
          std::optional<Figure> to_figure_old,
          const Figure& to_figure_new,
          std::optional<Figure> from_figure_new)
             : from_(from_pos)
             , to_(to_pos)
-            , point_of_history_(point_of_history)
+            , move_number_(move_number)
             , from_figure_old_(from_figure)
             , to_figure_new_(to_figure_new)
             , from_figure_new_(std::move(from_figure_new))
@@ -72,7 +72,7 @@ class Move {
     virtual bool cancelMove(Board& board) const;  // turn должен быть не правильным
 
     Position from_, to_;
-    std::size_t point_of_history_;
+    std::size_t move_number_;
     Figure from_figure_old_, to_figure_new_;
     std::optional<Figure> from_figure_new_, to_figure_old_;
 };

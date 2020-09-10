@@ -20,36 +20,36 @@ FigureMoveValidator::FigureMoveValidator(const Board& board,
                                          PlayerColour colour,
                                          Position pos,
                                          FigureType type,
-                                         std::size_t point_of_history)
+                                         std::size_t move_number)
         : board_(board)
         , figure_(Figure(colour, type))
         , pos_(pos)
-        , point_of_history_(point_of_history) {
+        , move_number_(move_number) {
 }
 
 std::shared_ptr<FigureMoveValidator> FigureMoveValidator::create(const Board& board,
                                                                  Figure figure,
                                                                  Position pos,
-                                                                 std::size_t point_of_history) {
+                                                                 std::size_t move_number) {
     PlayerColour colour = figure.colour_;
     switch (figure.type_) {
         case FigureType::INTELLECTOR:
-            return std::make_unique<IntellectorMoveValidator>(board, colour, pos, point_of_history);
+            return std::make_unique<IntellectorMoveValidator>(board, colour, pos, move_number);
 
         case FigureType::DOMINATOR:
-            return std::make_unique<DominatorMoveValidator>(board, colour, pos, point_of_history);
+            return std::make_unique<DominatorMoveValidator>(board, colour, pos, move_number);
 
         case FigureType::AGGRESSOR:
-            return std::make_unique<AggressorMoveValidator>(board, colour, pos, point_of_history);
+            return std::make_unique<AggressorMoveValidator>(board, colour, pos, move_number);
 
         case FigureType::DEFENSSOR:
-            return std::make_unique<DefenssorMoveValidator>(board, colour, pos, point_of_history);
+            return std::make_unique<DefenssorMoveValidator>(board, colour, pos, move_number);
 
         case FigureType::LIBERATOR:
-            return std::make_unique<LiberatorMoveValidator>(board, colour, pos, point_of_history);
+            return std::make_unique<LiberatorMoveValidator>(board, colour, pos, move_number);
 
         case FigureType::PROGRESSOR:
-            return std::make_unique<ProgressorMoveValidator>(board, colour, pos, point_of_history);
+            return std::make_unique<ProgressorMoveValidator>(board, colour, pos, move_number);
     }
     terminator();
 }
@@ -57,14 +57,14 @@ std::shared_ptr<FigureMoveValidator> FigureMoveValidator::create(const Board& bo
 IntellectorMoveValidator::IntellectorMoveValidator(const Board& board,
                                                    PlayerColour colour,
                                                    Position pos,
-                                                   std::size_t point_of_history)
-        : FigureMoveValidator(board, colour, pos, FigureType::INTELLECTOR, point_of_history) {
+                                                   std::size_t move_number)
+        : FigureMoveValidator(board, colour, pos, FigureType::INTELLECTOR, move_number) {
 }
 
 bool IntellectorMoveValidator::checkMove(Position to_pos) {
     if (!inBoard(to_pos))
         return false;
-    if (point_of_history_ < 4 && !atHomePart(figure_.colour_, to_pos))
+    if (move_number_ < 4 && !atHomePart(figure_.colour_, to_pos))
         return false;
 
     Position diff = to_pos - pos_;
@@ -88,16 +88,16 @@ std::vector<Move> IntellectorMoveValidator::allMoves() {
         Position pos = pos_ + d;
         if (!inBoard(pos))
             continue;
-        if (point_of_history_ < 4 && !atHomePart(figure_.colour_, pos))
+        if (move_number_ < 4 && !atHomePart(figure_.colour_, pos))
             continue;
 
         if (!board_[pos].figure_.has_value())
-            answer.emplace_back(pos_, pos_ + d, point_of_history_, figure_, std::nullopt);
+            answer.emplace_back(pos_, pos_ + d, move_number_, figure_, std::nullopt);
         else if (board_[pos].figure_->type_ == FigureType::DEFENSSOR &&
                  board_[pos].figure_->colour_ == figure_.colour_)
             answer.emplace_back(pos_,
                                 pos_ + d,
-                                point_of_history_,
+                                move_number_,
                                 figure_,
                                 board_[pos].figure_,
                                 figure_,
@@ -110,14 +110,14 @@ std::vector<Move> IntellectorMoveValidator::allMoves() {
 DominatorMoveValidator::DominatorMoveValidator(const Board& board,
                                                PlayerColour colour,
                                                Position pos,
-                                               std::size_t point_of_history)
-        : FigureMoveValidator(board, colour, pos, FigureType::DOMINATOR, point_of_history) {
+                                               std::size_t move_number)
+        : FigureMoveValidator(board, colour, pos, FigureType::DOMINATOR, move_number) {
 }
 
 bool DominatorMoveValidator::checkMove(Position to_pos) {
     if (!inBoard(to_pos))
         return false;
-    if (point_of_history_ < 4 && !atHomePart(figure_.colour_, to_pos))
+    if (move_number_ < 4 && !atHomePart(figure_.colour_, to_pos))
         return false;
 
     Position diff = to_pos - pos_;
@@ -150,13 +150,13 @@ std::vector<Move> DominatorMoveValidator::allMoves() {
         for (Position pos = pos_ + d;; pos += d) {
             if (!inBoard(pos))
                 break;
-            if (point_of_history_ < 4 && !atHomePart(figure_.colour_, pos))
+            if (move_number_ < 4 && !atHomePart(figure_.colour_, pos))
                 break;
 
             if (board_[pos].figure_.has_value() && board_[pos].figure_->colour_ == figure_.colour_)
                 break;
 
-            answer.emplace_back(pos_, pos, point_of_history_, figure_, board_[pos].figure_);
+            answer.emplace_back(pos_, pos, move_number_, figure_, board_[pos].figure_);
             if (board_[pos].figure_.has_value() && board_[pos].figure_->colour_ != figure_.colour_)
                 break;
         }
@@ -168,14 +168,14 @@ std::vector<Move> DominatorMoveValidator::allMoves() {
 AggressorMoveValidator::AggressorMoveValidator(const Board& board,
                                                PlayerColour colour,
                                                Position pos,
-                                               std::size_t point_of_history)
-        : FigureMoveValidator(board, colour, pos, FigureType::AGGRESSOR, point_of_history) {
+                                               std::size_t move_number)
+        : FigureMoveValidator(board, colour, pos, FigureType::AGGRESSOR, move_number) {
 }
 
 bool AggressorMoveValidator::checkMove(Position to_pos) {
     if (!inBoard(to_pos))
         return false;
-    if (point_of_history_ < 4 && !atHomePart(figure_.colour_, to_pos))
+    if (move_number_ < 4 && !atHomePart(figure_.colour_, to_pos))
         return false;
 
     Position diff = to_pos - pos_;
@@ -213,12 +213,12 @@ std::vector<Move> AggressorMoveValidator::allMoves() {
         for (Position pos = pos_ + d;; pos += d) {
             if (!inBoard(pos))
                 break;
-            if (point_of_history_ < 4 && !atHomePart(figure_.colour_, pos))
+            if (move_number_ < 4 && !atHomePart(figure_.colour_, pos))
                 break;
             if (board_[pos].figure_.has_value() && board_[pos].figure_->colour_ == figure_.colour_)
                 break;
 
-            answer.emplace_back(pos_, pos, point_of_history_, figure_, board_[pos].figure_);
+            answer.emplace_back(pos_, pos, move_number_, figure_, board_[pos].figure_);
             if (board_[pos].figure_.has_value() && board_[pos].figure_->colour_ != figure_.colour_)
                 break;
         }
@@ -230,14 +230,14 @@ std::vector<Move> AggressorMoveValidator::allMoves() {
 DefenssorMoveValidator::DefenssorMoveValidator(const Board& board,
                                                PlayerColour colour,
                                                Position pos,
-                                               std::size_t point_of_history)
-        : FigureMoveValidator(board, colour, pos, FigureType::DEFENSSOR, point_of_history) {
+                                               std::size_t move_number)
+        : FigureMoveValidator(board, colour, pos, FigureType::DEFENSSOR, move_number) {
 }
 
 bool DefenssorMoveValidator::checkMove(Position to_pos) {
     if (!inBoard(to_pos))
         return false;
-    if (point_of_history_ < 4 && !atHomePart(figure_.colour_, to_pos))
+    if (move_number_ < 4 && !atHomePart(figure_.colour_, to_pos))
         return false;
 
     Position diff = to_pos - pos_;
@@ -265,12 +265,12 @@ std::vector<Move> DefenssorMoveValidator::allMoves() {
         Position pos = pos_ + d;
         if (!inBoard(pos))
             continue;
-        if (point_of_history_ < 4 && !atHomePart(figure_.colour_, pos))
+        if (move_number_ < 4 && !atHomePart(figure_.colour_, pos))
             continue;
         if (board_[pos].figure_.has_value() && board_[pos].figure_->colour_ == figure_.colour_)
             continue;
 
-        answer.emplace_back(pos_, pos, point_of_history_, figure_, board_[pos].figure_);
+        answer.emplace_back(pos_, pos, move_number_, figure_, board_[pos].figure_);
     }
 
     return answer;
@@ -279,14 +279,14 @@ std::vector<Move> DefenssorMoveValidator::allMoves() {
 LiberatorMoveValidator::LiberatorMoveValidator(const Board& board,
                                                PlayerColour colour,
                                                Position pos,
-                                               std::size_t point_of_history)
-        : FigureMoveValidator(board, colour, pos, FigureType::LIBERATOR, point_of_history) {
+                                               std::size_t move_number)
+        : FigureMoveValidator(board, colour, pos, FigureType::LIBERATOR, move_number) {
 }
 
 bool LiberatorMoveValidator::checkMove(Position to_pos) {
     if (!inBoard(to_pos))
         return false;
-    if (point_of_history_ < 4 && !atHomePart(figure_.colour_, to_pos))
+    if (move_number_ < 4 && !atHomePart(figure_.colour_, to_pos))
         return false;
 
     Position diff = to_pos - pos_;
@@ -314,12 +314,12 @@ std::vector<Move> LiberatorMoveValidator::allMoves() {
         Position pos = pos_ + d;
         if (!inBoard(pos))
             continue;
-        if (point_of_history_ < 4 && !atHomePart(figure_.colour_, pos))
+        if (move_number_ < 4 && !atHomePart(figure_.colour_, pos))
             continue;
         if (board_[pos].figure_.has_value() && board_[pos].figure_->colour_ == figure_.colour_)
             continue;
 
-        answer.emplace_back(pos_, pos, point_of_history_, figure_, board_[pos].figure_);
+        answer.emplace_back(pos_, pos, move_number_, figure_, board_[pos].figure_);
     }
 
     return answer;
@@ -328,14 +328,14 @@ std::vector<Move> LiberatorMoveValidator::allMoves() {
 ProgressorMoveValidator::ProgressorMoveValidator(const Board& board,
                                                  PlayerColour colour,
                                                  Position pos,
-                                                 std::size_t point_of_history)
-        : FigureMoveValidator(board, colour, pos, FigureType::PROGRESSOR, point_of_history) {
+                                                 std::size_t move_number)
+        : FigureMoveValidator(board, colour, pos, FigureType::PROGRESSOR, move_number) {
 }
 
 bool ProgressorMoveValidator::checkMove(Position to_pos) {
     if (!inBoard(to_pos))
         return false;
-    if (point_of_history_ < 4 && !atHomePart(figure_.colour_, to_pos))
+    if (move_number_ < 4 && !atHomePart(figure_.colour_, to_pos))
         return false;
 
     Position diff = to_pos - pos_;
@@ -373,7 +373,7 @@ std::vector<Move> ProgressorMoveValidator::allMoves() {
         Position pos = pos_ + d;
         if (!inBoard(pos))
             continue;
-        if (point_of_history_ < 4 && !atHomePart(figure_.colour_, pos))
+        if (move_number_ < 4 && !atHomePart(figure_.colour_, pos))
             continue;
         if (board_[pos].figure_.has_value() && board_[pos].figure_->colour_ == figure_.colour_)
             continue;
@@ -381,30 +381,30 @@ std::vector<Move> ProgressorMoveValidator::allMoves() {
         if ((pos.posH() == 0 && pos.posW() % 2 == 0) || pos.posH() == Board::rows_ - 1) {
             answer.emplace_back(pos_,
                                 pos,
-                                point_of_history_,
+                                move_number_,
                                 figure_,
                                 board_[pos].figure_,
                                 Figure(colour, FigureType::DEFENSSOR));
             answer.emplace_back(pos_,
                                 pos,
-                                point_of_history_,
+                                move_number_,
                                 figure_,
                                 board_[pos].figure_,
                                 Figure(colour, FigureType::LIBERATOR));
             answer.emplace_back(pos_,
                                 pos,
-                                point_of_history_,
+                                move_number_,
                                 figure_,
                                 board_[pos].figure_,
                                 Figure(colour, FigureType::AGGRESSOR));
             answer.emplace_back(pos_,
                                 pos,
-                                point_of_history_,
+                                move_number_,
                                 figure_,
                                 board_[pos].figure_,
                                 Figure(colour, FigureType::DOMINATOR));
         } else
-            answer.emplace_back(pos_, pos, point_of_history_, figure_, board_[pos].figure_);
+            answer.emplace_back(pos_, pos, move_number_, figure_, board_[pos].figure_);
     }
 
     return answer;

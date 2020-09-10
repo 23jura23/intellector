@@ -112,6 +112,7 @@ bool Game::loadGame(const std::string& filename) {
         return false;
     board_ = Board(mas_for_board);
     point_of_history_ = pos_of_history;
+    move_number_ = pos_of_history;
     history_of_moves_ = std::move(mas_for_history);
     setGameSettings(settings);
     return true;
@@ -181,6 +182,7 @@ bool Game::makeWhiteBotMove() {
 
             history_of_moves_.push_back(bot_move);
             ++point_of_history_;
+            ++move_number_;
 
             is_calculated_ = false;
             return true;
@@ -209,6 +211,7 @@ bool Game::makeBlackBotMove() {
 
             history_of_moves_.push_back(bot_move);
             ++point_of_history_;
+            ++move_number_;
 
             is_calculated_ = false;
             return true;
@@ -244,6 +247,7 @@ bool Game::makeMove(const Move& move) {
 
     history_of_moves_.push_back(move);
     ++point_of_history_;
+    ++move_number_;
 
     turn_ = other_colour(turn_);
     return true;
@@ -254,7 +258,7 @@ std::vector<Move> Game::allFigureMoves(Position pos) const {
         return {};
 
     std::shared_ptr<FigureMoveValidator> figure =
-        FigureMoveValidator::create(board_, board_[pos].figure_.value(), pos, point_of_history_);
+        FigureMoveValidator::create(board_, board_[pos].figure_.value(), pos, move_number_);
     return figure->allMoves();
 }
 
@@ -294,7 +298,7 @@ GameStatus Game::getGameStatus() const {  // может можно получш�
                 FigureMoveValidator::create(board_,
                                             board_[cell.pos_].figure_.value(),
                                             cell.pos_,
-                                            point_of_history_);
+                                            move_number_);
             if (cell.figure_->colour_ == PlayerColour::white_)
                 white_player_can_move |= !figure->allMoves().empty();
             else if (cell.figure_->colour_ == PlayerColour::black_)
@@ -322,6 +326,7 @@ bool Game::cancelMove() {
         return false;
 
     --point_of_history_;
+    --move_number_;
     turn_ = other_colour(turn_);
 
     if (history_of_moves_[point_of_history_].cancelMove(board_)) {
@@ -330,6 +335,7 @@ bool Game::cancelMove() {
     }
     turn_ = other_colour(turn_);
     ++point_of_history_;
+    ++move_number_;
     return false;
 }
 
@@ -342,6 +348,7 @@ bool Game::nextMove() {
 
     turn_ = other_colour(turn_);
     ++point_of_history_;
+    ++move_number_;
     return true;
 }
 
@@ -350,6 +357,7 @@ bool Game::prevMove() {
         return false;
 
     --point_of_history_;
+    --move_number_;
     turn_ = other_colour(turn_);
 
     if (history_of_moves_[point_of_history_].cancelMove(board_)) {
@@ -357,5 +365,6 @@ bool Game::prevMove() {
     }
     turn_ = other_colour(turn_);
     ++point_of_history_;
+    ++move_number_;
     return false;
 }
